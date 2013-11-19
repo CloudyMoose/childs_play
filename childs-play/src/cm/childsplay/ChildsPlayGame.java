@@ -1,66 +1,41 @@
 package cm.childsplay;
 
-import com.badlogic.gdx.ApplicationListener;
+import cm.childsplay.screens.GameScreen;
+
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.InputMultiplexer;
 
-public class ChildsPlayGame implements ApplicationListener {
-	private OrthographicCamera camera;
-	private SpriteBatch batch;
-	private Texture texture;
-	private Sprite sprite;
-	
-	@Override
-	public void create() {		
-		float w = Gdx.graphics.getWidth();
-		float h = Gdx.graphics.getHeight();
-		
-		camera = new OrthographicCamera(1, h/w);
-		batch = new SpriteBatch();
-		
-		texture = new Texture(Gdx.files.internal("data/libgdx.png"));
-		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		
-		TextureRegion region = new TextureRegion(texture, 0, 0, 512, 275);
-		
-		sprite = new Sprite(region);
-		sprite.setSize(0.9f, 0.9f * sprite.getHeight() / sprite.getWidth());
-		sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
-		sprite.setPosition(-sprite.getWidth()/2, -sprite.getHeight()/2);
+public class ChildsPlayGame extends Game {
+	/** the game uses fixed fps **/
+	public static final int FIXED_FPS = 30;
+	/** max fixed updates to prevent the game from hanging **/
+	public static final int MAX_UPDATES = 20;
+
+	/** defines the viewport width. also defines the window width on desktop **/
+	public static final int VIEWPORT_WIDTH = 800;
+	/** defines the viewport height. also defines the window height on desktop **/
+	public static final int VIEWPORT_HEIGHT = 480;
+
+	public static ChildsPlayGame instance = null;
+
+	public InputMultiplexer multiplexer;
+
+	/** Registers itself as the game instance for static access. */
+	public ChildsPlayGame() {
+		super();
+		if (instance != null) {
+			// Should not happen, we create only one game
+			throw new RuntimeException("Duplicate game instance creation");
+		}
+		instance = this;
 	}
 
 	@Override
-	public void dispose() {
-		batch.dispose();
-		texture.dispose();
+	public void create() {
+		multiplexer = new InputMultiplexer();
+		Gdx.input.setInputProcessor(multiplexer);
+		setScreen(new GameScreen());
 	}
 
-	@Override
-	public void render() {		
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-		sprite.draw(batch);
-		batch.end();
-	}
-
-	@Override
-	public void resize(int width, int height) {
-	}
-
-	@Override
-	public void pause() {
-	}
-
-	@Override
-	public void resume() {
-	}
 }

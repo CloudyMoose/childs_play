@@ -1,5 +1,8 @@
 *.class
 
+/childs-play-android/bin
+/childs-play-android/gen
+
 # Package Files #
 #*.jar
 *.war
