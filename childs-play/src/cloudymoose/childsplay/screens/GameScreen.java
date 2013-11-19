@@ -1,8 +1,8 @@
-package cm.childsplay.screens;
+package cloudymoose.childsplay.screens;
 
-import cm.childsplay.ChildsPlayGame;
-import cm.childsplay.world.World;
-import cm.childsplay.world.WorldRenderer;
+import cloudymoose.childsplay.ChildsPlayGame;
+import cloudymoose.childsplay.world.World;
+import cloudymoose.childsplay.world.WorldRenderer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;

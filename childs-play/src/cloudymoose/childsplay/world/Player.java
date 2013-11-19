@@ -1,4 +1,4 @@
-package cm.childsplay.world;
+package cloudymoose.childsplay.world;
 
 import java.util.HashSet;
 import java.util.Set;

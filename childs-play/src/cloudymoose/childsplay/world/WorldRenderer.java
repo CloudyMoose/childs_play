@@ -1,6 +1,6 @@
-package cm.childsplay.world;
+package cloudymoose.childsplay.world;
 
-import cm.childsplay.ChildsPlayGame;
+import cloudymoose.childsplay.ChildsPlayGame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

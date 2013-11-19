@@ -1,6 +1,6 @@
-package cm.childsplay;
+package cloudymoose.childsplay;
 
-import cm.childsplay.screens.GameScreen;
+import cloudymoose.childsplay.screens.GameScreen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;

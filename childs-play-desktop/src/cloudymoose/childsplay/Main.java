@@ -1,7 +1,9 @@
-package cm.childsplay;
+package cloudymoose.childsplay;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+
+import cloudymoose.childsplay.ChildsPlayGame;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;

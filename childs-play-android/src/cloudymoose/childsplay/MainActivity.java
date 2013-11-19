@@ -1,6 +1,7 @@
-package cm.childsplay;
+package cloudymoose.childsplay;
 
 import android.os.Bundle;
+import cloudymoose.childsplay.ChildsPlayGame;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
