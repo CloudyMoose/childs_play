@@ -33,8 +33,8 @@ public class WorldRenderer {
 		for (Player player : world.players) {
 			for (Unit unit : player.units) {
 				final int unitSize = 10;
-				final int x = unit.getPosition().x;
-				final int y = unit.getPosition().y;
+				final float x = unit.getPosition().x;
+				final float y = unit.getPosition().y;
 
 				if (localPlayer.isSelected(unit)) {
 					debugRenderer.setColor(Color.YELLOW);

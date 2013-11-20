@@ -6,6 +6,7 @@ import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.WorldRenderer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
 
@@ -52,7 +53,14 @@ public class PlayerController implements InputProcessor {
 
 	@Override
 	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
+		switch (keycode) {
+		case Keys.ESCAPE:
+			player.clearSelection();
+			break;
+		case Keys.BACKSPACE:
+			player.resetUnits();
+			break;
+		}
 		return false;
 	}
 

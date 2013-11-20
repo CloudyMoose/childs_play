@@ -23,11 +23,25 @@ public class LocalPlayer extends Player {
 
 	public void moveSelectionTo(float x, float y) {
 		for (Unit unit : selection) {
-			unit.moveTo(x, y);
+			unit.setDestination((int) x, (int) y);
 		}
 	}
 
 	public boolean isSelected(Unit unit) {
 		return selection.contains(unit);
+	}
+
+	public void resetUnits() {
+		// TODO: Dubious code
+		selection.clear();
+		units.clear();
+		units.add(new Child(10, 10));
+		units.add(new Child(-10, 10));
+		units.add(new Child(10, -10));
+		units.add(new Child(-10, -10));
+	}
+
+	public void clearSelection() {
+		selection.clear();
 	}
 }

@@ -22,10 +22,10 @@ public class World {
 		map = new WorldMap();
 
 		localPlayer = new LocalPlayer();
-		localPlayer.units.add(new Unit(10, 10));
-		localPlayer.units.add(new Unit(-10, 10));
-		localPlayer.units.add(new Unit(10, -10));
-		localPlayer.units.add(new Unit(-10, -10));
+		localPlayer.units.add(new Child(10, 10));
+		localPlayer.units.add(new Child(-10, 10));
+		localPlayer.units.add(new Child(10, -10));
+		localPlayer.units.add(new Child(-10, -10));
 
 		players = new ArrayList<Player>();
 		players.add(localPlayer);
@@ -36,7 +36,11 @@ public class World {
 	}
 
 	public void fixedUpdate(float dt) {
-		// TODO Auto-generated method stub
+		for (Player p : players) {
+			for (Unit u : p.units) {
+				u.update(dt);
+			}
+		}
 	}
 
 	public Unit hit(Vector3 worldCoordinates) {
