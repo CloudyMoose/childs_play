@@ -42,9 +42,15 @@ public abstract class FixedTimestepScreen implements Screen {
 		renderScreen(dt);
 	}
 
+	/** Called once per {@link #render(float)} call, at the beginning */
 	public abstract void update(float dt);
 
+	/**
+	 * Can be called multiple times in {@link #render(float)}, between {@link #update(float)} and
+	 * {@link #renderScreen(float)}
+	 */
 	public abstract void fixedUpdate(float dt);
 
+	/** Called once per {@link #render(float)} call, at the end */
 	public abstract void renderScreen(float dt);
 }

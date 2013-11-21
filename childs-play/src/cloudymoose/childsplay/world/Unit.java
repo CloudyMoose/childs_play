@@ -16,18 +16,21 @@ public abstract class Unit {
 	protected int attackRange;
 	protected Point destination;
 	protected Vector2 currentMovement;
+	public final int id;
+
 	protected final float POSITION_EPSILON = 5f; // Position accuracy
 
-	public Unit(int x, int y, int size, int ms, int range) {
+	public Unit(int id, int x, int y, int size, int ms, int range) {
 		position = new Vector2(x, y);
 		this.size = size;
 		hitbox = new Rectangle(x, y, size, size);
 		movementSpeed = ms;
 		attackRange = range;
+		this.id = id;
 	}
 
-	public Unit() {
-		this(0, 0, 10, 0, 0);
+	public Unit(Player owner, int x, int y, int size, int ms, int range) {
+		this(owner.generateUnitId(), x, y, size, ms, range);
 	}
 
 	public Vector2 getPosition() {

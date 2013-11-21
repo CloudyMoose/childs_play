@@ -3,13 +3,17 @@ package cloudymoose.childsplay.world;
 import java.util.HashSet;
 import java.util.Set;
 
+import cloudymoose.childsplay.networking.UpdateRequest;
+
 public class LocalPlayer extends Player {
 
 	protected Set<Unit> selection;
+	protected World world;
 
-	public LocalPlayer() {
-		super();
+	public LocalPlayer(int id) {
+		super(id);
 		selection = new HashSet<Unit>();
+		world = World.getInstance();
 	}
 
 	/** @return true if the unit is has been added to the selection */
@@ -24,6 +28,7 @@ public class LocalPlayer extends Player {
 	public void moveSelectionTo(float x, float y) {
 		for (Unit unit : selection) {
 			unit.setDestination((int) x, (int) y);
+			world.addOutgoingUpdateRequest(new UpdateRequest.Move(unit.id, x, y));
 		}
 	}
 
@@ -35,10 +40,10 @@ public class LocalPlayer extends Player {
 		// TODO: Dubious code
 		selection.clear();
 		units.clear();
-		units.add(new Child(10, 10));
-		units.add(new Child(-10, 10));
-		units.add(new Child(10, -10));
-		units.add(new Child(-10, -10));
+		units.add(new Child(this, 10, 10));
+		units.add(new Child(this, -10, 10));
+		units.add(new Child(this, 10, -10));
+		units.add(new Child(this, -10, -10));
 	}
 
 	public void clearSelection() {

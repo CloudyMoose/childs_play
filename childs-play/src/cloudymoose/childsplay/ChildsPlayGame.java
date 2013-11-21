@@ -1,5 +1,6 @@
 package cloudymoose.childsplay;
 
+import cloudymoose.childsplay.networking.NetworkPeer;
 import cloudymoose.childsplay.screens.GameScreen;
 
 import com.badlogic.gdx.Game;
@@ -20,15 +21,15 @@ public class ChildsPlayGame extends Game {
 	public static ChildsPlayGame instance = null;
 
 	public InputMultiplexer multiplexer;
+	public final NetworkPeer networkPeer;
 
-	/** Registers itself as the game instance for static access. */
-	public ChildsPlayGame() {
-		super();
-		if (instance != null) {
-			// Should not happen, we create only one game
-			throw new RuntimeException("Duplicate game instance creation");
-		}
-		instance = this;
+	private ChildsPlayGame(NetworkPeer networkPeer) {
+		this.networkPeer = networkPeer;
+	}
+
+	public static ChildsPlayGame createInstance(NetworkPeer networkPeer) {
+		instance = new ChildsPlayGame(networkPeer);
+		return instance;
 	}
 
 	@Override

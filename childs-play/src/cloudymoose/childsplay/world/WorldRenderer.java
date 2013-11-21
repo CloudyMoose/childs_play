@@ -1,7 +1,6 @@
 package cloudymoose.childsplay.world;
 
-import cloudymoose.childsplay.ChildsPlayGame;
-
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -13,15 +12,14 @@ public class WorldRenderer {
 	public final World world;
 	public final OrthographicCamera cam;
 
+	private static final String TAG = "WorldRenderer";
+
 	/** for debug rendering **/
 	private ShapeRenderer debugRenderer = new ShapeRenderer();
 
 	public WorldRenderer(World world) {
 		this.world = world;
 		cam = new OrthographicCamera();
-		cam.setToOrtho(false, ChildsPlayGame.VIEWPORT_WIDTH / 2, ChildsPlayGame.VIEWPORT_HEIGHT / 2);
-		cam.position.set(0, 0, 0);
-		cam.update();
 	}
 
 	public void render(float dt) {
@@ -50,8 +48,12 @@ public class WorldRenderer {
 	}
 
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
+		Gdx.app.log(TAG, "resize(" + width + ", " + height + ")");
+		cam.setToOrtho(false, width / 2, height / 2);
 
+		cam.position.set(0, 0, 0);
+
+		cam.update();
 	}
 
 	public void moveCamera(int camDx, int camDy) {

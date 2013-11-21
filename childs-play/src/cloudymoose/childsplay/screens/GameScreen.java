@@ -25,7 +25,7 @@ public class GameScreen extends FixedTimestepScreen {
 
 	@Override
 	public void show() {
-		world = new World(0);
+		world = World.getInstance();
 		renderer = new WorldRenderer(world);
 
 		playerController = new PlayerController(world.getLocalPlayer(), renderer);
@@ -34,32 +34,25 @@ public class GameScreen extends FixedTimestepScreen {
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void update(float dt) {
-		// TODO Auto-generated method stub
-
+		world.sendUpdateRequests(); // TODO send less often?
+		world.processIncomingUpdateRequests();
 	}
 
 	@Override
