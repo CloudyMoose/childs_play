@@ -1,5 +1,5 @@
 *.class
-
+/childs-play/create_desktop_jar.xml
 /childs-play-android/bin
 /childs-play-android/gen
 

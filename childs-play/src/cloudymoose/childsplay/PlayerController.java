@@ -17,14 +17,21 @@ public class PlayerController implements InputProcessor {
 	/** Used to get the world coordinates out of the screen coordinates, control camera... */
 	private WorldRenderer renderer;
 	private World world;
+	private ChildsPlayGame game;
 
-	public PlayerController(LocalPlayer localPlayer, WorldRenderer renderer) {
-		this.player = localPlayer;
+	public boolean enabled;
+
+	public PlayerController(ChildsPlayGame game, WorldRenderer renderer) {
+		this.game = game;
 		this.renderer = renderer;
 		this.world = renderer.world;
+		this.player = world.getLocalPlayer();
+		this.enabled = true;
 	}
 
 	public void pollInput(float dt) {
+		if (!enabled) return;
+
 		int camDx = 0, camDy = 0;
 
 		int screenX = Gdx.input.getX();
@@ -53,12 +60,16 @@ public class PlayerController implements InputProcessor {
 
 	@Override
 	public boolean keyUp(int keycode) {
+		if (!enabled) return false;
+
 		switch (keycode) {
 		case Keys.ESCAPE:
-			player.clearSelection();
 			break;
 		case Keys.BACKSPACE:
-			player.resetUnits();
+			world.reset();
+			break;
+		case Keys.ENTER:
+			game.endTurn();
 			break;
 		}
 		return false;
@@ -78,7 +89,8 @@ public class PlayerController implements InputProcessor {
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
+		if (!enabled) return false;
+
 		Vector3 worldCoordinates = new Vector3(screenX, screenY, 0);
 		renderer.cam.unproject(worldCoordinates);
 
@@ -89,7 +101,7 @@ public class PlayerController implements InputProcessor {
 			player.moveSelectionTo(worldCoordinates.x, worldCoordinates.y);
 		} else {
 			Gdx.app.log("PC", "Toggling selection on: " + clicked.toString());
-			player.toggleSelect(clicked);
+			player.select(clicked);
 		}
 
 		return false;

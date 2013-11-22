@@ -29,17 +29,13 @@ public class WorldRenderer {
 		LocalPlayer localPlayer = world.getLocalPlayer();
 
 		for (Player player : world.players) {
-			for (Unit unit : player.units) {
-				final int unitSize = 10;
-				final float x = unit.getPosition().x;
-				final float y = unit.getPosition().y;
-
-				if (localPlayer.isSelected(unit)) {
+			for (Unit unit : player.units.values()) {
+				if (localPlayer.selection == unit) {
 					debugRenderer.setColor(Color.YELLOW);
 				} else {
 					debugRenderer.setColor(Color.RED);
 				}
-				debugRenderer.rect(x, y, unitSize, unitSize);
+				debugRenderer.rect(unit.hitbox.x, unit.hitbox.y, unit.hitbox.width, unit.hitbox.height);
 			}
 		}
 

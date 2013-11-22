@@ -5,9 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import cloudymoose.childsplay.ChildsPlayGame;
-import cloudymoose.childsplay.networking.NetworkPeer;
-import cloudymoose.childsplay.networking.UpdateRequest;
+import cloudymoose.childsplay.networking.UpdateRequest.Init;
+import cloudymoose.childsplay.world.Command.Runner;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
@@ -17,79 +16,47 @@ public class World {
 	List<Player> players;
 	WorldMap map;
 
-	private final Queue<UpdateRequest> incomingUpdateRequests;
-	private final Queue<UpdateRequest> outgoingUpdateRequests;
-	private final NetworkPeer networkPeer = ChildsPlayGame.instance.networkPeer;
+	private final Queue<Command> commands;
 
 	private LocalPlayer localPlayer;
-
-	/** Singletonized for easy access in other threads and stuff */
-	private static World INSTANCE;
+	private Init initData;
 
 	private static final String TAG = "World";
+	public static final int NB_TICKETS = 2;
 
-	protected World() {
-		incomingUpdateRequests = new LinkedList<UpdateRequest>();
-		outgoingUpdateRequests = new LinkedList<UpdateRequest>();
-	}
+	private int remainingTickets;
 
-	public static World getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new World();
-			// Local player id should be used to create the local player from the right
-			// item in the list of players
-			INSTANCE.createDemoWorld();
-		}
-		return INSTANCE;
-	}
+	private Runner ongoingCommand;
 
-	public void addIncomingUpdateRequest(UpdateRequest request) {
-		synchronized (incomingUpdateRequests) {
-			incomingUpdateRequests.add(request);
-		}
-	}
-
-	public void processIncomingUpdateRequests() {
-		synchronized (incomingUpdateRequests) {
-			while (!incomingUpdateRequests.isEmpty()) {
-				UpdateRequest request = incomingUpdateRequests.remove();
-				Gdx.app.log(TAG, request.toString());
-			}
-		}
-	}
-
-	public void addOutgoingUpdateRequest(UpdateRequest request) {
-		synchronized (outgoingUpdateRequests) {
-			outgoingUpdateRequests.add(request);
-		}
-	}
-
-	public void sendUpdateRequests() {
-		synchronized (outgoingUpdateRequests) {
-			if (!outgoingUpdateRequests.isEmpty()) {
-				networkPeer.send(outgoingUpdateRequests);
-				outgoingUpdateRequests.clear();
-			}
-		}
-	}
-
-	public void registerUpdate() {
-		synchronized (outgoingUpdateRequests) {
-			// TODO: create update request and add it to the list.
-		}
+	public World(Init initData) {
+		commands = new LinkedList<Command>();
+		this.initData = initData;
+		createDemoWorld();
 	}
 
 	private void createDemoWorld() {
 		map = new WorldMap();
+		players = new ArrayList<Player>(initData.nbPlayers + 1);
 
-		localPlayer = new LocalPlayer(1);
-		localPlayer.units.add(new Child(localPlayer, 10, 10));
-		localPlayer.units.add(new Child(localPlayer, -10, 10));
-		localPlayer.units.add(new Child(localPlayer, 10, -10));
-		localPlayer.units.add(new Child(localPlayer, -10, -10));
+		for (int i = 0; i < initData.nbPlayers + 1; i++) {
+			Player player;
+			if (initData.playerId == i) {
+				localPlayer = new LocalPlayer(i, this);
+				player = localPlayer;
+			} else {
+				player = new Player(i);
+			}
 
-		players = new ArrayList<Player>();
-		players.add(localPlayer);
+			if (i == 0) {
+				// NPCs
+			} else {
+				int x = (i == 1) ? -20 : 20;
+				player.addUnit(new Child(player, x, -10));
+				player.addUnit(new Child(player, x, 10));
+			}
+
+			players.add(player);
+		}
 	}
 
 	public LocalPlayer getLocalPlayer() {
@@ -97,9 +64,11 @@ public class World {
 	}
 
 	public void fixedUpdate(float dt) {
-		for (Player p : players) {
-			for (Unit u : p.units) {
-				u.update(dt);
+		if (ongoingCommand != null) {
+			Gdx.app.log(TAG, "updating running command");
+			boolean running = ongoingCommand.run(dt);
+			if (!running) {
+				ongoingCommand = null;
 			}
 		}
 	}
@@ -107,12 +76,51 @@ public class World {
 	public Unit hit(Vector3 worldCoordinates) {
 		// TODO: change to a better way to look for the clicked unit (using map areas or something similar)
 		for (Player p : players) {
-			for (Unit u : p.units) {
-				if (u.isHit(worldCoordinates)) {
-					return u;
-				}
+			for (Unit u : p.units.values()) {
+				if (u.isHit(worldCoordinates)) { return u; }
 			}
 		}
 		return null;
 	}
+
+	public void setReplayCommands(Command[] commands) {
+		for (int i = 0; i < commands.length; i++) {
+			this.commands.add(commands[i]);
+		}
+		// TODO run them
+		startTurn();
+	}
+
+	public Command[] getCommands() {
+		return commands.toArray(new Command[commands.size()]);
+	}
+
+	public void runCommand(Command command) {
+		Gdx.app.log(TAG, "remainingTickets (before action): " + remainingTickets);
+		if (remainingTickets <= 0) return;
+
+		ongoingCommand = command.execute(this);
+		ongoingCommand.start();
+		commands.add(command);
+		--remainingTickets;
+	}
+
+	public void reset() {
+		createDemoWorld();
+	}
+
+	public void startTurn() {
+		Gdx.app.log(TAG, "startTurn");
+		remainingTickets = NB_TICKETS;
+	}
+
+	public Unit getUnit(int unitId) {
+		int playerId = unitId / Player.UNIT_ID_OFFSET;
+		return players.get(playerId).units.get(unitId);
+	}
+
+	public boolean hasRunningCommand() {
+		return ongoingCommand != null && ongoingCommand.running;
+	}
+
 }

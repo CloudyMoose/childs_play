@@ -5,9 +5,7 @@ import java.awt.Toolkit;
 import java.io.IOException;
 import java.net.BindException;
 
-import cloudymoose.childsplay.networking.GameClient;
 import cloudymoose.childsplay.networking.GameServer;
-import cloudymoose.childsplay.networking.NetworkPeer;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
@@ -15,16 +13,12 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 public class Main {
 	public static void main(String[] args) throws IOException {
 
-		NetworkPeer peer;
+		GameServer server;
 		try {
-			GameServer server = new GameServer();
+			server = new GameServer();
 			server.start();
-			peer = server;
 		} catch (BindException e) {
-			System.out.println("Address already in use. Starting a client...");
-			GameClient client = new GameClient();
-			client.connect();
-			peer = client;
+			System.out.println("Address already in use. The server must be already started.");
 		}
 
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
@@ -38,7 +32,7 @@ public class Main {
 		cfg.x = (screenSize.width - cfg.width) / 2;
 		cfg.y = 20;
 
-		new LwjglApplication(ChildsPlayGame.createInstance(peer), cfg);
+		new LwjglApplication(new ChildsPlayGame(), cfg);
 
 	}
 }
