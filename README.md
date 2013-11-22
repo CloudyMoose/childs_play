@@ -1,7 +1,26 @@
 Child's Play
 ===========
 
-Something something RTS children's imagination, something capture points, something.
+Something something -RTS- Turn Based,  children's imagination, something capture points, something.
+
+Gameplay
+--------
+
+### Actions
+
+Possible options:
+
+* Regular turn based: Every units can move once and have an action (wait/attack/other) each turn
+* DnD: Every unit has 2 actions (move/wait/attack/other) each turn. Doing the same action twice has disminishing return
+* Ticket: The player has a fixed number of ticket each turn. He can use them to do an action (move/wait/attack/other) on any unit. Disminishing return by action type
+
+### Game state synchronization
+
+At the beginning of your turn, you download the list of actions done by the other player and replay them.
+
+### Terrain
+
+The map is made of areas (to be conquered) that are made of hexagonal tiles.
 
 
 Architecture (tmp)
