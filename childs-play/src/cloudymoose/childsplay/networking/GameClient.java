@@ -3,8 +3,8 @@ package cloudymoose.childsplay.networking;
 import java.io.IOException;
 
 import cloudymoose.childsplay.ChildsPlayGame;
-import cloudymoose.childsplay.networking.UpdateRequest.StartTurn;
-import cloudymoose.childsplay.world.Command;
+import cloudymoose.childsplay.networking.Message.TurnRecap;
+import cloudymoose.childsplay.world.commands.Command;
 
 import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Client;
@@ -39,7 +39,7 @@ public class GameClient {
 			public void received(Connection connection, final Object object) {
 				System.err.println("InitListener - " + object);
 
-				if (object instanceof UpdateRequest.Init) {
+				if (object instanceof Message.Init) {
 					connection.removeListener(this);
 					turnListener = new TurnListener();
 
@@ -48,34 +48,37 @@ public class GameClient {
 					// Execute it in the Gdx thread (graphic calls are not valid in other threads)
 					Gdx.app.postRunnable(new Runnable() {
 						public void run() {
-							game.initWorld((UpdateRequest.Init) object);
+							game.initWorld((Message.Init) object);
 						};
 					});
 				}
 			}
 		});
-		connection.sendTCP(UpdateRequest.Init.INIT_REQUEST);
+		connection.sendTCP(Message.Init.INIT_REQUEST);
 	}
 
 	public void send(Command[] commands) {
-		connection.sendTCP(commands);
+		connection.sendTCP(new Message.TurnRecap(-1 /* No one cares here */, commands));
 		turnListener.enabled = true;
 	}
 
 	private class TurnListener extends Listener {
+		/** Used to avoid problems while a turn is being played on the client */
 		public boolean enabled = true;
 
 		@Override
 		public void received(Connection connection, final Object object) {
 			if (object instanceof KeepAlive) return;
-			if (!enabled) return;
-			System.err.println("Turn listener (" + (enabled ? "ON" : "OFF") + ") -" + object);
-			System.err.println(object.getClass());
-			if (object instanceof StartTurn) {
-				System.err.println("TurnListener - " + object);
+			if (!enabled) {
+				System.err.println("Turn listener OFF, received: " + object);
+				return;
+			}
+
+			if (object instanceof TurnRecap) {
+				// For calls to libgdx, use postRunnable to make sure it will be run in the gdx thread
 				Gdx.app.postRunnable(new Runnable() {
 					public void run() {
-						game.replay((StartTurn) object);
+						game.replay((TurnRecap) object);
 					}
 				});
 				enabled = false;

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import cloudymoose.childsplay.world.Command;
+import cloudymoose.childsplay.world.commands.Command;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -44,26 +44,24 @@ public class GameServer {
 
 	protected void startNextPlayerTurn(Command[] lastCommandSet) {
 		if (lastCommandSet != null) {
-			// Register the last actions
+			// Register the last commands
 			currentTurn.commands[currentPlayer] = lastCommandSet;
 		}
-
-		// TODO fix------
-		lastCommandSet = new Command[] { new Command.Move(0, 0, 0) };
-		// ---------------
 
 		// Select the next player
 		if (currentPlayer >= nbMaxPlayers - 1) {
 			currentPlayer = 0;
+
+			// Register the next commands as part of a new turn
 			currentTurn = new TurnCommands(actionLog.size());
 			actionLog.add(currentTurn);
 		} else {
 			currentPlayer += 1;
 		}
-		// Send the actions to the next player
-		System.err.println("Sending StartTurn #" + currentTurn.turnNb + " to player " + (currentPlayer + 1)
-				+ server.getConnections()[currentPlayer]);
-		server.getConnections()[currentPlayer].sendTCP(new UpdateRequest.StartTurn(currentTurn.turnNb, lastCommandSet));
+		// Send the commands to the next player
+		System.err.println("Sending StartTurn #" + currentTurn.turnNb + " to player " + (currentPlayer + 1) + " ("
+				+ server.getConnections()[currentPlayer] + ")");
+		server.getConnections()[currentPlayer].sendTCP(new Message.TurnRecap(currentTurn.turnNb, lastCommandSet));
 	}
 
 	/** When a new client connects, sends him the init info, and starts the game if all clients are connected. */
@@ -74,8 +72,8 @@ public class GameServer {
 				@Override
 				public void received(Connection connection, Object object) {
 
-					if (UpdateRequest.Init.INIT_REQUEST.equals(object)) {
-						connection.sendTCP(new UpdateRequest.Init(server.getConnections().length, nbMaxPlayers));
+					if (Message.Init.INIT_REQUEST.equals(object)) {
+						connection.sendTCP(new Message.Init(server.getConnections().length, nbMaxPlayers));
 
 						if (server.getConnections().length == nbMaxPlayers) {
 							server.removeListener(ConnectionListener.this);
@@ -100,9 +98,9 @@ public class GameServer {
 		public void received(Connection connection, Object object) {
 			if (currentPlayer != playerId) return;
 
-			if (object instanceof Command[]) {
-				connection.sendTCP(new UpdateRequest.Ack());
-				startNextPlayerTurn((Command[]) object);
+			if (object instanceof Message.TurnRecap) {
+				connection.sendTCP(new Message.Ack());
+				startNextPlayerTurn(((Message.TurnRecap) object).commands);
 			}
 
 		}

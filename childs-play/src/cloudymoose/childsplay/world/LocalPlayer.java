@@ -1,10 +1,11 @@
 package cloudymoose.childsplay.world;
 
+import cloudymoose.childsplay.world.commands.MoveCommand;
+
 public class LocalPlayer extends Player {
 
 	protected Unit selection;
 	protected World world;
-	private int remainingTickets;
 
 	public LocalPlayer(int id, World world) {
 		super(id);
@@ -17,7 +18,7 @@ public class LocalPlayer extends Player {
 
 	public void moveSelectionTo(float x, float y) {
 		if (selection != null) {
-			world.runCommand(new Command.Move(selection.id, x, y));
+			world.runCommand(new MoveCommand(selection.id, x, y));
 		}
 	}
 

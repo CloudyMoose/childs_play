@@ -52,7 +52,7 @@ public class GameScreen extends FixedTimestepScreen {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
+		// TODO important! will have to be implemented
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class GameScreen extends FixedTimestepScreen {
 		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		renderer.render(dt);
-		// playerController.pollInput(dt); // Disabled camera scroll
+		// playerController.pollInput(dt); // TODO Disabled camera scroll
 
 	}
 

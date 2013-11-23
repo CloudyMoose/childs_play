@@ -5,28 +5,28 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import cloudymoose.childsplay.networking.UpdateRequest.Init;
-import cloudymoose.childsplay.world.Command.Runner;
+import cloudymoose.childsplay.networking.Message.Init;
+import cloudymoose.childsplay.world.commands.Command;
+import cloudymoose.childsplay.world.commands.CommandRunner;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 
 public class World {
 
+	private static final String TAG = "World";
+
 	List<Player> players;
 	WorldMap map;
+	LocalPlayer localPlayer;
 
-	private final Queue<Command> commands;
-
-	private LocalPlayer localPlayer;
+	// TODO: needed as attribute only for the reset() method. To be removed later.
 	private Init initData;
 
-	private static final String TAG = "World";
-	public static final int NB_TICKETS = 2;
-
+	// Current turn info
+	private final Queue<Command> commands;
 	private int remainingTickets;
-
-	private Runner ongoingCommand;
+	private CommandRunner ongoingCommand;
 
 	public World(Init initData) {
 		commands = new LinkedList<Command>();
@@ -34,6 +34,7 @@ public class World {
 		createDemoWorld();
 	}
 
+	/** TODO: will be replaced by a proper initialization from the map info */
 	private void createDemoWorld() {
 		map = new WorldMap();
 		players = new ArrayList<Player>(initData.nbPlayers + 1);
@@ -65,8 +66,8 @@ public class World {
 
 	public void fixedUpdate(float dt) {
 		if (ongoingCommand != null) {
-			Gdx.app.log(TAG, "updating running command");
 			boolean running = ongoingCommand.run(dt);
+			Gdx.app.log(TAG, "A command is " + (running ? "running" : "stopping"));
 			if (!running) {
 				ongoingCommand = null;
 			}
@@ -84,10 +85,12 @@ public class World {
 	}
 
 	public void setReplayCommands(Command[] commands) {
-		for (int i = 0; i < commands.length; i++) {
-			this.commands.add(commands[i]);
+		if (commands != null) {
+			for (int i = 0; i < commands.length; i++) {
+				this.commands.add(commands[i]);
+			}
+			// TODO run them
 		}
-		// TODO run them
 		startTurn();
 	}
 
@@ -97,10 +100,14 @@ public class World {
 
 	public void runCommand(Command command) {
 		Gdx.app.log(TAG, "remainingTickets (before action): " + remainingTickets);
+		// Check if the command is allowed
 		if (remainingTickets <= 0) return;
 
+		// Start it
 		ongoingCommand = command.execute(this);
 		ongoingCommand.start();
+
+		// Register it
 		commands.add(command);
 		--remainingTickets;
 	}
@@ -111,7 +118,7 @@ public class World {
 
 	public void startTurn() {
 		Gdx.app.log(TAG, "startTurn");
-		remainingTickets = NB_TICKETS;
+		remainingTickets = Constants.NB_TICKETS;
 	}
 
 	public Unit getUnit(int unitId) {
@@ -120,7 +127,7 @@ public class World {
 	}
 
 	public boolean hasRunningCommand() {
-		return ongoingCommand != null && ongoingCommand.running;
+		return ongoingCommand != null && ongoingCommand.isRunning();
 	}
 
 }

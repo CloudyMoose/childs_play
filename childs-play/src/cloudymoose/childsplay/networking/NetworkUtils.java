@@ -1,6 +1,7 @@
 package cloudymoose.childsplay.networking;
 
-import cloudymoose.childsplay.world.Command;
+import cloudymoose.childsplay.world.commands.Command;
+import cloudymoose.childsplay.world.commands.MoveCommand;
 
 import com.esotericsoftware.kryo.Kryo;
 
@@ -11,11 +12,11 @@ public abstract class NetworkUtils {
 
 	/** Must be called before any network traffic. */
 	public static void registerMessages(Kryo kryo) {
-		kryo.register(UpdateRequest.Print.class);
-		kryo.register(UpdateRequest.Init.class);
-		kryo.register(UpdateRequest.Ack.class);
-		kryo.register(UpdateRequest.StartTurn.class);
+		kryo.register(Message.Print.class);
+		kryo.register(Message.Init.class);
+		kryo.register(Message.Ack.class);
+		kryo.register(Message.TurnRecap.class);
 		kryo.register(Command[].class);
-		kryo.register(Command.Move.class);
+		kryo.register(MoveCommand.class);
 	}
 }

@@ -1,6 +1,6 @@
 package cloudymoose.childsplay.networking;
 
-import cloudymoose.childsplay.world.Command;
+import cloudymoose.childsplay.world.commands.Command;
 
 /**
  * Base class for the requests.
@@ -10,11 +10,11 @@ import cloudymoose.childsplay.world.Command;
  * 
  * They need default constructors, but they can be private or protected, as they are accessed by reflection.
  * 
- * The {@link UpdateRequest#toString()} method should also be properly implemented, to help with debugging.
+ * The {@link Message#toString()} method should also be properly implemented, to help with debugging.
  */
-public abstract class UpdateRequest {
+public abstract class Message {
 
-	public static class Print extends UpdateRequest {
+	public static class Print extends Message {
 		public final String text;
 
 		protected Print() {
@@ -33,7 +33,7 @@ public abstract class UpdateRequest {
 
 	}
 
-	public static class Init extends UpdateRequest {
+	public static class Init extends Message {
 		public static final Init INIT_REQUEST = new Init(-1, -1);
 		public final int playerId;
 		public final int nbPlayers;
@@ -65,27 +65,31 @@ public abstract class UpdateRequest {
 
 	}
 
-	public static class StartTurn extends UpdateRequest {
+	/**
+	 * Recap of what happened during the turn. Used to start a turn by sending the recap of the other player's action to
+	 * a client, or to end a turn when the client sends his actions to the server.
+	 */
+	public static class TurnRecap extends Message {
 		public final int turn;
-		public final Command[] lastCommands;
+		/** Warning: will be <code>null</code> for the first player on the first turn */
+		public final Command[] commands;
 
-		public StartTurn() {
+		public TurnRecap() {
 			this(0, null);
 		}
 
-		public StartTurn(int turn, Command[] lastCommands) {
+		public TurnRecap(int turn, Command[] lastCommands) {
 			this.turn = turn;
-			this.lastCommands = lastCommands;
+			this.commands = lastCommands;
 		}
 
 		@Override
 		public String toString() {
-			return "Request: Start Turn #" + turn + " "
-					+ (lastCommands == null ? "no commands" : lastCommands.toString());
+			return "Request: Start Turn #" + turn + " " + (commands == null ? "no commands" : commands.toString());
 		}
 	}
 
-	public static class Ack extends UpdateRequest {
+	public static class Ack extends Message {
 		@Override
 		public String toString() {
 			return "Request: Ack";

@@ -1,5 +1,6 @@
 package cloudymoose.childsplay;
 
+import cloudymoose.childsplay.world.Constants;
 import cloudymoose.childsplay.world.LocalPlayer;
 import cloudymoose.childsplay.world.Unit;
 import cloudymoose.childsplay.world.World;
@@ -11,14 +12,13 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
 
 public class PlayerController implements InputProcessor {
-	public static final int MAP_SCROLL_SPEED = 2;
-
 	private LocalPlayer player;
 	/** Used to get the world coordinates out of the screen coordinates, control camera... */
 	private WorldRenderer renderer;
 	private World world;
 	private ChildsPlayGame game;
 
+	/** set it to false to disable all input handling */
 	public boolean enabled;
 
 	public PlayerController(ChildsPlayGame game, WorldRenderer renderer) {
@@ -38,15 +38,15 @@ public class PlayerController implements InputProcessor {
 		int screenY = Gdx.input.getY();
 
 		if (screenX < ChildsPlayGame.VIEWPORT_WIDTH * 0.05) {
-			camDx = -MAP_SCROLL_SPEED;
+			camDx = -Constants.MAP_SCROLL_SPEED;
 		} else if (screenX > ChildsPlayGame.VIEWPORT_WIDTH * 0.95) {
-			camDx = MAP_SCROLL_SPEED;
+			camDx = Constants.MAP_SCROLL_SPEED;
 		}
 
 		if (screenY < ChildsPlayGame.VIEWPORT_HEIGHT * 0.05) {
-			camDy = MAP_SCROLL_SPEED;
+			camDy = Constants.MAP_SCROLL_SPEED;
 		} else if (screenY > ChildsPlayGame.VIEWPORT_HEIGHT * 0.95) {
-			camDy = -MAP_SCROLL_SPEED;
+			camDy = -Constants.MAP_SCROLL_SPEED;
 		}
 
 		renderer.moveCamera(camDx, camDy);
@@ -54,7 +54,6 @@ public class PlayerController implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -77,13 +76,11 @@ public class PlayerController implements InputProcessor {
 
 	@Override
 	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -109,19 +106,16 @@ public class PlayerController implements InputProcessor {
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

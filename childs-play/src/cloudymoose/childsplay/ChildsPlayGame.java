@@ -3,8 +3,8 @@ package cloudymoose.childsplay;
 import java.io.IOException;
 
 import cloudymoose.childsplay.networking.GameClient;
-import cloudymoose.childsplay.networking.UpdateRequest.Init;
-import cloudymoose.childsplay.networking.UpdateRequest.StartTurn;
+import cloudymoose.childsplay.networking.Message.Init;
+import cloudymoose.childsplay.networking.Message.TurnRecap;
 import cloudymoose.childsplay.screens.GameScreen;
 import cloudymoose.childsplay.screens.StartScreen;
 import cloudymoose.childsplay.screens.WaitScreen;
@@ -36,6 +36,10 @@ public class ChildsPlayGame extends Game {
 
 	private World world;
 
+	/**
+	 * Warning: do not add methods that could call something related to graphics here. It will fail if the call is not
+	 * handled by the rendering thread. Use {@link #create()} for that instead.
+	 */
 	public ChildsPlayGame() {
 		client = new GameClient(this);
 		try {
@@ -69,10 +73,10 @@ public class ChildsPlayGame extends Game {
 		client.send(world.getCommands());
 	}
 
-	public void replay(StartTurn turnData) {
+	public void replay(TurnRecap turnData) {
 		Gdx.app.log(TAG, "Replay");
 		gameScreen.mode = GameScreen.Mode.Replay;
-		world.setReplayCommands(turnData.lastCommands);
+		world.setReplayCommands(turnData.commands);
 		setScreen(gameScreen);
 
 	}

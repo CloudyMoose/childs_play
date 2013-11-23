@@ -37,29 +37,32 @@ ChildsPlayGame - Global game singleton class.
 
 ```
 
-Game Loop (tmp)
----------------
+Network Protocol
+----------------
+[![wsd](http://www.websequencediagrams.com/cgi-bin/cdraw?lz=cGFydGljaXBhbnQgUGxheWVyCgAHDENsaWVudAAGDVNlcnZlcgoKaWYgdGhlcmUgaXMgbm8gcwASBSBydW5uaW5nCgkARwYtPisAKgY6IGNyZWF0ZQAhBwplbmQKABoJAGAGABoJYwBvBgB2Bi0-ADgJb25uZWN0L2luaXQgc2VxdWVuY2UKCmFsdAB2BzogbmJDAB8GaW9ucyA9PSBuYk1heACBUgZzCgCBNAYARwpzdGFydCBnYW1lCgoKbG9vcCB0dXJucwoJAAcFAGgHaW9ucwoJCQA0CACBIwgANgZ0dXJuIHJlcXVlc3QgWwCCOgZBAHgGXQoJCQCBOggAglMGOiB1cGRhdGUAbQUgc3RhdGUsAD0LAIIGCQAmCHBsYXlcbgAWBQkAgkYJAIIjCGVuZACBKQUsIHNlbmQgQ29tbWFuZFsAagwAgnEIAIEKDQoJZW5kAIJ5BWVuZA&s=default)](http://www.websequencediagrams.com/?lz=cGFydGljaXBhbnQgUGxheWVyCgAHDENsaWVudAAGDVNlcnZlcgoKaWYgdGhlcmUgaXMgbm8gcwASBSBydW5uaW5nCgkARwYtPisAKgY6IGNyZWF0ZQAhBwplbmQKABoJAGAGABoJYwBvBgB2Bi0-ADgJb25uZWN0L2luaXQgc2VxdWVuY2UKCmFsdAB2BzogbmJDAB8GaW9ucyA9PSBuYk1heACBUgZzCgCBNAYARwpzdGFydCBnYW1lCgoKbG9vcCB0dXJucwoJAAcFAGgHaW9ucwoJCQA0CACBIwgANgZ0dXJuIHJlcXVlc3QgWwCCOgZBAHgGXQoJCQCBOggAglMGOiB1cGRhdGUAbQUgc3RhdGUsAD0LAIIGCQAmCHBsYXlcbgAWBQkAgkYJAIIjCGVuZACBKQUsIHNlbmQgQ29tbWFuZFsAagwAgnEIAIEKDQoJZW5kAIJ5BWVuZA&s=default)
+<!--
+participant Player
+participant Client
+participant Server
 
-The multiplayer aspect is handled in a peer to peer style. The player's actions are transformed into UpdateRequests which are put into a queue. The content of that queue is regularly sent to other players. Upon reception, the players use these UpdateRequests to replay the other player's actions and update their game world.
-
-```
-foreach turn:
-	send update requests to other players
-
-	receive update requests and apply them to the world
-
-	loop fixedUpdate: actual time flow in the world
-		it should be executed a fixed number of times per second (UPS = updates per second)
-
-	render world's state to screen
+if there is no server running
+	Player->+Server: create server
 end
+Player->+Client: create client
+Client->Server: connect/init sequence
 
-```
+alt server: nbConnections == nbMaxPlayers
+	Server->Server: start game
 
-### Remarks
 
-* The state is not synchonized atm, Since the local player's action are done the moment they are issued. They should only be applied on the following turn, with the other players' actions.
-* The current game loop does not work since actions are done over a certain number of turns which may not be the same for all clients. (Note: if the UPS is low enough, it shouldn't be a problem) Possible solutions:
-	- Send the number of fixedUpdates in an updateRequest
-	- Synchronize the clients' update frequency in the beginning
-	- other?
+	loop turns
+		loop connections
+			Server->Client: start turn request [PlayerActions]
+			Client->Player: update game state, start turn
+	Player->Player: play\nturn
+			Player->Client: end turn, send Command[]
+			Client->Server: PlayerActions
+		end
+	end
+end
+ -->
