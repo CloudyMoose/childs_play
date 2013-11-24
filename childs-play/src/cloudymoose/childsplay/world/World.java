@@ -8,8 +8,11 @@ import java.util.Queue;
 import cloudymoose.childsplay.networking.Message.Init;
 import cloudymoose.childsplay.world.commands.Command;
 import cloudymoose.childsplay.world.commands.CommandRunner;
+import cloudymoose.childsplay.world.hextiles.Direction;
+import cloudymoose.childsplay.world.hextiles.HexTile;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -44,6 +47,10 @@ public class World {
 	/** TODO: will be replaced by a proper initialization from the map info */
 	private void createDemoWorld() {
 		map = new WorldMap();
+		HexTile<Color> center = map.addValue(0, 0, Color.CYAN);
+		center.setNeighbor(Direction.UpLeft, Color.GREEN);
+		center.setNeighbor(Direction.UpRight, Color.PINK);
+
 		players = new ArrayList<Player>(initData.nbPlayers + 1);
 
 		for (int i = 0; i < initData.nbPlayers + 1; i++) {

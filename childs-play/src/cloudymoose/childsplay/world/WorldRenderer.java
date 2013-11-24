@@ -1,10 +1,13 @@
 package cloudymoose.childsplay.world;
 
+import cloudymoose.childsplay.world.hextiles.HexTile;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
 
 /** Takes the current state of the world and renders it to the screen */
 public class WorldRenderer {
@@ -24,6 +27,35 @@ public class WorldRenderer {
 
 	public void render(float dt) {
 		debugRenderer.setProjectionMatrix(cam.combined);
+
+		// Render background hexagons
+		debugRenderer.begin(ShapeType.Filled);
+		for (HexTile<Color> tile : world.map) {
+			float size = world.map.getTileSize();
+			float height = 2 * size;
+			float width = (float) (Math.sqrt(3) / 2f * height);
+			Vector2 center = tile.getPosition();
+
+			debugRenderer.setColor(tile.getValue());
+
+			// Draw hexagon with one rectangle and two triangles for now
+			debugRenderer.rect(
+					center.x - width / 2, center.y - height / 4,
+					width, height/2);
+
+			debugRenderer.triangle(
+					center.x - width / 2, center.y + height / 4,
+					center.x,             center.y + height / 2,
+					center.x + width / 2, center.y + height / 4);
+
+			debugRenderer.triangle(
+					center.x - width / 2, center.y - height / 4,
+					center.x,             center.y - height / 2,
+					center.x + width / 2, center.y - height / 4);
+		}
+
+		debugRenderer.end();
+
 		debugRenderer.begin(ShapeType.Line);
 
 		LocalPlayer localPlayer = world.getLocalPlayer();
