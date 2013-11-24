@@ -13,19 +13,30 @@ import com.esotericsoftware.kryonet.Server;
 public class GameServer {
 
 	// TODO: set to 2 for 2 players (duh)
-	private final int nbMaxPlayers = 1;
+	private final int nbMaxPlayers;
+	private final Server server;
 
-	private Server server;
 	private TurnCommands currentTurn;
-	private int currentPlayer = nbMaxPlayers;
-	private List<TurnCommands> actionLog = new ArrayList<TurnCommands>();
-	private boolean gameStarted = false;
+	private int currentPlayer;
+	private List<TurnCommands> actionLog;
+	private boolean gameStarted;
 
-	public void start() throws IOException {
+	public GameServer() {
+		this(2);
+	}
+
+	public GameServer(int nbPlayers) {
+		nbMaxPlayers = nbPlayers;
 		server = new Server();
-
 		NetworkUtils.registerMessages(server.getKryo());
 
+		currentTurn = null;
+		currentPlayer = nbMaxPlayers;
+		actionLog = new ArrayList<TurnCommands>();
+		gameStarted = false;
+	}
+
+	public void start() throws IOException {
 		server.start();
 		server.bind(54555, 54777);
 

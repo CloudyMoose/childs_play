@@ -78,7 +78,7 @@ public class GameClient {
 				// For calls to libgdx, use postRunnable to make sure it will be run in the gdx thread
 				Gdx.app.postRunnable(new Runnable() {
 					public void run() {
-						game.replay((TurnRecap) object);
+						game.notifyTurnRecapReceived((TurnRecap) object);
 					}
 				});
 				enabled = false;
