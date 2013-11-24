@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import com.badlogic.gdx.math.Vector2;
+
 /**
  * Represents a hexagonal grid, where each of the tiles holds a value of a
  * generic type. Contains methods to add and get tiles
@@ -66,6 +68,16 @@ public class HexGrid<T> extends AbstractCollection<HexTile<T>> {
 			return null;
 
 		return xAxis.get(y);
+	}
+
+	public HexTile<T> getTileFromPosition(Vector2 position) {
+		float x = -position.y * 2f / (3f * tileSize);
+		float y = (float) (1f / 3f * Math.sqrt(3) * position.x + (1f / 3f)
+				* position.y)
+				/ tileSize;
+		//x /= 2;
+		//y /= 2;
+		return getTile(Math.round(x), Math.round(y));
 	}
 
 	public T getNeighbor(int x, int y, Direction dir) {

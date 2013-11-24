@@ -9,6 +9,7 @@ import cloudymoose.childsplay.world.WorldRenderer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class PlayerController implements InputProcessor {
@@ -116,7 +117,13 @@ public class PlayerController implements InputProcessor {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		return false;
+		float x = screenX - ChildsPlayGame.VIEWPORT_WIDTH / 2;
+		float y = -screenY + ChildsPlayGame.VIEWPORT_HEIGHT / 2;
+		// Why do I have to divide by 2 to get this right? Seems weird...
+		x /= 2;
+		y /= 2;
+		player.setCurrentPosition(new Vector2(x, y));
+		return true;
 	}
 
 	@Override

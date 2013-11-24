@@ -30,6 +30,10 @@ public class WorldRenderer {
 
 		// Render background hexagons
 		debugRenderer.begin(ShapeType.Filled);
+
+		HexTile<Color> selectedTile = world.map.getTileFromPosition(world
+				.getLocalPlayer().currentPosition);
+
 		for (HexTile<Color> tile : world.map) {
 			float size = world.map.getTileSize();
 			float height = 2 * size;
@@ -37,6 +41,10 @@ public class WorldRenderer {
 			Vector2 center = tile.getPosition();
 
 			debugRenderer.setColor(tile.getValue());
+
+			if (selectedTile == tile) {
+				debugRenderer.setColor(Color.WHITE);
+			}
 
 			// Draw hexagon with one rectangle and two triangles for now
 			debugRenderer.rect(
