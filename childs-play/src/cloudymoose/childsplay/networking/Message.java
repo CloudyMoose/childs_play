@@ -49,7 +49,7 @@ public abstract class Message {
 
 		@Override
 		public String toString() {
-			return "Request: " + (this == INIT_REQUEST ? "INIT_REQUEST" : playerId + "/" + nbPlayers);
+			return "Init: " + (this == INIT_REQUEST ? "INIT_REQUEST" : playerId + "/" + nbPlayers);
 		}
 
 		@Override

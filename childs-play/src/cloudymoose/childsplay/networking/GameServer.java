@@ -2,7 +2,9 @@ package cloudymoose.childsplay.networking;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cloudymoose.childsplay.world.commands.Command;
 
@@ -21,6 +23,12 @@ public class GameServer {
 	private List<TurnCommands> actionLog;
 	private boolean gameStarted;
 
+	/**
+	 * Connections are stored there because Kryo's ones are weirdly managed: the lastest one is the first, array
+	 * recreated at every new connection, etc.
+	 */
+	Map<Integer, Connection> connections;
+
 	public GameServer() {
 		this(2);
 	}
@@ -33,6 +41,7 @@ public class GameServer {
 		currentTurn = null;
 		currentPlayer = nbMaxPlayers;
 		actionLog = new ArrayList<TurnCommands>();
+		connections = new HashMap<Integer, Connection>();
 		gameStarted = false;
 	}
 
@@ -45,8 +54,8 @@ public class GameServer {
 
 	protected void startGame() {
 		if (gameStarted) return;
-		for (int i = 0; i < server.getConnections().length; i++) {
-			server.getConnections()[i].addListener(new TurnListener(i));
+		for (Map.Entry<Integer, Connection> me : connections.entrySet()) {
+			me.getValue().addListener(new TurnListener(me.getKey()));
 		}
 		System.err.println("Start Game!");
 		gameStarted = true;
@@ -56,23 +65,27 @@ public class GameServer {
 	protected void startNextPlayerTurn(Command[] lastCommandSet) {
 		if (lastCommandSet != null) {
 			// Register the last commands
-			currentTurn.commands[currentPlayer] = lastCommandSet;
+			currentTurn.commands[currentPlayer - 1] = lastCommandSet;
+			System.err.println("Registering the commands of player #" + (currentPlayer));
 		}
 
 		// Select the next player
-		if (currentPlayer >= nbMaxPlayers - 1) {
-			currentPlayer = 0;
+		if (currentPlayer >= nbMaxPlayers) {
+			currentPlayer = 1;
 
 			// Register the next commands as part of a new turn
 			currentTurn = new TurnCommands(actionLog.size());
 			actionLog.add(currentTurn);
+			System.err.println("A new turn is starting");
 		} else {
 			currentPlayer += 1;
 		}
+		System.err.println("The next player is player #" + currentPlayer);
 		// Send the commands to the next player
-		System.err.println("Sending StartTurn #" + currentTurn.turnNb + " to player " + (currentPlayer + 1) + " ("
-				+ server.getConnections()[currentPlayer] + ")");
-		server.getConnections()[currentPlayer].sendTCP(new Message.TurnRecap(currentTurn.turnNb, lastCommandSet));
+		System.err.println("Sending StartTurn #" + currentTurn.turnNb + " to player " + currentPlayer + " ("
+				+ connections.get(currentPlayer) + ") with " + (lastCommandSet != null ? lastCommandSet.length : 0)
+				+ " commands");
+		connections.get(currentPlayer).sendTCP(new Message.TurnRecap(currentTurn.turnNb, lastCommandSet));
 	}
 
 	/** When a new client connects, sends him the init info, and starts the game if all clients are connected. */
@@ -84,9 +97,11 @@ public class GameServer {
 				public void received(Connection connection, Object object) {
 
 					if (Message.Init.INIT_REQUEST.equals(object)) {
-						connection.sendTCP(new Message.Init(server.getConnections().length, nbMaxPlayers));
+						int playerId = connections.size() + 1;
+						connections.put(playerId, connection);
+						connection.sendTCP(new Message.Init(playerId, nbMaxPlayers));
 
-						if (server.getConnections().length == nbMaxPlayers) {
+						if (connections.size() == nbMaxPlayers) {
 							server.removeListener(ConnectionListener.this);
 							startGame();
 						}

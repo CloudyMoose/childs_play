@@ -66,7 +66,7 @@ public class ChildsPlayGame extends Game {
 
 	public void endTurn() {
 		setScreen(waitScreen);
-		client.send(world.getCommands());
+		client.send(world.exportCommands());
 	}
 
 	public void notifyTurnRecapReceived(TurnRecap turnData) {

@@ -49,4 +49,12 @@ public abstract class Unit {
 	public boolean isHit(Vector3 coordinates) {
 		return hitbox.contains(coordinates.x, coordinates.y);
 	}
+
+	public int getPlayerId() {
+		return id / Player.UNIT_ID_OFFSET;
+	}
+
+	public String toString() {
+		return "{id:" + id + " pos:(" + position.x + ", " + position.y + ")}";
+	}
 }

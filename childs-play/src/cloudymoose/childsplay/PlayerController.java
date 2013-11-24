@@ -18,6 +18,8 @@ public class PlayerController implements InputProcessor {
 	private World world;
 	private ChildsPlayGame game;
 
+	private static final String TAG = "PlayerController";
+
 	/** set it to false to disable all input handling */
 	public boolean enabled;
 
@@ -91,14 +93,17 @@ public class PlayerController implements InputProcessor {
 		Vector3 worldCoordinates = new Vector3(screenX, screenY, 0);
 		renderer.cam.unproject(worldCoordinates);
 
-		Gdx.app.log("PC", "Clicked: " + worldCoordinates.toString());
+		Gdx.app.log(TAG, "Clicked: " + worldCoordinates.toString());
 
 		Unit clicked = world.hit(worldCoordinates);
 		if (clicked == null) {
 			player.moveSelectionTo(worldCoordinates.x, worldCoordinates.y);
-		} else {
-			Gdx.app.log("PC", "Toggling selection on: " + clicked.toString());
+		} else if (player.owns(clicked)) {
+			Gdx.app.log(TAG, "Toggling selection on: " + clicked.toString());
 			player.select(clicked);
+		} else {
+			Gdx.app.log(TAG, "Can't select that unit (not owned)");
+
 		}
 
 		return false;

@@ -12,6 +12,11 @@ import cloudymoose.childsplay.world.commands.CommandRunner;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 
+/**
+ * Holds the state of the units, map, etc. It doesn't do anything on its own. It can start running a {@link Command} by
+ * using {@link #runCommand(Command)} or {@link #replayNextCommand()}. Its {@link CommandRunner} will then be used to
+ * update the world's state at each {@link #fixedUpdate(float)} call
+ */
 public class World {
 
 	private static final String TAG = "World";
@@ -24,11 +29,13 @@ public class World {
 	private Init initData;
 
 	// Current turn info
+	Player currentPlayer;
 	private final Queue<Command> commands;
 	private int remainingTickets;
 	private CommandRunner ongoingCommand;
 
 	public World(Init initData) {
+		Gdx.app.log(TAG, "Init data: " + initData.toString());
 		commands = new LinkedList<Command>();
 		this.initData = initData;
 		createDemoWorld();
@@ -67,7 +74,6 @@ public class World {
 	public void fixedUpdate(float dt) {
 		if (ongoingCommand != null) {
 			boolean running = ongoingCommand.run(dt);
-			Gdx.app.log(TAG, "A command is " + (running ? "running" : "stopping"));
 			if (!running) {
 				ongoingCommand = null;
 			}
@@ -84,18 +90,32 @@ public class World {
 		return null;
 	}
 
+	/** Registers the commands and prepares the world to play them (reset tickets). */
 	public void setReplayCommands(Command[] commands) {
 		if (commands != null) {
 			for (int i = 0; i < commands.length; i++) {
 				this.commands.add(commands[i]);
 			}
-			// TODO run them
 		}
 		startTurn();
 	}
 
-	public Command[] getCommands() {
-		return commands.toArray(new Command[commands.size()]);
+	public boolean replayNextCommand() {
+		if (commands.isEmpty()) {
+			return false;
+		} else {
+			Command c = commands.remove();
+			runCommand(c);
+			Gdx.app.log(TAG, "Replaying command " + c);
+			return true;
+		}
+	}
+
+	/** Warning, also clears the command queue! */
+	public Command[] exportCommands() {
+		Command[] c = commands.toArray(new Command[commands.size()]);
+		commands.clear();
+		return c;
 	}
 
 	public void runCommand(Command command) {
@@ -116,6 +136,7 @@ public class World {
 		createDemoWorld();
 	}
 
+	/** Currently only resets the tickets */
 	public void startTurn() {
 		Gdx.app.log(TAG, "startTurn");
 		remainingTickets = Constants.NB_TICKETS;

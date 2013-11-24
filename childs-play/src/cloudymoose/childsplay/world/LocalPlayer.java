@@ -22,4 +22,8 @@ public class LocalPlayer extends Player {
 		}
 	}
 
+	public boolean owns(Unit unit) {
+		return id == unit.getPlayerId();
+	}
+
 }

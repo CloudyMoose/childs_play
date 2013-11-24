@@ -61,12 +61,33 @@ public class GameScreen extends FixedTimestepScreen {
 
 	@Override
 	public void fixedUpdate(float dt) {
+		if (mode == Mode.Replay) {
+			prepareReplayUpdate();
+		} else {
+			prepareDefaultUpdate();
+		}
+
+		world.fixedUpdate(dt);
+	}
+
+	private void prepareDefaultUpdate() {
 		if (world.hasRunningCommand()) {
 			playerController.enabled = false;
 		} else {
 			playerController.enabled = true;
 		}
-		world.fixedUpdate(dt);
+	}
+
+	private void prepareReplayUpdate() {
+		playerController.enabled = false;
+		if (!world.hasRunningCommand()) {
+			boolean replayOver = !world.replayNextCommand();
+			if (replayOver) {
+				mode = Mode.Default;
+				world.startTurn();
+				Gdx.app.log(TAG, "Player #" + world.getLocalPlayer().id + " can now give his commands.");
+			}
+		}
 	}
 
 	@Override
