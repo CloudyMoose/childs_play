@@ -61,7 +61,7 @@ public abstract class AbstractMenuStageManager {
 		return button;
 	}
 
-	public Skin getSkin() {
+	public static Skin getSkin() {
 		return MENU_SKIN;
 	}
 

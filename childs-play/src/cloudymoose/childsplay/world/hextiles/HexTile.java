@@ -3,16 +3,15 @@ package cloudymoose.childsplay.world.hextiles;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * Represents a hexagonal tile in a hexagonal tile. Every tile can also be
- * associated with a value that contains additional information about this tile.
- * Contains method to show and set neighboring tiles, which is a convenient way
+ * Represents a hexagonal tile in a hexagonal tile. Every tile can also be associated with a value that contains
+ * additional information about this tile. Contains method to show and set neighboring tiles, which is a convenient way
  * of building up maps. Internally, this is implemented with axial coordinates.
  * 
  * @param <T>
  *            the value type.
  */
 public class HexTile<T> {
-	private final int x, y;
+	protected final int x, y;
 	private final T value;
 	private final HexGrid<T> grid;
 
@@ -44,9 +43,8 @@ public class HexTile<T> {
 	}
 
 	public Vector2 getPosition() {
-		return new Vector2(
-				(float) (grid.getTileSize() * Math.sqrt(3) * (y + x / 2.0)),
-				-grid.getTileSize() * (3.0f / 2.0f) * x);
+		return new Vector2((float) (grid.getTileSize() * Math.sqrt(3) * (y + x / 2.0)), -grid.getTileSize()
+				* (3.0f / 2.0f) * x);
 	}
 
 	/**
@@ -69,8 +67,7 @@ public class HexTile<T> {
 	}
 
 	/**
-	 * Gets the tile that neighbors this tile in a specific direction, or null,
-	 * if no tile is there.
+	 * Gets the tile that neighbors this tile in a specific direction, or null, if no tile is there.
 	 * 
 	 * @param dir
 	 *            the direction to look in.

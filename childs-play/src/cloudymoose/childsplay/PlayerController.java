@@ -1,15 +1,17 @@
 package cloudymoose.childsplay;
 
-import cloudymoose.childsplay.screens.GameHUD;
+import cloudymoose.childsplay.screens.hud.GameHUD;
 import cloudymoose.childsplay.world.Constants;
 import cloudymoose.childsplay.world.LocalPlayer;
 import cloudymoose.childsplay.world.Unit;
 import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.WorldRenderer;
+import cloudymoose.childsplay.world.hextiles.HexTile;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -86,7 +88,21 @@ public class PlayerController implements InputProcessor {
 
 		Unit clicked = world.hit(touchedWorldPosition);
 		if (clicked == null) {
-			player.moveSelectionTo(touchedWorldPosition.x, touchedWorldPosition.y);
+			if (hud.isCommandMenuVisible()) {
+				hud.hideCommandMenu();
+			} else {
+				HexTile<?> clickedTile = world.getMap().getTile((int) touchedWorldPosition.x,
+						(int) touchedWorldPosition.y);
+				if (clickedTile == null) {
+					Gdx.app.error(TAG, "No tile found! Using a dummy one.");
+					clickedTile = new DummyTile(touchedWorldPosition);
+				}
+
+				if (player.hasSelectedUnit()) {
+					hud.displayCommandMenu(screenX, screenY, clickedTile);
+				}
+			}
+			// player.moveSelectionTo(touchedWorldPosition.x, touchedWorldPosition.y);
 		} else if (player.owns(clicked)) {
 			Gdx.app.log(TAG, "Toggling selection on: " + clicked.toString());
 			player.select(clicked);
@@ -141,6 +157,20 @@ public class PlayerController implements InputProcessor {
 	@Override
 	public boolean scrolled(int amount) {
 		return false;
+	}
+
+	/**
+	 * Dummy class used for testing the hud without having to care about the exact math of the hex grid TODO: will have
+	 * to be removed
+	 */
+	public static class DummyTile extends HexTile<Color> {
+		public DummyTile(Vector3 position) {
+			super((int) position.x, (int) position.y, Color.PINK, null);
+		}
+
+		public Vector2 getPosition() {
+			return new Vector2((float) x, (float) y);
+		}
 	}
 
 }

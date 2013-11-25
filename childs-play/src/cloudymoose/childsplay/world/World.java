@@ -158,4 +158,8 @@ public class World {
 		return ongoingCommand != null && ongoingCommand.isRunning();
 	}
 
+	public WorldMap getMap() {
+		return map;
+	}
+
 }

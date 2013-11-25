@@ -2,6 +2,7 @@ package cloudymoose.childsplay.screens;
 
 import cloudymoose.childsplay.ChildsPlayGame;
 import cloudymoose.childsplay.PlayerController;
+import cloudymoose.childsplay.screens.hud.GameHUD;
 import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.WorldRenderer;
 

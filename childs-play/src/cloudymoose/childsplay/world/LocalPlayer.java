@@ -1,6 +1,7 @@
 package cloudymoose.childsplay.world;
 
 import cloudymoose.childsplay.world.commands.MoveCommand;
+import cloudymoose.childsplay.world.hextiles.HexTile;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -32,6 +33,15 @@ public class LocalPlayer extends Player {
 
 	public boolean owns(Unit unit) {
 		return id == unit.getPlayerId();
+	}
+
+	public boolean hasSelectedUnit() {
+		return selection != null;
+	}
+
+	public void moveSelectionTo(HexTile<?> clickedTile) {
+		Vector2 tilePosition = clickedTile.getPosition();
+		moveSelectionTo(tilePosition.x, tilePosition.y);
 	}
 
 }
