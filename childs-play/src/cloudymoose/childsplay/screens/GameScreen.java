@@ -15,6 +15,7 @@ public class GameScreen extends FixedTimestepScreen {
 	private WorldRenderer renderer;
 	private PlayerController playerController;
 	public Mode mode = Mode.Default;
+	private GameHUD hud;
 
 	public GameScreen(ChildsPlayGame game) {
 		super(ChildsPlayGame.FIXED_FPS, ChildsPlayGame.MAX_UPDATES);
@@ -24,17 +25,20 @@ public class GameScreen extends FixedTimestepScreen {
 	public void init(World world) {
 		this.world = world;
 		renderer = new WorldRenderer(world);
-		playerController = new PlayerController(game, renderer);
+		hud = new GameHUD(game, this, world);
+		playerController = new PlayerController(game, renderer, hud);
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		renderer.resize(width, height);
+		hud.resize(width, height);
 	}
 
 	@Override
 	public void show() {
 		game.multiplexer.addProcessor(playerController);
+		hud.show();
 	}
 
 	@Override
@@ -70,6 +74,7 @@ public class GameScreen extends FixedTimestepScreen {
 		world.fixedUpdate(dt);
 	}
 
+	/** Method called before {@link World#fixedUpdate(float)}, when in Default mode */
 	private void prepareDefaultUpdate() {
 		if (world.hasRunningCommand()) {
 			playerController.enabled = false;
@@ -78,6 +83,7 @@ public class GameScreen extends FixedTimestepScreen {
 		}
 	}
 
+	/** Method called before {@link World#fixedUpdate(float)}, when in Replay mode */
 	private void prepareReplayUpdate() {
 		playerController.enabled = false;
 		if (!world.hasRunningCommand()) {
@@ -95,8 +101,9 @@ public class GameScreen extends FixedTimestepScreen {
 		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		renderer.render(dt);
-		// playerController.pollInput(dt); // TODO Disabled camera scroll
+		hud.render(dt);
 
+		// playerController.pollInput(dt); // TODO Disabled camera scroll
 	}
 
 	public enum Mode {

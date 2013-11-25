@@ -42,7 +42,7 @@ public class MainMenuScreen extends AbstractMenuScreen<MainMenuScreen.StageManag
 			playButton.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					mGame.connectToServer();
+					game.connectToServer();
 				}
 			});
 			table.add(playButton).size(300, 60).uniform().spaceBottom(10);
@@ -53,7 +53,7 @@ public class MainMenuScreen extends AbstractMenuScreen<MainMenuScreen.StageManag
 			startServerButton.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					mGame.startServer(2);
+					game.startServer(2);
 				}
 			});
 			table.add(startServerButton).uniform().fill().spaceBottom(10);
@@ -64,7 +64,7 @@ public class MainMenuScreen extends AbstractMenuScreen<MainMenuScreen.StageManag
 			tmpStartServButton.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					mGame.startServer(1);
+					game.startServer(1);
 				}
 			});
 			table.add(tmpStartServButton).uniform().fill().spaceBottom(10);

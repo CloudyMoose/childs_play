@@ -11,29 +11,30 @@ public abstract class FixedTimestepScreen implements Screen {
 	public float fixedFps;
 	public float fixedDeltaTime;
 
-	private float mCurrentTime;
-	private float mMaxUpdates;
+	private float currentTime;
+	private float maxUpdates;
 
 	public FixedTimestepScreen(float fps, int maxUpdates) {
 		time = 0;
 		fixedFps = fps;
 		fixedDeltaTime = Math.max(1 / fps, 0.001f);
-		mCurrentTime = 0;
-		mMaxUpdates = maxUpdates;
+		currentTime = 0;
+		this.maxUpdates = maxUpdates;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void render(float dt) {
 		int nbUpdates = 0;
-		mCurrentTime += dt;
+		currentTime += dt;
 
 		update(dt);
 
-		while (time < mCurrentTime) {
+		while (time < currentTime) {
 			nbUpdates++;
 			time += fixedDeltaTime;
 			fixedUpdate(fixedDeltaTime);
-			if (nbUpdates >= mMaxUpdates) {
+			if (nbUpdates >= maxUpdates) {
 				Gdx.app.log(TAG, "update break at " + time);
 				break;
 			}

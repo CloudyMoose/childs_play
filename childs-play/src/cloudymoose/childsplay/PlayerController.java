@@ -1,5 +1,6 @@
 package cloudymoose.childsplay;
 
+import cloudymoose.childsplay.screens.GameHUD;
 import cloudymoose.childsplay.world.Constants;
 import cloudymoose.childsplay.world.LocalPlayer;
 import cloudymoose.childsplay.world.Unit;
@@ -18,41 +19,23 @@ public class PlayerController implements InputProcessor {
 	private WorldRenderer renderer;
 	private World world;
 	private ChildsPlayGame game;
+	private GameHUD hud;
+
+	private Vector3 touchedWorldPosition;
+	private boolean dragged;
 
 	private static final String TAG = "PlayerController";
 
 	/** set it to false to disable all input handling */
 	public boolean enabled;
 
-	public PlayerController(ChildsPlayGame game, WorldRenderer renderer) {
+	public PlayerController(ChildsPlayGame game, WorldRenderer renderer, GameHUD hud) {
 		this.game = game;
+		this.hud = hud;
 		this.renderer = renderer;
 		this.world = renderer.world;
 		this.player = world.getLocalPlayer();
 		this.enabled = true;
-	}
-
-	public void pollInput(float dt) {
-		if (!enabled) return;
-
-		int camDx = 0, camDy = 0;
-
-		int screenX = Gdx.input.getX();
-		int screenY = Gdx.input.getY();
-
-		if (screenX < ChildsPlayGame.VIEWPORT_WIDTH * 0.05) {
-			camDx = -Constants.MAP_SCROLL_SPEED;
-		} else if (screenX > ChildsPlayGame.VIEWPORT_WIDTH * 0.95) {
-			camDx = Constants.MAP_SCROLL_SPEED;
-		}
-
-		if (screenY < ChildsPlayGame.VIEWPORT_HEIGHT * 0.05) {
-			camDy = Constants.MAP_SCROLL_SPEED;
-		} else if (screenY > ChildsPlayGame.VIEWPORT_HEIGHT * 0.95) {
-			camDy = -Constants.MAP_SCROLL_SPEED;
-		}
-
-		renderer.moveCamera(camDx, camDy);
 	}
 
 	@Override
@@ -84,21 +67,26 @@ public class PlayerController implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		touchedWorldPosition = new Vector3(screenX, screenY, 0);
+		renderer.cam.unproject(touchedWorldPosition);
 		return false;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		if (!enabled) return false;
+		if (dragged) { // Do not consider this touchUp as a click, because the pointer was dragged before.
+			dragged = false;
+			return false;
+		} else {
+			dragged = false;
+		}
 
-		Vector3 worldCoordinates = new Vector3(screenX, screenY, 0);
-		renderer.cam.unproject(worldCoordinates);
+		Gdx.app.log(TAG, "Clicked: " + touchedWorldPosition.toString());
 
-		Gdx.app.log(TAG, "Clicked: " + worldCoordinates.toString());
-
-		Unit clicked = world.hit(worldCoordinates);
+		Unit clicked = world.hit(touchedWorldPosition);
 		if (clicked == null) {
-			player.moveSelectionTo(worldCoordinates.x, worldCoordinates.y);
+			player.moveSelectionTo(touchedWorldPosition.x, touchedWorldPosition.y);
 		} else if (player.owns(clicked)) {
 			Gdx.app.log(TAG, "Toggling selection on: " + clicked.toString());
 			player.select(clicked);
@@ -107,11 +95,35 @@ public class PlayerController implements InputProcessor {
 
 		}
 
+		// finger released, there is no touched position anymore
+		touchedWorldPosition = null;
 		return false;
 	}
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		if (!enabled) return false;
+
+		Vector3 moveVector = new Vector3(screenX, screenY, 0);
+		renderer.cam.unproject(moveVector);
+
+		/* Check the dragging distance to avoid it being too sensitive */
+		if (!dragged) { /* Once we start moving the camera, no need to check again */
+			float dst = moveVector.dst2(touchedWorldPosition);
+			Gdx.app.log(TAG, "drag dist: " + dst);
+
+			if (dst > 10 /* TODO Arbitrary value, to be tweaked */) {
+				dragged = true;
+			} else {
+				return false;
+			}
+		}
+
+		/* Compute camera movement */
+		moveVector.sub(touchedWorldPosition).scl(Constants.MAP_SCROLL_SPEED * -1 /* for reversed scroll direction */);
+		Gdx.app.debug(TAG, "move vector: " + moveVector.toString());
+		renderer.moveCamera(moveVector);
+
 		return false;
 	}
 

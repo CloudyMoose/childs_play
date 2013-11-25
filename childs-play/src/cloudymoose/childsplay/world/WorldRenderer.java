@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 /** Takes the current state of the world and renders it to the screen */
 public class WorldRenderer {
@@ -31,8 +32,7 @@ public class WorldRenderer {
 		// Render background hexagons
 		debugRenderer.begin(ShapeType.Filled);
 
-		HexTile<Color> selectedTile = world.map.getTileFromPosition(world
-				.getLocalPlayer().currentPosition);
+		HexTile<Color> selectedTile = world.map.getTileFromPosition(world.getLocalPlayer().currentPosition);
 
 		for (HexTile<Color> tile : world.map) {
 			float size = world.map.getTileSize();
@@ -47,18 +47,12 @@ public class WorldRenderer {
 			}
 
 			// Draw hexagon with one rectangle and two triangles for now
-			debugRenderer.rect(
-					center.x - width / 2, center.y - height / 4,
-					width, height/2);
+			debugRenderer.rect(center.x - width / 2, center.y - height / 4, width, height / 2);
 
-			debugRenderer.triangle(
-					center.x - width / 2, center.y + height / 4,
-					center.x,             center.y + height / 2,
+			debugRenderer.triangle(center.x - width / 2, center.y + height / 4, center.x, center.y + height / 2,
 					center.x + width / 2, center.y + height / 4);
 
-			debugRenderer.triangle(
-					center.x - width / 2, center.y - height / 4,
-					center.x,             center.y - height / 2,
+			debugRenderer.triangle(center.x - width / 2, center.y - height / 4, center.x, center.y - height / 2,
 					center.x + width / 2, center.y - height / 4);
 		}
 
@@ -92,8 +86,8 @@ public class WorldRenderer {
 		cam.update();
 	}
 
-	public void moveCamera(int camDx, int camDy) {
-		cam.position.add(camDx, camDy, 0);
+	public void moveCamera(Vector3 moveVector) {
+		cam.position.add(moveVector);
 		cam.update();
 	}
 

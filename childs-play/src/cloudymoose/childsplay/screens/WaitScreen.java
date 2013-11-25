@@ -57,7 +57,7 @@ public class WaitScreen extends AbstractMenuScreen<WaitScreen.StageManager> {
 				public void clicked(InputEvent event, float x, float y) {
 					if (!startTurnButton.isDisabled()) {
 						setTurnReadyState(false);
-						mGame.startTurn();
+						game.startTurn();
 					}
 				}
 			});

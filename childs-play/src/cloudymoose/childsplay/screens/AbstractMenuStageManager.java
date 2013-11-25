@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+/** Utility class allowing easier use of a {@link Stage} */
 public abstract class AbstractMenuStageManager {
 
 	public final String TAG = getClass().getSimpleName();
@@ -24,23 +25,23 @@ public abstract class AbstractMenuStageManager {
 	public static final SpriteBatch SpriteBatch = new SpriteBatch();
 	public static final Skin MENU_SKIN = new Skin(Gdx.files.internal("uiskin.json"));
 
-	protected boolean mInitialized;
-	protected final Stage mStage;
-	protected final ChildsPlayGame mGame;
-	protected final Screen mScreen;
+	protected boolean initialized;
+	protected final Stage stage;
+	protected final ChildsPlayGame game;
+	protected final Screen screen;
 
 	public AbstractMenuStageManager(ChildsPlayGame game, Screen screen) {
-		mGame = game;
-		mScreen = screen;
-		mInitialized = false;
-		mStage = new Stage(0, 0, true, SpriteBatch);
+		this.game = game;
+		this.screen = screen;
+		initialized = false;
+		stage = new Stage(0, 0, true, SpriteBatch);
 	}
 
 	/**
 	 * Called the first time {@link #show()} is called, to initialize the menu. This method is also called in
 	 * {@link #show()} after a {@link #dispose()}.
 	 * 
-	 * @return the Actor to add to the stage
+	 * @return the Actor to add to the stage. Returning <code>null</code> is safe.
 	 */
 	protected abstract Actor init();
 
@@ -65,58 +66,69 @@ public abstract class AbstractMenuStageManager {
 	}
 
 	public Stage getStage() {
-		return mStage;
+		return stage;
 	}
 
 	public void render(float delta) {
-		mStage.act(delta);
-		mStage.draw();
+		stage.act(delta);
+		stage.draw();
 
-		Table.drawDebug(mStage); // TODO: Remove to hide the all debug lines
+		Table.drawDebug(stage); // TODO: Remove to hide the all debug lines
 	}
 
 	public void resize(int width, int height) {
-		mStage.setViewport(width, height, true);
+		stage.setViewport(width, height, true);
 	}
 
 	/**
 	 * Adds the actor returned by {@link #init()} to the stage and adds the stage as input processor.
 	 */
 	public void show() {
-		if (!mInitialized) {
+		if (!initialized) {
 			Gdx.app.log(TAG, "Initializing");
-			mStage.addActor(init());
-			mInitialized = true;
+			Actor actor = init();
+			if (actor != null) {
+				stage.addActor(actor);
+			}
+			initialized = true;
 		}
-		mGame.multiplexer.addProcessor(mStage);
+		game.multiplexer.addProcessor(stage);
 	}
 
 	public void dispose() {
-		mStage.dispose(); // removes the children of the stage. The menu is considered uninitialized then.
-		mInitialized = false;
+		stage.dispose(); // removes the children of the stage. The menu is considered uninitialized then.
+		initialized = false;
 	}
 
 	/** Removes the stage from the processors. */
 	public void hide() {
-		mGame.multiplexer.removeProcessor(mStage);
+		game.multiplexer.removeProcessor(stage);
 	}
 
 	protected class ScreenSwitchListener extends ClickListener {
 
-		private final boolean mDisposeScreen;
-		private final Screen screen;
+		/** If true, the previous screen will be disposed. */
+		private final boolean disposeScreen;
+		/** screen we want to switch to */
+		private final Screen destinationScreen;
 
+		/**
+		 * @param disposeScreen
+		 *            if <code>true</code> the previous screen will be disposed after the switch
+		 * @param screen
+		 *            screen we want to switch to
+		 */
 		public ScreenSwitchListener(boolean disposeScreen, Screen screen) {
 			super();
-			mDisposeScreen = disposeScreen;
-			this.screen = screen;
+			this.disposeScreen = disposeScreen;
+			this.destinationScreen = screen;
 		}
 
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			mGame.setScreen(screen);
-			if (mDisposeScreen) {
-				mScreen.dispose();
+			game.setScreen(destinationScreen);
+			if (disposeScreen) {
+				screen.dispose();
 			}
 		}
 	}
