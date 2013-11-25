@@ -9,7 +9,10 @@ import cloudymoose.childsplay.world.hextiles.HexTile;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class GameHUD extends AbstractMenuStageManager {
 
@@ -18,6 +21,7 @@ public class GameHUD extends AbstractMenuStageManager {
 
 	Label labelUnitCount;
 	CommandMenu commandMenu;
+	TextButton btnEnd;
 
 	public GameHUD(ChildsPlayGame game, Screen screen, World world) {
 		super(game, screen);
@@ -32,6 +36,16 @@ public class GameHUD extends AbstractMenuStageManager {
 		updateUnitCount();
 		stage.addActor(labelUnitCount);
 
+		btnEnd = new TextButton("End Turn", getSkin());
+		btnEnd.setSize(200, 50);
+		btnEnd.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				game.endTurn();
+			}
+		});
+		stage.addActor(btnEnd);
+
 		commandMenu = new CommandMenu(player);
 		stage.addActor(commandMenu);
 
@@ -41,7 +55,8 @@ public class GameHUD extends AbstractMenuStageManager {
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
-		labelUnitCount.setPosition(0, 0);
+		labelUnitCount.setPosition(0, 20);
+		btnEnd.setPosition(200, 20);
 		commandMenu.resize(width, height);
 	}
 
