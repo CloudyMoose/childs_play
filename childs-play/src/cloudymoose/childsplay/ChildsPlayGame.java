@@ -22,10 +22,11 @@ public class ChildsPlayGame extends Game {
 	/** max fixed updates to prevent the game from hanging **/
 	public static final int MAX_UPDATES = 20;
 
+	// Nexus 4 native resolution
 	/** defines the viewport width. also defines the window width on desktop **/
-	public static final int VIEWPORT_WIDTH = 800;
+	public static final int VIEWPORT_WIDTH = 1280;
 	/** defines the viewport height. also defines the window height on desktop **/
-	public static final int VIEWPORT_HEIGHT = 480;
+	public static final int VIEWPORT_HEIGHT = 768;
 
 	private static final String TAG = "ChildsPlayGame";
 

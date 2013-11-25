@@ -1,6 +1,7 @@
 package cloudymoose.childsplay.networking;
 
 import java.io.IOException;
+import java.net.InetAddress;
 
 import cloudymoose.childsplay.ChildsPlayGame;
 import cloudymoose.childsplay.networking.Message.TurnRecap;
@@ -30,7 +31,8 @@ public class GameClient {
 		NetworkUtils.registerMessages(client.getKryo());
 
 		client.start();
-		client.connect(5000, "localhost", 54555, 54777);
+		InetAddress serverAddress = client.discoverHost(54777, 10000);
+		client.connect(5000, serverAddress, 54555, 54777);
 	}
 
 	public void init() {

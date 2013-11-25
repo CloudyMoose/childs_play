@@ -1,7 +1,5 @@
 package cloudymoose.childsplay.world.commands;
 
-import java.awt.Point;
-
 import cloudymoose.childsplay.world.Unit;
 import cloudymoose.childsplay.world.World;
 
@@ -34,7 +32,7 @@ public class MoveCommand extends Command {
 	}
 
 	public static class MoveRunner extends CommandRunner {
-		private Point destination;
+		private Vector2 destination;
 		private Vector2 currentMovement;
 		private Unit unit;
 		protected final float POSITION_EPSILON = 5f; // Position accuracy
@@ -42,7 +40,7 @@ public class MoveCommand extends Command {
 		public MoveRunner(MoveCommand command, World world) {
 			super(command);
 			this.unit = world.getUnit(command.unitId);
-			this.destination = new Point((int) command.destX, (int) command.destY);
+			this.destination = new Vector2(command.destX, command.destY);
 
 			// TODO replace with pathfinding
 			// angle between the line made by the 2 points and the x-axis

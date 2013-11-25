@@ -9,5 +9,10 @@
 	<classpathentry exported="true" kind="lib" path="libs/gdx-backend-android.jar" sourcepath="libs/gdx-backend-android-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/childs-play/libs/bodyeditor-loader.jar" sourcepath="/childs-play/libs/bodyeditor-loader-sources.jar"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+	<classpathentry kind="lib" path="libs/kryonet-2.21-all.jar" sourcepath="/childs-play/libs/kryonet-2.21/java">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/childs-play/libs/kryonet-2.21/javadoc/package-list!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
