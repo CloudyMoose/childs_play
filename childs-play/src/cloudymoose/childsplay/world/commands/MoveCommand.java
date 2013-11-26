@@ -53,9 +53,15 @@ public class MoveCommand extends Command {
 		protected boolean update(float dt) {
 			unit.move(currentMovement);
 
-			return !(Math.abs(unit.position.x - destination.x) < POSITION_EPSILON && Math.abs(unit.position.y
-					- destination.y) < POSITION_EPSILON);
-
+			boolean closeEnough = Math.abs(unit.position.x - destination.x) < POSITION_EPSILON && Math.abs(unit.position.y
+					- destination.y) < POSITION_EPSILON;
+			
+			if (closeEnough) {
+				unit.setPosition((int)destination.x, (int)destination.y);
+				return false;
+			} else {
+				return true;
+			}
 		}
 	}
 

@@ -7,6 +7,6 @@ import com.badlogic.gdx.graphics.Color;
 public class WorldMap extends HexGrid<Color> {
 
 	public WorldMap() {
-		super(25.0f);
+		super(Constants.TILE_SIZE);
 	}
 }

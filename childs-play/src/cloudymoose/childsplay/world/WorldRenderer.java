@@ -30,7 +30,7 @@ public class WorldRenderer {
 		debugRenderer.setProjectionMatrix(cam.combined);
 
 		// Render background hexagons
-		debugRenderer.begin(ShapeType.Filled);
+//		debugRenderer.begin(ShapeType.Filled);
 
 		HexTile<Color> selectedTile = world.map.getTileFromPosition(world.getLocalPlayer().currentPosition);
 
@@ -40,6 +40,7 @@ public class WorldRenderer {
 			float width = (float) (Math.sqrt(3) / 2f * height);
 			Vector2 center = tile.getPosition();
 
+			debugRenderer.begin(ShapeType.Filled);
 			debugRenderer.setColor(tile.getValue());
 
 			if (selectedTile == tile) {
@@ -54,11 +55,20 @@ public class WorldRenderer {
 
 			debugRenderer.triangle(center.x - width / 2, center.y - height / 4, center.x, center.y - height / 2,
 					center.x + width / 2, center.y - height / 4);
+			debugRenderer.end();
+			
+			debugRenderer.begin(ShapeType.Line);
+			debugRenderer.setColor(Color.BLACK);
+			debugRenderer.polygon(new float[]{center.x - width / 2, center.y + height / 4, center.x, center.y + height / 2,
+					center.x + width / 2, center.y + height / 4, center.x + width / 2, center.y - height / 4,  center.x, center.y - height / 2, center.x - width / 2, center.y - height / 4});
+
+			
+			debugRenderer.end();
+			
 		}
 
-		debugRenderer.end();
 
-		debugRenderer.begin(ShapeType.Line);
+		debugRenderer.begin(ShapeType.Filled);
 
 		LocalPlayer localPlayer = world.getLocalPlayer();
 

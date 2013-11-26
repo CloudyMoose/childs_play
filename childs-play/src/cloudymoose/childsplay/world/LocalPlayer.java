@@ -4,24 +4,25 @@ import cloudymoose.childsplay.world.commands.MoveCommand;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class LocalPlayer extends Player {
 
 	protected Unit selection;
 	protected World world;
-	protected Vector2 currentPosition;
+	protected Vector3 currentPosition;
 
 	public LocalPlayer(int id, World world) {
 		super(id);
 		this.world = world;
-		this.currentPosition = new Vector2();
+		this.currentPosition = new Vector3();
 	}
 
 	public void select(Unit unit) {
 		selection = unit;
 	}
 
-	public void setCurrentPosition(Vector2 position) {
+	public void setCurrentPosition(Vector3 position) {
 		currentPosition = position;
 	}
 

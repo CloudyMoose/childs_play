@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * Represents a hexagonal grid, where each of the tiles holds a value of a
@@ -70,7 +70,7 @@ public class HexGrid<T> extends AbstractCollection<HexTile<T>> {
 		return xAxis.get(y);
 	}
 
-	public HexTile<T> getTileFromPosition(Vector2 position) {
+	public HexTile<T> getTileFromPosition(Vector3 position) {
 		float x = -position.y * 2f / (3f * tileSize);
 		float y = (float) (1f / 3f * Math.sqrt(3) * position.x + (1f / 3f)
 				* position.y)

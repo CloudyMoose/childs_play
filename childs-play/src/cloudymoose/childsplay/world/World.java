@@ -46,11 +46,8 @@ public class World {
 
 	/** TODO: will be replaced by a proper initialization from the map info */
 	private void createDemoWorld() {
-		map = new WorldMap();
-		HexTile<Color> center = map.addValue(0, 0, Color.CYAN);
-		center.setNeighbor(Direction.UpLeft, Color.GREEN);
-		center.setNeighbor(Direction.UpRight, Color.PINK);
-
+		map = createEmptyMap(20, 10);
+		
 		players = new ArrayList<Player>(initData.nbPlayers + 1);
 
 		for (int i = 0; i < initData.nbPlayers + 1; i++) {
@@ -65,13 +62,29 @@ public class World {
 			if (i == 0) {
 				// NPCs
 			} else {
-				int x = (i == 1) ? -20 : 20;
-				player.addUnit(new Child(player, x, -10));
-				player.addUnit(new Child(player, x, 10));
+				int r = (i == 1) ? 1 : 19;
+				player.addUnit(new Child(player, map.getTile(1, r).getPosition()));
+				player.addUnit(new Child(player, map.getTile(7, r-3).getPosition()));
 			}
 
 			players.add(player);
 		}
+	}
+
+	private WorldMap createEmptyMap(int width, int height) {
+		WorldMap newMap = new WorldMap();
+		HexTile<Color> columnHead = newMap.addValue(0, 0, Color.GREEN);
+		for (int y = 0; y < height; y++) {
+			HexTile<Color> tmp = columnHead;
+			for (int x = 0; x < width; x++) {
+				tmp = tmp.setNeighbor(Direction.Right, Color.GREEN);				
+			}
+			if (y != height-1){
+				Direction indentation = y%2 == 0 ? Direction.DownRight : Direction.DownLeft;
+				columnHead = columnHead.setNeighbor(indentation, Color.GREEN);
+			}
+		}
+		return newMap;
 	}
 
 	public LocalPlayer getLocalPlayer() {

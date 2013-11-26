@@ -91,16 +91,15 @@ public class PlayerController implements InputProcessor {
 			if (hud.isCommandMenuVisible()) {
 				hud.hideCommandMenu();
 			} else {
-				HexTile<?> clickedTile = world.getMap().getTile((int) touchedWorldPosition.x,
-						(int) touchedWorldPosition.y);
+				HexTile<?> clickedTile = world.getMap().getTileFromPosition(touchedWorldPosition);
 				if (clickedTile == null) {
-					Gdx.app.error(TAG, "No tile found! Using a dummy one.");
-					clickedTile = new DummyTile(touchedWorldPosition);
+					Gdx.app.error(TAG, "No tile clicked! ");
+				} else {
+					if (player.hasSelectedUnit()) {
+						hud.displayCommandMenu(screenX, screenY, clickedTile);
+					}
 				}
 
-				if (player.hasSelectedUnit()) {
-					hud.displayCommandMenu(screenX, screenY, clickedTile);
-				}
 			}
 			// player.moveSelectionTo(touchedWorldPosition.x, touchedWorldPosition.y);
 		} else if (player.owns(clicked)) {
@@ -147,7 +146,7 @@ public class PlayerController implements InputProcessor {
 	public boolean mouseMoved(int screenX, int screenY) {
 		Vector3 v = new Vector3(screenX, screenY, 0);
 		renderer.cam.unproject(v);
-		player.setCurrentPosition(new Vector2(v.x, v.y));
+		player.setCurrentPosition(v);
 		return true;
 	}
 

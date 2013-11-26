@@ -32,7 +32,7 @@ public abstract class Unit {
 	public void setPosition(int x, int y) {
 		position.x = x;
 		position.y = y;
-		hitbox.setPosition(x, y);
+		hitbox.setCenter(x, y);
 	}
 
 	/**  */
