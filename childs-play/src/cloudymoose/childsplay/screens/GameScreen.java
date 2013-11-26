@@ -38,13 +38,15 @@ public class GameScreen extends FixedTimestepScreen {
 
 	@Override
 	public void show() {
-		game.multiplexer.addProcessor(playerController);
+		// Be careful while changing the order of the statements here, it changes the way input is handled.
 		hud.show();
+		game.multiplexer.addProcessor(playerController);
 	}
 
 	@Override
 	public void hide() {
 		game.multiplexer.removeProcessor(playerController);
+		hud.hide();
 	}
 
 	@Override

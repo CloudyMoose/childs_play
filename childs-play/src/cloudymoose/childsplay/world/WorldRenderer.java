@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 /** Takes the current state of the world and renders it to the screen */
@@ -26,16 +25,20 @@ public class WorldRenderer {
 	}
 
 	public void render(float dt) {
+		if (world.preferredCameraFocus != null) {
+			// TODO: jumps at the beginning. It should be smoothed or something...
+			setCameraPosition(world.preferredCameraFocus);
+		}
 		debugRenderer.setProjectionMatrix(cam.combined);
 
 		// Render background hexagons
-		HexTile<Color> selectedTile = world.map.getTileFromPosition(world.getLocalPlayer().currentPosition);
+		HexTile<Color> selectedTile = world.getLocalPlayer().touchedTile;
 
 		for (HexTile<Color> tile : world.map) {
 			float size = world.map.getTileSize();
 			float height = 2 * size;
 			float width = (float) (Math.sqrt(3) / 2f * height);
-			Vector2 center = tile.getPosition();
+			Vector3 center = tile.getPosition();
 
 			debugRenderer.begin(ShapeType.Filled);
 			debugRenderer.setColor(tile.getValue());
@@ -94,8 +97,21 @@ public class WorldRenderer {
 		cam.update();
 	}
 
+	/**
+	 * @param moveVector
+	 *            movement vector that will be used to move the current camera position
+	 */
 	public void moveCamera(Vector3 moveVector) {
 		cam.position.add(moveVector);
+		cam.update();
+	}
+
+	/**
+	 * @param position
+	 *            new camera position
+	 */
+	public void setCameraPosition(Vector3 position) {
+		cam.position.set(position);
 		cam.update();
 	}
 

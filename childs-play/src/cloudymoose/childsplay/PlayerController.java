@@ -11,6 +11,7 @@ import cloudymoose.childsplay.world.hextiles.HexTile;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 
 public class PlayerController implements InputProcessor {
@@ -21,7 +22,8 @@ public class PlayerController implements InputProcessor {
 	private ChildsPlayGame game;
 	private GameHUD hud;
 
-	private Vector3 touchedWorldPosition;
+	private HexTile<Color> touchedTile;
+	private Vector3 touchedPosition;
 	private boolean dragged;
 
 	private static final String TAG = "PlayerController";
@@ -63,8 +65,15 @@ public class PlayerController implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		touchedWorldPosition = new Vector3(screenX, screenY, 0);
-		renderer.cam.unproject(touchedWorldPosition);
+		touchedPosition = new Vector3(screenX, screenY, 0);
+		renderer.cam.unproject(touchedPosition);
+		touchedTile = world.getMap().getTileFromPosition(touchedPosition);
+		player.touchedTile = touchedTile;
+
+		if (hud.isCommandMenuVisible()) {
+			hud.hideCommandMenu();
+		}
+
 		return false;
 	}
 
@@ -78,22 +87,18 @@ public class PlayerController implements InputProcessor {
 			dragged = false;
 		}
 
-		Gdx.app.log(TAG, "Clicked: " + touchedWorldPosition.toString());
+		if (touchedTile == null) return false;
 
-		Unit clicked = world.hit(touchedWorldPosition);
+		Gdx.app.log(TAG, "Touched tile: " + touchedTile.toString());
+
+		Unit clicked = world.hit(touchedPosition);
 		if (clicked == null) {
 			if (hud.isCommandMenuVisible()) {
 				hud.hideCommandMenu();
 			} else {
-				HexTile<?> clickedTile = world.getMap().getTileFromPosition(touchedWorldPosition);
-				if (clickedTile == null) {
-					Gdx.app.error(TAG, "No tile clicked! ");
-				} else {
-					if (player.hasSelectedUnit()) {
-						hud.displayCommandMenu(screenX, screenY, clickedTile);
-					}
+				if (player.hasSelectedUnit()) {
+					hud.displayCommandMenu(screenX, screenY, touchedTile);
 				}
-
 			}
 			// player.moveSelectionTo(touchedWorldPosition.x, touchedWorldPosition.y);
 		} else if (player.owns(clicked)) {
@@ -105,23 +110,24 @@ public class PlayerController implements InputProcessor {
 		}
 
 		// finger released, there is no touched position anymore
-		touchedWorldPosition = null;
+		touchedTile = null;
 		return false;
 	}
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// if (!enabled) return false;
+		if (!enabled) return false;
+		if (touchedTile == null) return false;
 
 		Vector3 moveVector = new Vector3(screenX, screenY, 0);
 		renderer.cam.unproject(moveVector);
 
 		/* Check the dragging distance to avoid it being too sensitive */
 		if (!dragged) { /* Once we start moving the camera, no need to check again */
-			float dst = moveVector.dst2(touchedWorldPosition);
+			float dst = moveVector.dst2(touchedPosition);
 			Gdx.app.log(TAG, "drag dist: " + dst);
 
-			if (dst > 10 /* TODO Arbitrary value, to be tweaked */) {
+			if (dst > 50 /* TODO Arbitrary value, to be tweaked */) {
 				dragged = true;
 			} else {
 				return false;
@@ -129,7 +135,7 @@ public class PlayerController implements InputProcessor {
 		}
 
 		/* Compute camera movement */
-		moveVector.sub(touchedWorldPosition).scl(Constants.MAP_SCROLL_SPEED * -1 /* for reversed scroll direction */);
+		moveVector.sub(touchedPosition).scl(Constants.MAP_SCROLL_SPEED * -1 /* for reversed scroll direction */);
 		Gdx.app.debug(TAG, "move vector: " + moveVector.toString());
 		renderer.moveCamera(moveVector);
 
@@ -138,10 +144,7 @@ public class PlayerController implements InputProcessor {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		Vector3 v = new Vector3(screenX, screenY, 0);
-		renderer.cam.unproject(v);
-		player.setCurrentPosition(v);
-		return true;
+		return false;
 	}
 
 	@Override

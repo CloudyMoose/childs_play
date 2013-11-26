@@ -33,6 +33,8 @@ public class World {
 
 	// Current turn info
 	Player currentPlayer;
+	Vector3 preferredCameraFocus;
+
 	private final Queue<Command> commands;
 	private int remainingTickets;
 	private CommandRunner ongoingCommand;
@@ -47,7 +49,7 @@ public class World {
 	/** TODO: will be replaced by a proper initialization from the map info */
 	private void createDemoWorld() {
 		map = createEmptyMap(20, 10);
-		
+
 		players = new ArrayList<Player>(initData.nbPlayers + 1);
 
 		for (int i = 0; i < initData.nbPlayers + 1; i++) {
@@ -64,7 +66,7 @@ public class World {
 			} else {
 				int r = (i == 1) ? 1 : 19;
 				player.addUnit(new Child(player, map.getTile(1, r).getPosition()));
-				player.addUnit(new Child(player, map.getTile(7, r-3).getPosition()));
+				player.addUnit(new Child(player, map.getTile(7, r - 3).getPosition()));
 			}
 
 			players.add(player);
@@ -77,10 +79,10 @@ public class World {
 		for (int y = 0; y < height; y++) {
 			HexTile<Color> tmp = columnHead;
 			for (int x = 0; x < width; x++) {
-				tmp = tmp.setNeighbor(Direction.Right, Color.GREEN);				
+				tmp = tmp.setNeighbor(Direction.Right, Color.GREEN);
 			}
-			if (y != height-1){
-				Direction indentation = y%2 == 0 ? Direction.DownRight : Direction.DownLeft;
+			if (y != height - 1) {
+				Direction indentation = y % 2 == 0 ? Direction.DownRight : Direction.DownLeft;
 				columnHead = columnHead.setNeighbor(indentation, Color.GREEN);
 			}
 		}
@@ -94,7 +96,9 @@ public class World {
 	public void fixedUpdate(float dt) {
 		if (ongoingCommand != null) {
 			boolean running = ongoingCommand.run(dt);
+			preferredCameraFocus = ongoingCommand.getPreferredCameraFocus();
 			if (!running) {
+				preferredCameraFocus = null;
 				ongoingCommand = null;
 			}
 		}

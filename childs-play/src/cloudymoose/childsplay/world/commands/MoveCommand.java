@@ -3,7 +3,7 @@ package cloudymoose.childsplay.world.commands;
 import cloudymoose.childsplay.world.Unit;
 import cloudymoose.childsplay.world.World;
 
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class MoveCommand extends Command {
 	public final int unitId;
@@ -17,8 +17,10 @@ public class MoveCommand extends Command {
 	/**
 	 * 
 	 * @param unitId
-	 * @param destQ destination tile Q coordinate
-	 * @param destR destination tile R coordinate
+	 * @param destQ
+	 *            destination tile Q coordinate
+	 * @param destR
+	 *            destination tile R coordinate
 	 */
 	public MoveCommand(int unitId, int destQ, int destR) {
 		super();
@@ -38,32 +40,33 @@ public class MoveCommand extends Command {
 	}
 
 	public static class MoveRunner extends CommandRunner {
-		private Vector2 destination;
-		private Vector2 currentMovement;
+		private Vector3 destination;
+		private Vector3 currentMovement;
 		private Unit unit;
 		protected final float POSITION_EPSILON = 5f; // Position accuracy
 
 		public MoveRunner(MoveCommand command, World world) {
 			super(command);
 			this.unit = world.getUnit(command.unitId);
-			this.destination = new Vector2(world.map.getTile(command.destQ, command.destR).getPosition());
+			this.destination = world.map.getTile(command.destQ, command.destR).getPosition();
 
 			// TODO replace with pathfinding
 			// angle between the line made by the 2 points and the x-axis
 			double angle = Math.atan2((destination.y - unit.position.y), destination.x - unit.position.x);
-			currentMovement = new Vector2((float) (unit.movementSpeed * Math.cos(angle)),
-					(float) (unit.movementSpeed * Math.sin(angle)));
+			currentMovement = new Vector3((float) (unit.movementSpeed * Math.cos(angle)),
+					(float) (unit.movementSpeed * Math.sin(angle)), 0);
 		}
 
 		@Override
 		protected boolean update(float dt) {
 			unit.move(currentMovement);
+			preferredCameraFocus = unit.position;
 
-			boolean closeEnough = Math.abs(unit.position.x - destination.x) < POSITION_EPSILON && Math.abs(unit.position.y
-					- destination.y) < POSITION_EPSILON;
-			
+			boolean closeEnough = Math.abs(unit.position.x - destination.x) < POSITION_EPSILON
+					&& Math.abs(unit.position.y - destination.y) < POSITION_EPSILON;
+
 			if (closeEnough) {
-				unit.setPosition((int)destination.x, (int)destination.y);
+				unit.setPosition((int) destination.x, (int) destination.y);
 				return false;
 			} else {
 				return true;

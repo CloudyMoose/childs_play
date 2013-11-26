@@ -3,6 +3,7 @@ package cloudymoose.childsplay.world;
 import cloudymoose.childsplay.world.commands.MoveCommand;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 
 public class LocalPlayer extends Player {
@@ -10,6 +11,7 @@ public class LocalPlayer extends Player {
 	protected Unit selection;
 	protected World world;
 	protected Vector3 currentPosition;
+	public HexTile<Color> touchedTile;
 
 	public LocalPlayer(int id, World world) {
 		super(id);

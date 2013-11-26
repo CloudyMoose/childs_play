@@ -1,6 +1,6 @@
 package cloudymoose.childsplay.world.hextiles;
 
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * Represents a hexagonal tile in a hexagonal tile. Every tile can also be associated with a value that contains
@@ -47,9 +47,9 @@ public class HexTile<T> {
 	 * 
 	 * @return the world position of the center of this tile.
 	 */
-	public Vector2 getPosition() {
-		return new Vector2((float) (grid.getTileSize() * Math.sqrt(3) * (r + q / 2.0)), -grid.getTileSize()
-				* (3.0f / 2.0f) * q);
+	public Vector3 getPosition() {
+		return new Vector3((float) (grid.getTileSize() * Math.sqrt(3) * (r + q / 2.0)), -grid.getTileSize()
+				* (3.0f / 2.0f) * q, 0);
 	}
 
 	/**

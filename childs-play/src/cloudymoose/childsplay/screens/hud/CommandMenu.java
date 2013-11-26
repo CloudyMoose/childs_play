@@ -36,6 +36,7 @@ public class CommandMenu extends Group {
 		btnMove.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				setVisible(false);
 				player.moveSelectionTo(clickedTile);
 			}
 		});
@@ -47,6 +48,7 @@ public class CommandMenu extends Group {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				// TODO
+				setVisible(false);
 				Gdx.app.log(TAG, "TODO Attack");
 			}
 		});

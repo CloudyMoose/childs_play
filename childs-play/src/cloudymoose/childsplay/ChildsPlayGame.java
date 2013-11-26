@@ -47,6 +47,7 @@ public class ChildsPlayGame extends Game {
 
 	@Override
 	public void create() {
+		Gdx.app.log(TAG, "Create");
 		assetManager = initializeAssetManager();
 		gameScreen = new GameScreen(this);
 		waitScreen = new WaitScreen(this);
@@ -54,7 +55,30 @@ public class ChildsPlayGame extends Game {
 		multiplexer = new InputMultiplexer();
 		Gdx.input.setInputProcessor(multiplexer);
 		setScreen(mainMenuScreen);
+	}
 
+	@Override
+	public void dispose() {
+		Gdx.app.log(TAG, "Dispose");
+		super.dispose();
+	}
+
+	@Override
+	public void pause() {
+		Gdx.app.log(TAG, "Pause");
+		super.pause();
+	}
+
+	@Override
+	public void resume() {
+		Gdx.app.log(TAG, "Resume");
+		super.resume();
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		Gdx.app.log(TAG, "Resize");
+		super.resize(width, height);
 	}
 
 	/**
