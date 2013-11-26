@@ -11,26 +11,26 @@ import com.badlogic.gdx.math.Vector2;
  *            the value type.
  */
 public class HexTile<T> {
-	protected final int x, y;
+	protected final int q, r;
 	private final T value;
 	private final HexGrid<T> grid;
 
 	/**
-	 * Get the x position on the grid.
+	 * Get the q coordinate on the grid.
 	 * 
-	 * @return the x position on the grid.
+	 * @return the q coordinate on the grid.
 	 */
-	public int getX() {
-		return x;
+	public int getQ() {
+		return q;
 	}
 
 	/**
-	 * Get the y position on the grid.
+	 * Get the r coordinate on the grid.
 	 * 
-	 * @return the y position on the grid.
+	 * @return the r coordinate on the grid.
 	 */
-	public int getY() {
-		return y;
+	public int getR() {
+		return r;
 	}
 
 	/**
@@ -42,27 +42,32 @@ public class HexTile<T> {
 		return value;
 	}
 
+	/**
+	 * Get the world position of the center of this tile.
+	 * 
+	 * @return the world position of the center of this tile.
+	 */
 	public Vector2 getPosition() {
-		return new Vector2((float) (grid.getTileSize() * Math.sqrt(3) * (y + x / 2.0)), -grid.getTileSize()
-				* (3.0f / 2.0f) * x);
+		return new Vector2((float) (grid.getTileSize() * Math.sqrt(3) * (r + q / 2.0)), -grid.getTileSize()
+				* (3.0f / 2.0f) * q);
 	}
 
 	/**
 	 * Creates a new hexagonal tile, belonging to a specific hexagonal grid.
 	 * 
-	 * @param x
-	 *            the x position on the grid.
-	 * @param y
-	 *            the y position on the grid.
+	 * @param q
+	 *            the q coordinate on the grid.
+	 * @param r
+	 *            the r coordinate on the grid.
 	 * @param value
 	 *            the value of this tile.
 	 * @param grid
 	 *            the hexagonal grid this tile belongs to.
 	 */
-	protected HexTile(int x, int y, T value, HexGrid<T> grid) {
+	protected HexTile(int q, int r, T value, HexGrid<T> grid) {
 		this.grid = grid;
-		this.x = x;
-		this.y = y;
+		this.q = q;
+		this.r = r;
 		this.value = value;
 	}
 
@@ -74,7 +79,7 @@ public class HexTile<T> {
 	 * @return the neighboring tile in that direction, or null of no tile.
 	 */
 	public HexTile<T> getNeighbor(Direction dir) {
-		return grid.getTile(this.x + dir.deltaX, this.y + dir.deltaY);
+		return grid.getTile(this.q + dir.deltaX, this.r + dir.deltaY);
 	}
 
 	/**
@@ -87,8 +92,8 @@ public class HexTile<T> {
 	 * @return the created tile.
 	 */
 	public HexTile<T> setNeighbor(Direction dir, T value) {
-		int x = this.x + dir.deltaX;
-		int y = this.y + dir.deltaY;
+		int x = this.q + dir.deltaX;
+		int y = this.r + dir.deltaY;
 		return grid.addValue(x, y, value);
 	}
 
