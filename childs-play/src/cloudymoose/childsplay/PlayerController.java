@@ -165,7 +165,7 @@ public class PlayerController implements InputProcessor {
 		}
 
 		public Vector2 getPosition() {
-			return new Vector2((float) x, (float) y);
+			return new Vector2((float) q, (float) r);
 		}
 	}
 
