@@ -3,7 +3,6 @@ package cloudymoose.childsplay.world;
 import cloudymoose.childsplay.world.commands.MoveCommand;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class LocalPlayer extends Player {
@@ -41,7 +40,7 @@ public class LocalPlayer extends Player {
 	}
 
 	public void moveSelectionTo(HexTile<?> clickedTile) {
-		moveSelectionTo(clickedTile.getX(), clickedTile.getY());
+		moveSelectionTo(clickedTile.getQ(), clickedTile.getR());
 	}
 
 }

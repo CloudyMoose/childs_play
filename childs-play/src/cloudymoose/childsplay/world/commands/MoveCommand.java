@@ -3,7 +3,6 @@ package cloudymoose.childsplay.world.commands;
 import cloudymoose.childsplay.world.Unit;
 import cloudymoose.childsplay.world.World;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
 public class MoveCommand extends Command {
@@ -30,7 +29,7 @@ public class MoveCommand extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("Move %d to (%f,%f)", unitId, destQ, destR);
+		return String.format("Move %d to tile(%d,%d)", unitId, destQ, destR);
 	}
 
 	@Override
