@@ -57,7 +57,8 @@ public class GameScreen extends FixedTimestepScreen {
 
 	@Override
 	public void dispose() {
-		// TODO important! will have to be implemented
+		hud.dispose();
+		renderer.dispose();
 	}
 
 	@Override
@@ -103,8 +104,6 @@ public class GameScreen extends FixedTimestepScreen {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		renderer.render(dt);
 		hud.render(dt);
-
-		// playerController.pollInput(dt); // TODO Disabled camera scroll
 	}
 
 	public enum Mode {

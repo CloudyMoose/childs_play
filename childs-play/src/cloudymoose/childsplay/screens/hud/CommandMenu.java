@@ -1,12 +1,12 @@
 package cloudymoose.childsplay.screens.hud;
 
-import cloudymoose.childsplay.screens.AbstractMenuStageManager;
 import cloudymoose.childsplay.world.LocalPlayer;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -15,24 +15,24 @@ public class CommandMenu extends Group {
 
 	private static final String TAG = "CommandMenu";
 
-	HexTile<?> clickedTile;
-	TextButton btnMove;
-	TextButton btnAttack;
-	LocalPlayer player;
+	private HexTile<?> clickedTile;
+	private LocalPlayer player;
 
-	Table table;
+	private TextButton btnMove;
+	private TextButton btnAttack;
+	private Table table;
 
-	public CommandMenu(LocalPlayer player) {
+	public CommandMenu(LocalPlayer player, Skin uiSkin) {
 		this.player = player;
 		setTransform(false);
-		build();
+		build(uiSkin);
 	}
 
-	protected void build() {
+	protected void build(Skin uiSkin) {
 		table = new Table();
 		table.debug();
 
-		btnMove = new TextButton("Move", AbstractMenuStageManager.getSkin());
+		btnMove = new TextButton("Move", uiSkin);
 		btnMove.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -42,7 +42,7 @@ public class CommandMenu extends Group {
 		table.add(btnMove).size(80, 40).uniform().spaceBottom(10);
 		table.row();
 
-		btnAttack = new TextButton("Attack", AbstractMenuStageManager.getSkin());
+		btnAttack = new TextButton("Attack", uiSkin);
 		btnAttack.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

@@ -1,6 +1,7 @@
 package cloudymoose.childsplay.screens;
 
 import cloudymoose.childsplay.ChildsPlayGame;
+import cloudymoose.childsplay.world.Constants;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -23,7 +24,7 @@ public abstract class AbstractMenuStageManager {
 	 * and is unable to initialize it again afterwards, making the stage itself not reusable.
 	 */
 	public static final SpriteBatch SpriteBatch = new SpriteBatch();
-	public static final Skin MENU_SKIN = new Skin(Gdx.files.internal("uiskin.json"));
+	private static Skin MENU_SKIN;
 
 	protected boolean initialized;
 	protected final Stage stage;
@@ -61,7 +62,10 @@ public abstract class AbstractMenuStageManager {
 		return button;
 	}
 
-	public static Skin getSkin() {
+	public Skin getSkin() {
+		if (MENU_SKIN == null) {
+			MENU_SKIN = game.assetManager.get(Constants.SKIN_JSON_PATH);
+		}
 		return MENU_SKIN;
 	}
 

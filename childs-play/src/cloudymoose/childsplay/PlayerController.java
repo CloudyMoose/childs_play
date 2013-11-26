@@ -11,8 +11,6 @@ import cloudymoose.childsplay.world.hextiles.HexTile;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class PlayerController implements InputProcessor {
@@ -50,15 +48,11 @@ public class PlayerController implements InputProcessor {
 		if (!enabled) return false;
 
 		switch (keycode) {
-		case Keys.ESCAPE:
-			break;
-		case Keys.BACKSPACE:
-			world.reset();
-			break;
 		case Keys.ENTER:
 			game.endTurn();
 			break;
 		}
+
 		return false;
 	}
 
@@ -117,7 +111,7 @@ public class PlayerController implements InputProcessor {
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-//		if (!enabled) return false;
+		// if (!enabled) return false;
 
 		Vector3 moveVector = new Vector3(screenX, screenY, 0);
 		renderer.cam.unproject(moveVector);
@@ -154,19 +148,4 @@ public class PlayerController implements InputProcessor {
 	public boolean scrolled(int amount) {
 		return false;
 	}
-
-	/**
-	 * Dummy class used for testing the hud without having to care about the exact math of the hex grid TODO: will have
-	 * to be removed
-	 */
-	public static class DummyTile extends HexTile<Color> {
-		public DummyTile(Vector3 position) {
-			super((int) position.x, (int) position.y, Color.PINK, null);
-		}
-
-		public Vector2 getPosition() {
-			return new Vector2((float) q, (float) r);
-		}
-	}
-
 }

@@ -3,6 +3,7 @@ package cloudymoose.childsplay.world;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -14,24 +15,20 @@ import com.badlogic.gdx.math.Vector3;
 public class WorldRenderer {
 
 	public final World world;
-	public final OrthographicCamera cam;
+	public final OrthographicCamera cam = new OrthographicCamera();
+	private final ShapeRenderer debugRenderer = new ShapeRenderer();
+	public static final AssetManager assetManager = new AssetManager();
 
 	private static final String TAG = "WorldRenderer";
 
-	/** for debug rendering **/
-	private ShapeRenderer debugRenderer = new ShapeRenderer();
-
 	public WorldRenderer(World world) {
 		this.world = world;
-		cam = new OrthographicCamera();
 	}
 
 	public void render(float dt) {
 		debugRenderer.setProjectionMatrix(cam.combined);
 
 		// Render background hexagons
-//		debugRenderer.begin(ShapeType.Filled);
-
 		HexTile<Color> selectedTile = world.map.getTileFromPosition(world.getLocalPlayer().currentPosition);
 
 		for (HexTile<Color> tile : world.map) {
@@ -56,17 +53,18 @@ public class WorldRenderer {
 			debugRenderer.triangle(center.x - width / 2, center.y - height / 4, center.x, center.y - height / 2,
 					center.x + width / 2, center.y - height / 4);
 			debugRenderer.end();
-			
+
 			debugRenderer.begin(ShapeType.Line);
 			debugRenderer.setColor(Color.BLACK);
-			debugRenderer.polygon(new float[]{center.x - width / 2, center.y + height / 4, center.x, center.y + height / 2,
-					center.x + width / 2, center.y + height / 4, center.x + width / 2, center.y - height / 4,  center.x, center.y - height / 2, center.x - width / 2, center.y - height / 4});
+			debugRenderer
+					.polygon(new float[] { center.x - width / 2, center.y + height / 4, center.x,
+							center.y + height / 2, center.x + width / 2, center.y + height / 4, center.x + width / 2,
+							center.y - height / 4, center.x, center.y - height / 2, center.x - width / 2,
+							center.y - height / 4 });
 
-			
 			debugRenderer.end();
-			
-		}
 
+		}
 
 		debugRenderer.begin(ShapeType.Filled);
 
@@ -99,6 +97,10 @@ public class WorldRenderer {
 	public void moveCamera(Vector3 moveVector) {
 		cam.position.add(moveVector);
 		cam.update();
+	}
+
+	public void dispose() {
+		debugRenderer.dispose();
 	}
 
 }

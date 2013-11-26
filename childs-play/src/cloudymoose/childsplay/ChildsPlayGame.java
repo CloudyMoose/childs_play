@@ -10,11 +10,14 @@ import cloudymoose.childsplay.networking.Message.TurnRecap;
 import cloudymoose.childsplay.screens.GameScreen;
 import cloudymoose.childsplay.screens.MainMenuScreen;
 import cloudymoose.childsplay.screens.WaitScreen;
+import cloudymoose.childsplay.world.Constants;
 import cloudymoose.childsplay.world.World;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class ChildsPlayGame extends Game {
 	/** the game uses fixed fps **/
@@ -35,21 +38,16 @@ public class ChildsPlayGame extends Game {
 	public GameScreen gameScreen;
 	public WaitScreen waitScreen;
 	public MainMenuScreen mainMenuScreen;
+	public AssetManager assetManager;
 
 	private boolean serverFound;
 	private GameClient client;
 
 	private World world;
 
-	/**
-	 * Warning: do not add methods that could call something related to graphics here. It will fail if the call is not
-	 * handled by the rendering thread. Use {@link #create()} for that instead.
-	 */
-	public ChildsPlayGame() {
-	}
-
 	@Override
 	public void create() {
+		assetManager = initializeAssetManager();
 		gameScreen = new GameScreen(this);
 		waitScreen = new WaitScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
@@ -57,6 +55,17 @@ public class ChildsPlayGame extends Game {
 		Gdx.input.setInputProcessor(multiplexer);
 		setScreen(mainMenuScreen);
 
+	}
+
+	/**
+	 * Load all the textures for the game here. That way they can be properly cleared when the application is stopped
+	 * (important on android)
+	 */
+	private static AssetManager initializeAssetManager() {
+		AssetManager am = new AssetManager();
+		am.load(Constants.SKIN_JSON_PATH, Skin.class);
+		am.finishLoading();
+		return am;
 	}
 
 	public void initWorld(Init initData) {

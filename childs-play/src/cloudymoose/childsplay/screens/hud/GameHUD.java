@@ -46,7 +46,7 @@ public class GameHUD extends AbstractMenuStageManager {
 		});
 		stage.addActor(btnEnd);
 
-		commandMenu = new CommandMenu(player);
+		commandMenu = new CommandMenu(player, getSkin());
 		stage.addActor(commandMenu);
 
 		return null; /* We're adding the objects to the scene manually here */
