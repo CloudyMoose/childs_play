@@ -145,12 +145,9 @@ public class PlayerController implements InputProcessor {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		float x = screenX - ChildsPlayGame.VIEWPORT_WIDTH / 2;
-		float y = -screenY + ChildsPlayGame.VIEWPORT_HEIGHT / 2;
-		// Why do I have to divide by 2 to get this right? Seems weird...
-		x /= 2;
-		y /= 2;
-		player.setCurrentPosition(new Vector2(x, y));
+		Vector3 v = new Vector3(screenX, screenY, 0);
+		renderer.cam.unproject(v);
+		player.setCurrentPosition(new Vector2(v.x, v.y));
 		return true;
 	}
 
