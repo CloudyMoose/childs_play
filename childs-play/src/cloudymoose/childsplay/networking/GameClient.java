@@ -32,7 +32,13 @@ public class GameClient {
 
 		client.start();
 		InetAddress serverAddress = client.discoverHost(54777, 5000);
-		client.connect(5000, serverAddress, 54555, 54777);
+
+		if (serverAddress == null) {
+			System.err.println("No Server found");
+			Gdx.app.exit();
+		}
+
+		client.connect(5000, "192.168.43.197", 54555, 54777);
 	}
 
 	public void init() {
