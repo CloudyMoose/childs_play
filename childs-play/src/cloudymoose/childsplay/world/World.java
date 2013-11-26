@@ -25,7 +25,7 @@ public class World {
 	private static final String TAG = "World";
 
 	List<Player> players;
-	WorldMap map;
+	public WorldMap map;
 	LocalPlayer localPlayer;
 
 	// TODO: needed as attribute only for the reset() method. To be removed later.

@@ -117,7 +117,7 @@ public class PlayerController implements InputProcessor {
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		if (!enabled) return false;
+//		if (!enabled) return false;
 
 		Vector3 moveVector = new Vector3(screenX, screenY, 0);
 		renderer.cam.unproject(moveVector);

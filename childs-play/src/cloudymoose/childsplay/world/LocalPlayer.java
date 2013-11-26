@@ -26,9 +26,9 @@ public class LocalPlayer extends Player {
 		currentPosition = position;
 	}
 
-	public void moveSelectionTo(float x, float y) {
+	public void moveSelectionTo(int q, int r) {
 		if (selection != null) {
-			world.runCommand(new MoveCommand(selection.id, x, y));
+			world.runCommand(new MoveCommand(selection.id, q, r));
 		}
 	}
 
@@ -41,8 +41,7 @@ public class LocalPlayer extends Player {
 	}
 
 	public void moveSelectionTo(HexTile<?> clickedTile) {
-		Vector2 tilePosition = clickedTile.getPosition();
-		moveSelectionTo(tilePosition.x, tilePosition.y);
+		moveSelectionTo(clickedTile.getX(), clickedTile.getY());
 	}
 
 }
