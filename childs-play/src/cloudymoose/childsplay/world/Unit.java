@@ -10,27 +10,34 @@ public abstract class Unit {
 	/** center */
 	public final Vector3 position;
 	protected HexTile<?> occupiedTile;
+	public final int id;
 	public final int size;
 	public final Rectangle hitbox;
-	public final int movementRange;
-	public final int attackRange;
-	public final int id;
 
-	public Unit(int id, HexTile<?> tile, int size, int moveRange, int atkRange) {
+	public final int healthPoints;
+	public final int attackRange;
+	public final int attackDamage;
+	public final int movementRange;
+
+	public Unit(int id, HexTile<?> tile, int size, int hp, int moveRange, int atkRange, int atkDamage) {
 		position = new Vector3(tile.getPosition());
 		occupiedTile = tile;
+		this.id = id;
 		this.size = size;
 		hitbox = new Rectangle(0, 0, size, size);
 		hitbox.setCenter(position.x, position.y);
-		movementRange = moveRange;
+
+		healthPoints = hp;
 		attackRange = atkRange;
-		this.id = id;
+		attackDamage = atkDamage;
+		movementRange = moveRange;
+		
 
 		tile.setOccupant(this);
 	}
 
-	public Unit(Player owner, HexTile<?> tile, int size, int moveRange, int atkRange) {
-		this(owner.generateUnitId(), tile, size, moveRange, atkRange);
+	public Unit(Player owner, HexTile<?> tile, int size, int hp, int moveRange, int atkRange, int atkDamage) {
+		this(owner.generateUnitId(), tile, size, hp, moveRange, atkRange, atkDamage);
 	}
 
 	/** Update the position of the center and the hitbox */

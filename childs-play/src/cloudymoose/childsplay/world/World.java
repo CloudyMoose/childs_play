@@ -69,6 +69,7 @@ public class World {
 
 			if (i == 0) {
 				// NPCs
+				player.addUnit(new Child(player, map.getTile(4, 2)));
 			} else {
 				int r = (i == 1) ? 1 : 19;
 				player.addUnit(new Child(player, map.getTile(1, r)));
