@@ -2,6 +2,7 @@ package cloudymoose.childsplay.screens.hud;
 
 import cloudymoose.childsplay.ChildsPlayGame;
 import cloudymoose.childsplay.screens.AbstractMenuStageManager;
+import cloudymoose.childsplay.world.Constants;
 import cloudymoose.childsplay.world.LocalPlayer;
 import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.hextiles.HexTile;
@@ -20,6 +21,7 @@ public class GameHUD extends AbstractMenuStageManager {
 	LocalPlayer player;
 
 	Label labelUnitCount;
+	Label labelTicketCount;
 	CommandMenu commandMenu;
 	TextButton btnEnd;
 
@@ -32,9 +34,13 @@ public class GameHUD extends AbstractMenuStageManager {
 	@Override
 	protected Actor init() {
 
-		labelUnitCount = new Label("0", getSkin());
+		labelUnitCount = new Label("", getSkin());
 		updateUnitCount();
 		stage.addActor(labelUnitCount);
+		
+		labelTicketCount = new Label("", getSkin());
+		updateTicketCount();
+		stage.addActor(labelTicketCount);
 
 		btnEnd = new TextButton("End Turn", getSkin());
 		btnEnd.setSize(200, 50);
@@ -56,12 +62,17 @@ public class GameHUD extends AbstractMenuStageManager {
 	public void resize(int width, int height) {
 		super.resize(width, height);
 		labelUnitCount.setPosition(0, 20);
+		labelTicketCount.setPosition(0, 40);
 		btnEnd.setPosition(200, 20);
 		commandMenu.resize(width, height);
 	}
 
 	public void updateUnitCount() {
 		labelUnitCount.setText(String.format("%d units", player.units.size()));
+	}
+	
+	private void updateTicketCount() {
+		labelTicketCount.setText(String.format("%d/%d tickets", world.getRemainingTickets(), Constants.NB_TICKETS));
 	}
 
 	public void displayCommandMenu(int screenX, int screenY, HexTile<?> clickedTile) {
@@ -81,6 +92,7 @@ public class GameHUD extends AbstractMenuStageManager {
 
 	public void update() {
 		updateUnitCount();
+		updateTicketCount();
 	}
 
 }

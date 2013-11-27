@@ -217,5 +217,9 @@ public class World {
 		runCommand(selectedCommandBuilder.build(), false);
 		cancelCommand();
 	}
+	
+	public int getRemainingTickets() {
+		return remainingTickets;
+	}
 
 }
