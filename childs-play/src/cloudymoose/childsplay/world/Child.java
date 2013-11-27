@@ -1,15 +1,11 @@
 package cloudymoose.childsplay.world;
 
-import com.badlogic.gdx.math.Vector3;
+import cloudymoose.childsplay.world.hextiles.HexTile;
 
 public class Child extends Unit {
 
-	public Child(Player owner, int x, int y) {
-		super(owner, x, y, 20, 1, 0);
-	}
-
-	public Child(Player player, Vector3 position) {
-		this(player, (int) position.x, (int) position.y);
+	public Child(Player owner, HexTile<?> position) {
+		super(owner, position, 20, 5, 0);
 	}
 
 }

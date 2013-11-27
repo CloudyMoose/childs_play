@@ -6,6 +6,8 @@ import java.util.Map;
 public class Player {
 
 	public static final int UNIT_ID_OFFSET = 1000;
+	/** Player owning the npcs */
+	public static final int GAIA_ID = 0;
 
 	public final int id;
 	public final Map<Integer, Unit> units;

@@ -1,12 +1,15 @@
 package cloudymoose.childsplay.world;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 
 import cloudymoose.childsplay.networking.Message.Init;
 import cloudymoose.childsplay.world.commands.Command;
+import cloudymoose.childsplay.world.commands.CommandBuilder;
 import cloudymoose.childsplay.world.commands.CommandRunner;
 import cloudymoose.childsplay.world.hextiles.Direction;
 import cloudymoose.childsplay.world.hextiles.HexTile;
@@ -39,6 +42,9 @@ public class World {
 	private int remainingTickets;
 	private CommandRunner ongoingCommand;
 
+	private CommandBuilder selectedCommandBuilder;
+	public final Set<HexTile<?>> targetableTiles = new HashSet<HexTile<?>>();
+
 	public World(Init initData) {
 		Gdx.app.log(TAG, "Init data: " + initData.toString());
 		commands = new LinkedList<Command>();
@@ -65,8 +71,8 @@ public class World {
 				// NPCs
 			} else {
 				int r = (i == 1) ? 1 : 19;
-				player.addUnit(new Child(player, map.getTile(1, r).getPosition()));
-				player.addUnit(new Child(player, map.getTile(7, r - 3).getPosition()));
+				player.addUnit(new Child(player, map.getTile(1, r)));
+				player.addUnit(new Child(player, map.getTile(7, r - 3)));
 			}
 
 			players.add(player);
@@ -177,6 +183,22 @@ public class World {
 
 	public WorldMap getMap() {
 		return map;
+	}
+
+	public void setSelectedCommand(CommandBuilder commandBuilder) {
+		selectedCommandBuilder = commandBuilder;
+		targetableTiles.addAll(map.findTiles(commandBuilder.getTargetConstraints()));
+	}
+
+	public void cancelCommand() {
+		selectedCommandBuilder = null;
+		targetableTiles.clear();
+	}
+
+	public void selectTargetTile(HexTile<Color> target) {
+		selectedCommandBuilder.setTarget(target);
+		runCommand(selectedCommandBuilder.build());
+		cancelCommand();
 	}
 
 }

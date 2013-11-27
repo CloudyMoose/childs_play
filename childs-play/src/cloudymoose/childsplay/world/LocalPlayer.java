@@ -1,5 +1,6 @@
 package cloudymoose.childsplay.world;
 
+import cloudymoose.childsplay.world.commands.CommandBuilder;
 import cloudymoose.childsplay.world.commands.MoveCommand;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
@@ -23,9 +24,23 @@ public class LocalPlayer extends Player {
 		selection = unit;
 	}
 
+	public void clearSelectedUnit() {
+		selection = null;
+	}
+
+	public boolean hasSelectedUnit() {
+		return selection != null;
+	}
+
+	public boolean owns(Unit unit) {
+		return id == unit.getPlayerId();
+	}
+
 	public void setCurrentPosition(Vector3 position) {
 		currentPosition = position;
 	}
+
+	// __ Command Creation _______________________________________
 
 	public void moveSelectionTo(int q, int r) {
 		if (selection != null) {
@@ -33,16 +48,11 @@ public class LocalPlayer extends Player {
 		}
 	}
 
-	public boolean owns(Unit unit) {
-		return id == unit.getPlayerId();
-	}
-
-	public boolean hasSelectedUnit() {
-		return selection != null;
-	}
-
 	public void moveSelectionTo(HexTile<?> clickedTile) {
 		moveSelectionTo(clickedTile.getQ(), clickedTile.getR());
 	}
 
+	public void setSelectedCommand(CommandBuilder commandBuilder) {
+		world.setSelectedCommand(commandBuilder);
+	}
 }

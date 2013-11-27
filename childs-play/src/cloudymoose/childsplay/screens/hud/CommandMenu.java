@@ -1,6 +1,8 @@
 package cloudymoose.childsplay.screens.hud;
 
 import cloudymoose.childsplay.world.LocalPlayer;
+import cloudymoose.childsplay.world.commands.Command;
+import cloudymoose.childsplay.world.commands.MoveCommand;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
 import com.badlogic.gdx.Gdx;
@@ -37,7 +39,7 @@ public class CommandMenu extends Group {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				setVisible(false);
-				player.moveSelectionTo(clickedTile);
+				player.setSelectedCommand(Command.builder(MoveCommand.class).from(clickedTile));
 			}
 		});
 		table.add(btnMove).size(80, 40).uniform().spaceBottom(10);

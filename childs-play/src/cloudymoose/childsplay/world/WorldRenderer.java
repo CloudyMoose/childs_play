@@ -45,6 +45,8 @@ public class WorldRenderer {
 
 			if (selectedTile == tile) {
 				debugRenderer.setColor(Color.WHITE);
+			} else if (world.targetableTiles.contains(tile)) {
+				debugRenderer.setColor(Color.ORANGE);
 			}
 
 			// Draw hexagon with one rectangle and two triangles for now

@@ -2,6 +2,7 @@ package cloudymoose.childsplay.world.commands;
 
 import cloudymoose.childsplay.world.Unit;
 import cloudymoose.childsplay.world.World;
+import cloudymoose.childsplay.world.hextiles.HexTile;
 
 import com.badlogic.gdx.math.Vector3;
 
@@ -39,22 +40,43 @@ public class MoveCommand extends Command {
 		return new MoveRunner(this, world);
 	}
 
+	public static class Builder extends CommandBuilder {
+
+		@Override
+		protected TargetConstraints constraints() {
+			return new TargetConstraints.Empty(true, originTile.getOccupant().movementRange, originTile);
+		}
+
+		@Override
+		public Command build() {
+			return new MoveCommand(originTile.getOccupant().id, targetTile.getQ(), targetTile.getR());
+		}
+
+		@Override
+		public int getCommandRange() {
+			return originTile.getOccupant().movementRange;
+		}
+
+	}
+
 	public static class MoveRunner extends CommandRunner {
 		private Vector3 destination;
 		private Vector3 currentMovement;
+		private HexTile<?> destTile;
 		private Unit unit;
 		protected final float POSITION_EPSILON = 5f; // Position accuracy
 
 		public MoveRunner(MoveCommand command, World world) {
 			super(command);
 			this.unit = world.getUnit(command.unitId);
-			this.destination = world.map.getTile(command.destQ, command.destR).getPosition();
+			this.destTile = world.map.getTile(command.destQ, command.destR);
+			this.destination = destTile.getPosition();
 
 			// TODO replace with pathfinding
 			// angle between the line made by the 2 points and the x-axis
 			double angle = Math.atan2((destination.y - unit.position.y), destination.x - unit.position.x);
-			currentMovement = new Vector3((float) (unit.movementSpeed * Math.cos(angle)),
-					(float) (unit.movementSpeed * Math.sin(angle)), 0);
+			currentMovement = new Vector3((float) (unit.movementRange * Math.cos(angle)),
+					(float) (unit.movementRange * Math.sin(angle)), 0);
 		}
 
 		@Override
@@ -67,6 +89,7 @@ public class MoveCommand extends Command {
 
 			if (closeEnough) {
 				unit.setPosition((int) destination.x, (int) destination.y);
+				unit.updateOccupiedTile(destTile);
 				return false;
 			} else {
 				return true;

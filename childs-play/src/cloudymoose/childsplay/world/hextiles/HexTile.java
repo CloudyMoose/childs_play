@@ -1,5 +1,7 @@
 package cloudymoose.childsplay.world.hextiles;
 
+import cloudymoose.childsplay.world.Unit;
+
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -14,6 +16,7 @@ public class HexTile<T> {
 	protected final int q, r;
 	private final T value;
 	private final HexGrid<T> grid;
+	protected Unit occupant;
 
 	/**
 	 * Get the q coordinate on the grid.
@@ -95,6 +98,19 @@ public class HexTile<T> {
 		int x = this.q + dir.deltaX;
 		int y = this.r + dir.deltaY;
 		return grid.addValue(x, y, value);
+	}
+
+	public Unit getOccupant() {
+		return occupant;
+	}
+
+	/** Set the occupant of this tile. Set it to null to remove it. */
+	public void setOccupant(Unit occupant) {
+		this.occupant = occupant;
+	}
+
+	public boolean isOccupied() {
+		return occupant != null;
 	}
 
 	@Override

@@ -87,31 +87,42 @@ public class PlayerController implements InputProcessor {
 			dragged = false;
 		}
 
-		if (touchedTile == null) return false;
+		if (touchedTile == null) return false; // Clicked outside the map
 
 		Gdx.app.log(TAG, "Touched tile: " + touchedTile.toString());
 
-		Unit clicked = world.hit(touchedPosition);
-		if (clicked == null) {
-			if (hud.isCommandMenuVisible()) {
-				hud.hideCommandMenu();
-			} else {
-				if (player.hasSelectedUnit()) {
-					hud.displayCommandMenu(screenX, screenY, touchedTile);
-				}
-			}
-			// player.moveSelectionTo(touchedWorldPosition.x, touchedWorldPosition.y);
-		} else if (player.owns(clicked)) {
-			Gdx.app.log(TAG, "Toggling selection on: " + clicked.toString());
-			player.select(clicked);
+		if (!world.targetableTiles.isEmpty()) {
+			handleTargetSelectTouch(screenX, screenY);
 		} else {
-			Gdx.app.log(TAG, "Can't select that unit (not owned)");
-
+			handleTileSelectTouch(screenX, screenY);
 		}
 
 		// finger released, there is no touched position anymore
 		touchedTile = null;
+		touchedPosition = null;
 		return false;
+	}
+
+	private void handleTileSelectTouch(int screenX, int screenY) {
+		Unit clicked = touchedTile.getOccupant();
+		if (clicked != null && player.owns(clicked)) {
+			player.select(clicked);
+			hud.displayCommandMenu(screenX, screenY, touchedTile);
+		} else {
+			// if (hud.isCommandMenuVisible()) {
+			hud.hideCommandMenu();
+			// } else {
+			player.clearSelectedUnit();
+			// }
+		}
+	}
+
+	private void handleTargetSelectTouch(int screenX, int screenY) {
+		if (world.targetableTiles.contains(touchedTile)) {
+			world.selectTargetTile(touchedTile);
+		} else {
+			world.cancelCommand();
+		}
 	}
 
 	@Override
