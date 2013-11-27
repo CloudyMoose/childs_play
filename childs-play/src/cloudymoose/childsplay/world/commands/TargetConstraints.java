@@ -35,7 +35,7 @@ public abstract class TargetConstraints {
 
 		public final int currentPlayerId;
 
-		public HasEnemy(boolean considerObstacles, int maxRange, int currentPlayerId, HexTile<?> origin) {
+		public HasEnemy(boolean considerObstacles, int maxRange, HexTile<?> origin, int currentPlayerId) {
 			super(considerObstacles, maxRange, origin);
 			this.currentPlayerId = currentPlayerId;
 		}

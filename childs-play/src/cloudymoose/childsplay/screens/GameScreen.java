@@ -105,6 +105,7 @@ public class GameScreen extends FixedTimestepScreen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		renderer.render(dt);
+		hud.update();
 		hud.render(dt);
 	}
 

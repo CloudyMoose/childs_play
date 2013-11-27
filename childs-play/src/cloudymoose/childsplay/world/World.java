@@ -2,8 +2,10 @@ package cloudymoose.childsplay.world;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 
@@ -54,7 +56,7 @@ public class World {
 
 	/** TODO: will be replaced by a proper initialization from the map info */
 	private void createDemoWorld() {
-		map = createEmptyMap(20, 10);
+		map = createEmptyMap(10, 10);
 
 		players = new ArrayList<Player>(initData.nbPlayers + 1);
 
@@ -71,7 +73,7 @@ public class World {
 				// NPCs
 				player.addUnit(new Child(player, map.getTile(4, 2)));
 			} else {
-				int r = (i == 1) ? 1 : 19;
+				int r = (i == 1) ? 1 : 9;
 				player.addUnit(new Child(player, map.getTile(1, r)));
 				player.addUnit(new Child(player, map.getTile(7, r - 3)));
 			}
@@ -104,9 +106,22 @@ public class World {
 		if (ongoingCommand != null) {
 			boolean running = ongoingCommand.run(dt);
 			preferredCameraFocus = ongoingCommand.getPreferredCameraFocus();
-			if (!running) {
+			if (!running) { // The command just stopped
 				preferredCameraFocus = null;
 				ongoingCommand = null;
+				
+				
+				for (Player p : players) {
+					for (Iterator<Entry<Integer, Unit>> it = p.units.entrySet().iterator(); it.hasNext();) {
+						Entry<Integer, Unit> entry = it.next();
+						
+						if (entry.getValue().isDead()) {
+							entry.getValue().updateOccupiedTile(null);
+							it.remove();
+						}
+					}
+					
+				}
 			}
 		}
 	}
@@ -123,6 +138,7 @@ public class World {
 
 	/** Registers the commands and prepares the world to play them (reset tickets). */
 	public void setReplayCommands(Command[] commands) {
+		this.commands.clear();
 		if (commands != null) {
 			for (int i = 0; i < commands.length; i++) {
 				this.commands.add(commands[i]);
@@ -136,20 +152,18 @@ public class World {
 			return false;
 		} else {
 			Command c = commands.remove();
-			runCommand(c);
+			runCommand(c, true);
 			Gdx.app.log(TAG, "Replaying command " + c);
 			return true;
 		}
 	}
 
-	/** Warning, also clears the command queue! */
 	public Command[] exportCommands() {
 		Command[] c = commands.toArray(new Command[commands.size()]);
-		commands.clear();
 		return c;
 	}
 
-	public void runCommand(Command command) {
+	public void runCommand(Command command, boolean replayMode) {
 		Gdx.app.log(TAG, "remainingTickets (before action): " + remainingTickets);
 		// Check if the command is allowed
 		if (remainingTickets <= 0) return;
@@ -158,8 +172,10 @@ public class World {
 		ongoingCommand = command.execute(this);
 		ongoingCommand.start();
 
-		// Register it
-		commands.add(command);
+		if (!replayMode) {
+			// Register it
+			commands.add(command);			
+		}
 		--remainingTickets;
 	}
 
@@ -198,7 +214,7 @@ public class World {
 
 	public void selectTargetTile(HexTile<Color> target) {
 		selectedCommandBuilder.setTarget(target);
-		runCommand(selectedCommandBuilder.build());
+		runCommand(selectedCommandBuilder.build(), false);
 		cancelCommand();
 	}
 

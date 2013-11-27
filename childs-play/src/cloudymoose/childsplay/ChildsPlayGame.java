@@ -2,6 +2,7 @@ package cloudymoose.childsplay;
 
 import java.io.IOException;
 import java.net.BindException;
+import java.util.Arrays;
 
 import cloudymoose.childsplay.networking.GameClient;
 import cloudymoose.childsplay.networking.GameServer;
@@ -104,7 +105,7 @@ public class ChildsPlayGame extends Game {
 	}
 
 	public void notifyTurnRecapReceived(TurnRecap turnData) {
-		Gdx.app.log(TAG, "Turn recap received");
+		Gdx.app.log(TAG, "Turn recap received : " + (turnData.commands == null ? "[]" : Arrays.asList(turnData.commands)));
 		gameScreen.mode = GameScreen.Mode.Replay;
 		world.setReplayCommands(turnData.commands);
 		waitScreen.notifyTurnRecapReceived();

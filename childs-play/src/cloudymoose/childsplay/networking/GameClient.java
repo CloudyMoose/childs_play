@@ -15,6 +15,8 @@ import com.esotericsoftware.kryonet.Listener;
 
 public class GameClient {
 
+	private static final String TAG = "GameClient";
+	
 	private Connection connection;
 	private ChildsPlayGame game;
 	private TurnListener turnListener;
@@ -46,7 +48,7 @@ public class GameClient {
 		connection.addListener(new Listener() {
 			@Override
 			public void received(Connection connection, final Object object) {
-				System.err.println("InitListener - " + object);
+				Gdx.app.log(TAG, "InitListener - " + object);
 
 				if (object instanceof Message.Init) {
 					connection.removeListener(this);
@@ -79,7 +81,7 @@ public class GameClient {
 		public void received(Connection connection, final Object object) {
 			if (object instanceof KeepAlive) return;
 			if (!enabled) {
-				System.err.println("Turn listener OFF, received: " + object);
+				Gdx.app.log(TAG, "Turn listener OFF, received: " + object);
 				return;
 			}
 

@@ -14,7 +14,8 @@ public abstract class Unit {
 	public final int size;
 	public final Rectangle hitbox;
 
-	public final int healthPoints;
+	public final int maxHealthPoints;
+	private int currentHealthPoints;
 	public final int attackRange;
 	public final int attackDamage;
 	public final int movementRange;
@@ -27,7 +28,8 @@ public abstract class Unit {
 		hitbox = new Rectangle(0, 0, size, size);
 		hitbox.setCenter(position.x, position.y);
 
-		healthPoints = hp;
+		maxHealthPoints = hp;
+		currentHealthPoints = hp;
 		attackRange = atkRange;
 		attackDamage = atkDamage;
 		movementRange = moveRange;
@@ -72,6 +74,16 @@ public abstract class Unit {
 	public void updateOccupiedTile(HexTile<?> newOccupiedTile) {
 		occupiedTile.setOccupant(null);
 		occupiedTile = newOccupiedTile;
-		occupiedTile.setOccupant(this);
+		if (newOccupiedTile != null) {
+			occupiedTile.setOccupant(this);
+		}
+	}
+
+	public void attack(Unit target) {
+		target.currentHealthPoints -= attackDamage;
+	}
+	
+	public boolean isDead() {
+		return currentHealthPoints <= 0;
 	}
 }

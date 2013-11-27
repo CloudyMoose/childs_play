@@ -79,4 +79,8 @@ public class GameHUD extends AbstractMenuStageManager {
 		commandMenu.setVisible(false);
 	}
 
+	public void update() {
+		updateUnitCount();
+	}
+
 }

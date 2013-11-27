@@ -1,6 +1,7 @@
 package cloudymoose.childsplay.screens.hud;
 
 import cloudymoose.childsplay.world.LocalPlayer;
+import cloudymoose.childsplay.world.commands.AttackCommand;
 import cloudymoose.childsplay.world.commands.Command;
 import cloudymoose.childsplay.world.commands.MoveCommand;
 import cloudymoose.childsplay.world.hextiles.HexTile;
@@ -35,25 +36,12 @@ public class CommandMenu extends Group {
 		table.debug();
 
 		btnMove = new TextButton("Move", uiSkin);
-		btnMove.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				setVisible(false);
-				player.setSelectedCommand(Command.builder(MoveCommand.class).from(clickedTile));
-			}
-		});
+		btnMove.addListener(new CommandListener(MoveCommand.class));
 		table.add(btnMove).size(80, 40).uniform().spaceBottom(10);
 		table.row();
 
 		btnAttack = new TextButton("Attack", uiSkin);
-		btnAttack.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				// TODO
-				setVisible(false);
-				Gdx.app.log(TAG, "TODO Attack");
-			}
-		});
+		btnAttack.addListener(new CommandListener(AttackCommand.class));
 		table.add(btnAttack).size(80, 40).uniform().spaceBottom(10);
 		table.row();
 
@@ -78,7 +66,21 @@ public class CommandMenu extends Group {
 	}
 
 	public void resize(int width, int height) {
-		Gdx.app.log(TAG, "resize command menu");
+		Gdx.app.log(TAG, "resize");
+	}
+	
+	protected class CommandListener extends ClickListener{
+		private final Class<? extends Command> commandClass;
+		
+		public CommandListener(Class<? extends Command> commandClass) {
+			this.commandClass = commandClass;
+		}
+
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			setVisible(false);
+			player.setSelectedCommand(Command.builder(commandClass).from(clickedTile));
+		}
 	}
 
 }

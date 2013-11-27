@@ -68,7 +68,6 @@ public class PlayerController implements InputProcessor {
 		touchedPosition = new Vector3(screenX, screenY, 0);
 		renderer.cam.unproject(touchedPosition);
 		touchedTile = world.getMap().getTileFromPosition(touchedPosition);
-		player.touchedTile = touchedTile;
 
 		if (hud.isCommandMenuVisible()) {
 			hud.hideCommandMenu();
@@ -106,14 +105,10 @@ public class PlayerController implements InputProcessor {
 	private void handleTileSelectTouch(int screenX, int screenY) {
 		Unit clicked = touchedTile.getOccupant();
 		if (clicked != null && player.owns(clicked)) {
-			player.select(clicked);
+			player.selectTile(touchedTile);
 			hud.displayCommandMenu(screenX, screenY, touchedTile);
 		} else {
-			// if (hud.isCommandMenuVisible()) {
 			hud.hideCommandMenu();
-			// } else {
-			player.clearSelectedUnit();
-			// }
 		}
 	}
 

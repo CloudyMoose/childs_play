@@ -32,7 +32,7 @@ public class WorldRenderer {
 		debugRenderer.setProjectionMatrix(cam.combined);
 
 		// Render background hexagons
-		HexTile<Color> selectedTile = world.getLocalPlayer().touchedTile;
+		HexTile<Color> selectedTile = world.getLocalPlayer().getSelectedTile();
 
 		for (HexTile<Color> tile : world.map) {
 			float size = world.map.getTileSize();
@@ -76,16 +76,16 @@ public class WorldRenderer {
 		LocalPlayer localPlayer = world.getLocalPlayer();
 
 		for (Player player : world.players) {
+			
+			if (player == localPlayer){
+				debugRenderer.setColor(Color.BLUE);
+			} else if (player.id == Player.GAIA_ID){
+				debugRenderer.setColor(Color.GRAY);					
+			} else {
+				debugRenderer.setColor(Color.RED);										
+			}
+			
 			for (Unit unit : player.units.values()) {
-				if (localPlayer.selection == unit) {
-					debugRenderer.setColor(Color.YELLOW);
-				} else if (player == localPlayer){
-					debugRenderer.setColor(Color.BLUE);
-				} else if (player.id == Player.GAIA_ID){
-					debugRenderer.setColor(Color.GRAY);					
-				} else {
-					debugRenderer.setColor(Color.RED);										
-				}
 				debugRenderer.rect(unit.hitbox.x, unit.hitbox.y, unit.hitbox.width, unit.hitbox.height);
 			}
 		}

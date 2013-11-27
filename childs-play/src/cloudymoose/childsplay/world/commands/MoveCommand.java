@@ -52,11 +52,6 @@ public class MoveCommand extends Command {
 			return new MoveCommand(originTile.getOccupant().id, targetTile.getQ(), targetTile.getR());
 		}
 
-		@Override
-		public int getCommandRange() {
-			return originTile.getOccupant().movementRange;
-		}
-
 	}
 
 	public static class MoveRunner extends CommandRunner {

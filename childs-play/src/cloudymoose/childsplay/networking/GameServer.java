@@ -8,6 +8,7 @@ import java.util.Map;
 
 import cloudymoose.childsplay.world.commands.Command;
 
+import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
@@ -57,7 +58,7 @@ public class GameServer {
 		for (Map.Entry<Integer, Connection> me : connections.entrySet()) {
 			me.getValue().addListener(new TurnListener(me.getKey()));
 		}
-		System.err.println("Start Game!");
+		log("Start Game!");
 		gameStarted = true;
 		startNextPlayerTurn(null);
 	}
@@ -66,7 +67,7 @@ public class GameServer {
 		if (lastCommandSet != null) {
 			// Register the last commands
 			currentTurn.commands[currentPlayer - 1] = lastCommandSet;
-			System.err.println("Registering the commands of player #" + (currentPlayer));
+			log("Registering the commands of player #" + (currentPlayer));
 		}
 
 		// Select the next player
@@ -76,16 +77,20 @@ public class GameServer {
 			// Register the next commands as part of a new turn
 			currentTurn = new TurnCommands(actionLog.size());
 			actionLog.add(currentTurn);
-			System.err.println("A new turn is starting");
+			log("A new turn is starting");
 		} else {
 			currentPlayer += 1;
 		}
-		System.err.println("The next player is player #" + currentPlayer);
+		log("The next player is player #" + currentPlayer);
 		// Send the commands to the next player
-		System.err.println("Sending StartTurn #" + currentTurn.turnNb + " to player " + currentPlayer + " ("
-				+ connections.get(currentPlayer) + ") with " + (lastCommandSet != null ? lastCommandSet.length : 0)
-				+ " commands");
-		connections.get(currentPlayer).sendTCP(new Message.TurnRecap(currentTurn.turnNb, lastCommandSet));
+		
+		Command[] commandsToSend = nbMaxPlayers == 1 ? null : lastCommandSet; 
+		
+		log("Sending StartTurn #%d to player %d, (%s) with %d commands.",
+				currentTurn.turnNb, currentPlayer, connections.get(currentPlayer),
+				(commandsToSend != null ? commandsToSend.length : 0));
+		
+		connections.get(currentPlayer).sendTCP(new Message.TurnRecap(currentTurn.turnNb, commandsToSend));
 	}
 
 	/** When a new client connects, sends him the init info, and starts the game if all clients are connected. */
@@ -130,6 +135,11 @@ public class GameServer {
 			}
 
 		}
+	}
+	
+	/** Custom method to make it easier to switch the logger in case the server is started without libgdx */
+	private static void log(String message, Object... params) {
+		Gdx.app.log("GameServer", String.format(message, params));
 	}
 
 	/** Data structure used to store the actions */
