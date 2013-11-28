@@ -71,6 +71,7 @@ public class GameServer {
 		}
 
 		// Select the next player
+		int previousPlayer = currentPlayer;
 		if (currentPlayer >= nbMaxPlayers) {
 			currentPlayer = 1;
 
@@ -83,14 +84,14 @@ public class GameServer {
 		}
 		log("The next player is player #" + currentPlayer);
 		// Send the commands to the next player
-		
-		Command[] commandsToSend = nbMaxPlayers == 1 ? null : lastCommandSet; 
-		
-		log("Sending StartTurn #%d to player %d, (%s) with %d commands.",
-				currentTurn.turnNb, currentPlayer, connections.get(currentPlayer),
-				(commandsToSend != null ? commandsToSend.length : 0));
-		
-		connections.get(currentPlayer).sendTCP(new Message.TurnRecap(currentTurn.turnNb, commandsToSend));
+
+		Command[] commandsToSend = nbMaxPlayers == 1 ? null : lastCommandSet;
+
+		log("Sending StartTurn #%d to player %d, (%s) with %d commands.", currentTurn.turnNb, currentPlayer,
+				connections.get(currentPlayer), (commandsToSend != null ? commandsToSend.length : 0));
+
+		connections.get(currentPlayer).sendTCP(
+				new Message.TurnRecap(currentTurn.turnNb, commandsToSend, previousPlayer, nbMaxPlayers));
 	}
 
 	/** When a new client connects, sends him the init info, and starts the game if all clients are connected. */
@@ -136,7 +137,7 @@ public class GameServer {
 
 		}
 	}
-	
+
 	/** Custom method to make it easier to switch the logger in case the server is started without libgdx */
 	private static void log(String message, Object... params) {
 		Gdx.app.log("GameServer", String.format(message, params));

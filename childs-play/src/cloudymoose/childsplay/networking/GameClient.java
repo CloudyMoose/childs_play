@@ -16,10 +16,12 @@ import com.esotericsoftware.kryonet.Listener;
 public class GameClient {
 
 	private static final String TAG = "GameClient";
-	
+
 	private Connection connection;
 	private ChildsPlayGame game;
 	private TurnListener turnListener;
+	private int playerId;
+	private int nbPlayers;
 
 	public GameClient(ChildsPlayGame game) {
 		this.game = game;
@@ -51,6 +53,10 @@ public class GameClient {
 				Gdx.app.log(TAG, "InitListener - " + object);
 
 				if (object instanceof Message.Init) {
+					final Message.Init initData = (Message.Init) object;
+					playerId = initData.playerId;
+					nbPlayers = initData.nbPlayers;
+
 					connection.removeListener(this);
 					turnListener = new TurnListener();
 
@@ -59,7 +65,7 @@ public class GameClient {
 					// Execute it in the Gdx thread (graphic calls are not valid in other threads)
 					Gdx.app.postRunnable(new Runnable() {
 						public void run() {
-							game.initWorld((Message.Init) object);
+							game.initWorld(initData);
 						};
 					});
 				}
@@ -69,7 +75,7 @@ public class GameClient {
 	}
 
 	public void send(Command[] commands) {
-		connection.sendTCP(new Message.TurnRecap(-1 /* No one cares here */, commands));
+		connection.sendTCP(new Message.TurnRecap(-1 /* No one cares here */, commands, playerId, nbPlayers));
 		turnListener.enabled = true;
 	}
 

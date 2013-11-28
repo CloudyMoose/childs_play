@@ -64,7 +64,7 @@ public class MoveCommand extends Command {
 		public MoveRunner(MoveCommand command, World world) {
 			super(command);
 			this.unit = world.getUnit(command.unitId);
-			this.destTile = world.map.getTile(command.destQ, command.destR);
+			this.destTile = world.getMap().getTile(command.destQ, command.destR);
 			this.destination = destTile.getPosition();
 
 			// TODO replace with pathfinding

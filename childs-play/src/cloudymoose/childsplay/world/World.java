@@ -10,6 +10,7 @@ import java.util.Queue;
 import java.util.Set;
 
 import cloudymoose.childsplay.networking.Message.Init;
+import cloudymoose.childsplay.networking.Message.TurnRecap;
 import cloudymoose.childsplay.world.commands.Command;
 import cloudymoose.childsplay.world.commands.CommandBuilder;
 import cloudymoose.childsplay.world.commands.CommandRunner;
@@ -26,36 +27,44 @@ import com.badlogic.gdx.math.Vector3;
  * update the world's state at each {@link #fixedUpdate(float)} call
  */
 public class World {
+	public enum Phase {
+		Replay,
+		Environment,
+		Command,
+		Wait
+	}
 
 	private static final String TAG = "World";
 
-	List<Player> players;
-	public WorldMap map;
-	LocalPlayer localPlayer;
+	// Constant data
+	private WorldMap map;
+	private List<Player> players;
+	private LocalPlayer localPlayer;
 
-	// TODO: needed as attribute only for the reset() method. To be removed later.
-	private Init initData;
+	// Current turn data
 
-	// Current turn info
-	Player currentPlayer;
-	Vector3 preferredCameraFocus;
+	// Current phase data
+	private Phase currentPhase = Phase.Wait;
+	private Player currentPlayer; // will be the enemy during the replay phase
+	private final Queue<Command> commands = new LinkedList<Command>();
 
-	private final Queue<Command> commands;
-	private int remainingTickets;
-	private CommandRunner ongoingCommand;
-
+	// Command execution and creation data
 	private CommandBuilder selectedCommandBuilder;
+	private CommandRunner ongoingCommand;
 	public final Set<HexTile<?>> targetableTiles = new HashSet<HexTile<?>>();
+	private Vector3 preferredCameraFocus;
+
+	// =================================================================================================================
+	// Initialization
+	// =================================================================================================================
 
 	public World(Init initData) {
 		Gdx.app.log(TAG, "Init data: " + initData.toString());
-		commands = new LinkedList<Command>();
-		this.initData = initData;
-		createDemoWorld();
+		createDemoWorld(initData);
 	}
 
 	/** TODO: will be replaced by a proper initialization from the map info */
-	private void createDemoWorld() {
+	private void createDemoWorld(Init initData) {
 		map = createEmptyMap(10, 10);
 
 		players = new ArrayList<Player>(initData.nbPlayers + 1);
@@ -98,9 +107,9 @@ public class World {
 		return newMap;
 	}
 
-	public LocalPlayer getLocalPlayer() {
-		return localPlayer;
-	}
+	// =================================================================================================================
+	// World update
+	// =================================================================================================================
 
 	public void fixedUpdate(float dt) {
 		if (ongoingCommand != null) {
@@ -109,43 +118,66 @@ public class World {
 			if (!running) { // The command just stopped
 				preferredCameraFocus = null;
 				ongoingCommand = null;
-				
-				
+
 				for (Player p : players) {
 					for (Iterator<Entry<Integer, Unit>> it = p.units.entrySet().iterator(); it.hasNext();) {
 						Entry<Integer, Unit> entry = it.next();
-						
+
 						if (entry.getValue().isDead()) {
 							entry.getValue().updateOccupiedTile(null);
 							it.remove();
 						}
 					}
-					
+
 				}
 			}
 		}
 	}
 
-	public Unit hit(Vector3 worldCoordinates) {
-		// TODO: change to a better way to look for the clicked unit (using map areas or something similar)
-		for (Player p : players) {
-			for (Unit u : p.units.values()) {
-				if (u.isHit(worldCoordinates)) { return u; }
+	// =================================================================================================================
+	// Phase switch
+	// =================================================================================================================
+
+	/**
+	 * Registers the commands and prepares the world to play them (reset tickets). Warning: there must actually be
+	 * commands to replay in the turn data, as the non nullity of the command array is not checked.
+	 */
+	public void startReplayPhase(TurnRecap turnData) {
+		currentPhase = Phase.Replay;
+
+		commands.clear();
+
+		for (int i = 0; i < turnData.playerCommands.length; i++) {
+			int nbCommands = turnData.playerCommands[i];
+			if (nbCommands > 0) {
+				currentPlayer = players.get(i);
+				break;
 			}
 		}
-		return null;
+
+		for (int i = 0; i < turnData.commands.length; i++) {
+			commands.add(turnData.commands[i]);
+		}
+
+		startTurn();
+
 	}
 
-	/** Registers the commands and prepares the world to play them (reset tickets). */
-	public void setReplayCommands(Command[] commands) {
-		this.commands.clear();
-		if (commands != null) {
-			for (int i = 0; i < commands.length; i++) {
-				this.commands.add(commands[i]);
-			}
-		}
+	public void startCommandPhase() {
+		currentPhase = Phase.Command;
+		currentPlayer = localPlayer;
 		startTurn();
+		Gdx.app.log(TAG, "Player #" + localPlayer.id + " can now give his commands.");
 	}
+
+	public void startEnvironmentPhase() {
+		currentPhase = Phase.Environment;
+		currentPlayer = localPlayer;
+	}
+
+	// =================================================================================================================
+	// Command registration and stuff
+	// =================================================================================================================
 
 	public boolean replayNextCommand() {
 		if (commands.isEmpty()) {
@@ -158,48 +190,40 @@ public class World {
 		}
 	}
 
-	public Command[] exportCommands() {
-		Command[] c = commands.toArray(new Command[commands.size()]);
-		return c;
-	}
-
 	public void runCommand(Command command, boolean replayMode) {
-		Gdx.app.log(TAG, "remainingTickets (before action): " + remainingTickets);
-		// Check if the command is allowed
-		if (remainingTickets <= 0) return;
+		Gdx.app.log(TAG, "remainingTickets (before action): " + currentPlayer.getRemainingTickets());
 
-		// Start it
+		// Try to use a ticket
+		if (!currentPlayer.useTicket()) return;
+
+		// Start the command
 		ongoingCommand = command.execute(this);
 		ongoingCommand.start();
 
 		if (!replayMode) {
 			// Register it
-			commands.add(command);			
+			commands.add(command);
 		}
-		--remainingTickets;
-	}
-
-	public void reset() {
-		createDemoWorld();
 	}
 
 	/** Currently only resets the tickets */
 	public void startTurn() {
 		Gdx.app.log(TAG, "startTurn");
-		remainingTickets = Constants.NB_TICKETS;
+		currentPlayer.resetTickets();
 	}
 
-	public Unit getUnit(int unitId) {
-		int playerId = unitId / Player.UNIT_ID_OFFSET;
-		return players.get(playerId).units.get(unitId);
-	}
+	// =================================================================================================================
+	// Utility functions
+	// =================================================================================================================
 
-	public boolean hasRunningCommand() {
-		return ongoingCommand != null && ongoingCommand.isRunning();
-	}
-
-	public WorldMap getMap() {
-		return map;
+	public Unit hit(Vector3 worldCoordinates) {
+		// TODO: change to a better way to look for the clicked unit (using map areas or something similar)
+		for (Player p : players) {
+			for (Unit u : p.units.values()) {
+				if (u.isHit(worldCoordinates)) { return u; }
+			}
+		}
+		return null;
 	}
 
 	public void setSelectedCommand(CommandBuilder commandBuilder) {
@@ -217,9 +241,47 @@ public class World {
 		runCommand(selectedCommandBuilder.build(), false);
 		cancelCommand();
 	}
-	
-	public int getRemainingTickets() {
-		return remainingTickets;
+
+	// =================================================================================================================
+	// Getters
+	// =================================================================================================================
+
+	public boolean hasRunningCommand() {
+		return ongoingCommand != null && ongoingCommand.isRunning();
+	}
+
+	public Command[] exportCommands() {
+		Command[] c = commands.toArray(new Command[commands.size()]);
+		return c;
+	}
+
+	public Unit getUnit(int unitId) {
+		int playerId = unitId / Player.UNIT_ID_OFFSET;
+		return players.get(playerId).units.get(unitId);
+	}
+
+	public WorldMap getMap() {
+		return map;
+	}
+
+	public Player getCurrentPlayer() {
+		return currentPlayer;
+	}
+
+	public Phase getPhase() {
+		return currentPhase;
+	}
+
+	public LocalPlayer getLocalPlayer() {
+		return localPlayer;
+	}
+
+	public List<Player> getPlayers() {
+		return players;
+	}
+
+	public Vector3 getPreferredCameraFocus() {
+		return preferredCameraFocus;
 	}
 
 }

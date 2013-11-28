@@ -15,7 +15,6 @@ public class GameScreen extends FixedTimestepScreen {
 	private World world;
 	private WorldRenderer renderer;
 	private PlayerController playerController;
-	public Mode mode = Mode.Default;
 	private GameHUD hud;
 
 	public GameScreen(ChildsPlayGame game) {
@@ -41,6 +40,8 @@ public class GameScreen extends FixedTimestepScreen {
 		// Be careful while changing the order of the statements here, it changes the way input is handled.
 		hud.show();
 		game.multiplexer.addProcessor(playerController);
+
+		hud.hideCommandMenu(); // just in case ...
 	}
 
 	@Override
@@ -69,13 +70,26 @@ public class GameScreen extends FixedTimestepScreen {
 
 	@Override
 	public void fixedUpdate(float dt) {
-		if (mode == Mode.Replay) {
+
+		switch (world.getPhase()) {
+		case Replay:
 			prepareReplayUpdate();
-		} else {
+			break;
+		case Environment:
+			prepareEnvironmentUpdate();
+			break;
+		case Command:
 			prepareDefaultUpdate();
+			break;
+		case Wait:
+			break;
 		}
 
 		world.fixedUpdate(dt);
+	}
+
+	private void prepareEnvironmentUpdate() {
+		world.startCommandPhase();
 	}
 
 	/** Method called before {@link World#fixedUpdate(float)}, when in Default mode */
@@ -93,9 +107,7 @@ public class GameScreen extends FixedTimestepScreen {
 		if (!world.hasRunningCommand()) {
 			boolean replayOver = !world.replayNextCommand();
 			if (replayOver) {
-				mode = Mode.Default;
-				world.startTurn();
-				Gdx.app.log(TAG, "Player #" + world.getLocalPlayer().id + " can now give his commands.");
+				world.startEnvironmentPhase();
 			}
 		}
 	}
@@ -107,9 +119,5 @@ public class GameScreen extends FixedTimestepScreen {
 		renderer.render(dt);
 		hud.update();
 		hud.render(dt);
-	}
-
-	public enum Mode {
-		Default, Replay
 	}
 }

@@ -25,17 +25,17 @@ public class WorldRenderer {
 	}
 
 	public void render(float dt) {
-		if (world.preferredCameraFocus != null) {
+		if (world.getPreferredCameraFocus() != null) {
 			// TODO: jumps at the beginning. It should be smoothed or something...
-			setCameraPosition(world.preferredCameraFocus);
+			setCameraPosition(world.getPreferredCameraFocus());
 		}
 		debugRenderer.setProjectionMatrix(cam.combined);
 
 		// Render background hexagons
 		HexTile<Color> selectedTile = world.getLocalPlayer().getSelectedTile();
 
-		for (HexTile<Color> tile : world.map) {
-			float size = world.map.getTileSize();
+		for (HexTile<Color> tile : world.getMap()) {
+			float size = world.getMap().getTileSize();
 			float height = 2 * size;
 			float width = (float) (Math.sqrt(3) / 2f * height);
 			Vector3 center = tile.getPosition();
@@ -75,16 +75,16 @@ public class WorldRenderer {
 
 		LocalPlayer localPlayer = world.getLocalPlayer();
 
-		for (Player player : world.players) {
-			
-			if (player == localPlayer){
+		for (Player player : world.getPlayers()) {
+
+			if (player == localPlayer) {
 				debugRenderer.setColor(Color.BLUE);
-			} else if (player.id == Player.GAIA_ID){
-				debugRenderer.setColor(Color.GRAY);					
+			} else if (player.id == Player.GAIA_ID) {
+				debugRenderer.setColor(Color.GRAY);
 			} else {
-				debugRenderer.setColor(Color.RED);										
+				debugRenderer.setColor(Color.RED);
 			}
-			
+
 			for (Unit unit : player.units.values()) {
 				debugRenderer.rect(unit.hitbox.x, unit.hitbox.y, unit.hitbox.width, unit.hitbox.height);
 			}

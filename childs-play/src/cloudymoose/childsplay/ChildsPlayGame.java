@@ -105,9 +105,14 @@ public class ChildsPlayGame extends Game {
 	}
 
 	public void notifyTurnRecapReceived(TurnRecap turnData) {
-		Gdx.app.log(TAG, "Turn recap received : " + (turnData.commands == null ? "[]" : Arrays.asList(turnData.commands)));
-		gameScreen.mode = GameScreen.Mode.Replay;
-		world.setReplayCommands(turnData.commands);
+		if (turnData.commands == null) {
+			Gdx.app.log(TAG, "Initial turn 'go' received");
+			world.startEnvironmentPhase();
+		} else {
+			Gdx.app.log(TAG, "Turn recap : " + Arrays.asList(turnData.commands));
+			world.startReplayPhase(turnData);
+		}
+
 		waitScreen.notifyTurnRecapReceived();
 	}
 

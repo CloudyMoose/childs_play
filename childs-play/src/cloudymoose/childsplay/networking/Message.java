@@ -73,14 +73,23 @@ public abstract class Message {
 		public final int turn;
 		/** Warning: will be <code>null</code> for the first player on the first turn */
 		public final Command[] commands;
+		/** Number of commands issued by each of the players in this recap */
+		public final int[] playerCommands;
 
 		public TurnRecap() {
-			this(0, null);
+			this(0, null, 0, 0);
 		}
 
-		public TurnRecap(int turn, Command[] lastCommands) {
+		public TurnRecap(int turn, Command[] lastCommands, int currentPlayerId, int nbPlayers) {
 			this.turn = turn;
 			this.commands = lastCommands;
+			if (commands == null) {
+				this.playerCommands = null;
+			} else {
+				this.playerCommands = new int[nbPlayers + 1];
+				playerCommands[currentPlayerId] = lastCommands.length;
+			}
+
 		}
 
 		@Override

@@ -13,6 +13,7 @@ public class Player {
 	public final Map<Integer, Unit> units;
 
 	private int unitCreationCount;
+	private int remainingTickets;
 
 	public Player(int id) {
 		units = new HashMap<Integer, Unit>();
@@ -27,6 +28,24 @@ public class Player {
 
 	public int generateUnitId() {
 		return id * UNIT_ID_OFFSET + (unitCreationCount++);
+	}
+
+	public int getRemainingTickets() {
+		return remainingTickets;
+	}
+
+	/**
+	 * Decrements the number of tickets available for the turn.
+	 * 
+	 * @return <code>true</code> if there were tickets left to use.
+	 */
+	public boolean useTicket() {
+		remainingTickets -= 1;
+		return remainingTickets >= 0;
+	}
+
+	public void resetTickets() {
+		remainingTickets = Constants.NB_TICKETS;
 	}
 
 }

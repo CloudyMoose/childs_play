@@ -3,7 +3,6 @@ package cloudymoose.childsplay.screens.hud;
 import cloudymoose.childsplay.ChildsPlayGame;
 import cloudymoose.childsplay.screens.AbstractMenuStageManager;
 import cloudymoose.childsplay.world.Constants;
-import cloudymoose.childsplay.world.LocalPlayer;
 import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
@@ -18,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class GameHUD extends AbstractMenuStageManager {
 
 	World world;
-	LocalPlayer player;
 
 	Label labelUnitCount;
 	Label labelTicketCount;
@@ -28,7 +26,6 @@ public class GameHUD extends AbstractMenuStageManager {
 	public GameHUD(ChildsPlayGame game, Screen screen, World world) {
 		super(game, screen);
 		this.world = world;
-		player = world.getLocalPlayer();
 	}
 
 	@Override
@@ -37,7 +34,7 @@ public class GameHUD extends AbstractMenuStageManager {
 		labelUnitCount = new Label("", getSkin());
 		updateUnitCount();
 		stage.addActor(labelUnitCount);
-		
+
 		labelTicketCount = new Label("", getSkin());
 		updateTicketCount();
 		stage.addActor(labelTicketCount);
@@ -52,7 +49,7 @@ public class GameHUD extends AbstractMenuStageManager {
 		});
 		stage.addActor(btnEnd);
 
-		commandMenu = new CommandMenu(player, getSkin());
+		commandMenu = new CommandMenu(world.getLocalPlayer(), getSkin());
 		stage.addActor(commandMenu);
 
 		return null; /* We're adding the objects to the scene manually here */
@@ -68,11 +65,12 @@ public class GameHUD extends AbstractMenuStageManager {
 	}
 
 	public void updateUnitCount() {
-		labelUnitCount.setText(String.format("%d units", player.units.size()));
+		labelUnitCount.setText(String.format("%d units", world.getCurrentPlayer().units.size()));
 	}
-	
+
 	private void updateTicketCount() {
-		labelTicketCount.setText(String.format("%d/%d tickets", world.getRemainingTickets(), Constants.NB_TICKETS));
+		labelTicketCount.setText(String.format("%d/%d tickets", world.getCurrentPlayer().getRemainingTickets(),
+				Constants.NB_TICKETS));
 	}
 
 	public void displayCommandMenu(int screenX, int screenY, HexTile<?> clickedTile) {
