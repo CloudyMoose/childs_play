@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 
 import cloudymoose.childsplay.ChildsPlayGame;
+import cloudymoose.childsplay.networking.Message.EndGame;
 import cloudymoose.childsplay.networking.Message.TurnRecap;
 import cloudymoose.childsplay.world.commands.Command;
 
@@ -22,12 +23,14 @@ public class GameClient {
 	private TurnListener turnListener;
 	private int playerId;
 	private int nbPlayers;
+	private boolean terminating = false;
 
 	public GameClient(ChildsPlayGame game) {
 		this.game = game;
 	}
 
-	public void connect() throws IOException {
+	/** @return <code>true</code> is the client found a server and is successfully connected */
+	public boolean connect() throws IOException {
 
 		Client client = new Client();
 		connection = client;
@@ -39,11 +42,11 @@ public class GameClient {
 
 		if (serverAddress == null) {
 			Gdx.app.error("Client", "No server found");
-			Gdx.app.exit();
+			return false;
+		} else {
+			client.connect(5000, serverAddress, 54555, 54777);
+			return true;
 		}
-
-		client.connect(5000, serverAddress, 54555, 54777);
-
 	}
 
 	public void init() {
@@ -100,6 +103,26 @@ public class GameClient {
 				});
 				enabled = false;
 			}
+
+			if (object instanceof EndGame) {
+				Gdx.app.postRunnable(new Runnable() {
+					public void run() {
+						game.notifyEndGameReceived();
+					}
+				});
+				enabled = false;
+			}
 		}
+
+		@Override
+		public void disconnected(Connection connection) {
+			if (!terminating) game.onClientDisconnection();
+		}
+	}
+
+	public void terminateConnection() {
+		terminating = true;
+		connection.sendTCP(new Message.EndGame());
+		connection.close();
 	}
 }

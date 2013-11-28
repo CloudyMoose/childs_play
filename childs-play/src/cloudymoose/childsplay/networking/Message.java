@@ -104,4 +104,12 @@ public abstract class Message {
 			return "Request: Ack";
 		}
 	}
+
+	/** Sent by the server to the clients, means that the client won. Sent by a client, it means that it quits the game. */
+	public static class EndGame extends Message {
+		@Override
+		public String toString() {
+			return "Request: End game";
+		}
+	}
 }

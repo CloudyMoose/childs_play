@@ -17,6 +17,7 @@ public abstract class NetworkUtils {
 		kryo.register(Message.Init.class);
 		kryo.register(Message.Ack.class);
 		kryo.register(Message.TurnRecap.class);
+		kryo.register(Message.EndGame.class);
 		kryo.register(Command[].class);
 		kryo.register(int[].class);
 		kryo.register(MoveCommand.class);

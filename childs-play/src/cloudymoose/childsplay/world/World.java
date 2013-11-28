@@ -54,6 +54,9 @@ public class World {
 	public final Set<HexTile<?>> targetableTiles = new HashSet<HexTile<?>>();
 	private Vector3 preferredCameraFocus;
 
+	// Other
+	private boolean disconnected;
+
 	// =================================================================================================================
 	// Initialization
 	// =================================================================================================================
@@ -242,8 +245,23 @@ public class World {
 		cancelCommand();
 	}
 
+	/**
+	 * Returns true if there is a winner for the game. The winner is not returned here. The context of the call has to
+	 * be used to know who is the winner.
+	 */
+	public boolean isEndGameState() {
+		for (Player p : players) {
+			if (p.id == Player.GAIA_ID && players.size() > 2) {
+				// Single player (current + GAIA): we stil want to end when the NPCs are defeated
+				continue;
+			}
+			if (p.units.isEmpty()) return true;
+		}
+		return false;
+	}
+
 	// =================================================================================================================
-	// Getters
+	// Getters and Setters
 	// =================================================================================================================
 
 	public boolean hasRunningCommand() {
@@ -282,6 +300,10 @@ public class World {
 
 	public Vector3 getPreferredCameraFocus() {
 		return preferredCameraFocus;
+	}
+
+	public void isDisconnected() {
+		disconnected = true;
 	}
 
 }

@@ -55,8 +55,10 @@ public class GameServer {
 
 	protected void startGame() {
 		if (gameStarted) return;
-		for (Map.Entry<Integer, Connection> me : connections.entrySet()) {
-			me.getValue().addListener(new TurnListener(me.getKey()));
+		synchronized (connections) {
+			for (Map.Entry<Integer, Connection> me : connections.entrySet()) {
+				me.getValue().addListener(new TurnListener(me.getKey()));
+			}
 		}
 		log("Start Game!");
 		gameStarted = true;
@@ -87,11 +89,39 @@ public class GameServer {
 
 		Command[] commandsToSend = nbMaxPlayers == 1 ? null : lastCommandSet;
 
-		log("Sending StartTurn #%d to player %d, (%s) with %d commands.", currentTurn.turnNb, currentPlayer,
-				connections.get(currentPlayer), (commandsToSend != null ? commandsToSend.length : 0));
+		Connection cpc;
+		synchronized (connections) {
+			cpc = connections.get(currentPlayer);
+		}
 
-		connections.get(currentPlayer).sendTCP(
-				new Message.TurnRecap(currentTurn.turnNb, commandsToSend, previousPlayer, nbMaxPlayers));
+		if (cpc == null) {
+			removePlayer(currentPlayer);
+			startNextPlayerTurn(null); // Go to the next player
+		} else {
+			boolean isLastConnected = false;
+			synchronized (connections) {
+				isLastConnected = nbMaxPlayers > 1 && (connections.size() == 1);
+			}
+
+			if (isLastConnected) {
+				cpc.sendTCP(new Message.EndGame());
+			} else {
+				log("Sending StartTurn #%d to player %d, (%s) with %d commands.", currentTurn.turnNb, currentPlayer,
+						cpc, (commandsToSend != null ? commandsToSend.length : 0));
+
+				cpc.sendTCP(new Message.TurnRecap(currentTurn.turnNb, commandsToSend, previousPlayer, nbMaxPlayers));
+			}
+
+		}
+
+	}
+
+	protected void removePlayer(int playerId) {
+		synchronized (connections) {
+			log("Removing player #%d", playerId);
+			Connection c = connections.remove(playerId);
+			if (c != null) c.close();
+		}
 	}
 
 	/** When a new client connects, sends him the init info, and starts the game if all clients are connected. */
@@ -103,18 +133,43 @@ public class GameServer {
 				public void received(Connection connection, Object object) {
 
 					if (Message.Init.INIT_REQUEST.equals(object)) {
-						int playerId = connections.size() + 1;
-						connections.put(playerId, connection);
+						int nbConnectedPlayers;
+						int playerId;
+
+						synchronized (connections) {
+							playerId = connections.size() + 1;
+							connections.put(playerId, connection);
+							nbConnectedPlayers = connections.size(); // redundant, but clearer I guess
+						}
 						connection.sendTCP(new Message.Init(playerId, nbMaxPlayers));
 
-						if (connections.size() == nbMaxPlayers) {
-							server.removeListener(ConnectionListener.this);
+						if (nbConnectedPlayers == nbMaxPlayers) {
 							startGame();
 						}
 					}
 
 				}
 			});
+		}
+
+		@Override
+		public void disconnected(Connection connection) {
+			int playerId = -1;
+			synchronized (connections) {
+				for (Map.Entry<Integer, Connection> entry : connections.entrySet()) {
+					if (connection.equals(entry.getValue())) {
+						playerId = entry.getKey();
+						break;
+					}
+				}
+			}
+
+			if (playerId != -1) {
+				removePlayer(playerId);
+			} else {
+				log("An unrecognized client disconnected (%s)", connection);
+			}
+
 		}
 	}
 
@@ -135,6 +190,11 @@ public class GameServer {
 				startNextPlayerTurn(((Message.TurnRecap) object).commands);
 			}
 
+			if (object instanceof Message.EndGame) {
+				removePlayer(playerId);
+				connection.sendTCP(new Message.Ack());
+			}
+
 		}
 	}
 
@@ -152,5 +212,9 @@ public class GameServer {
 			this.turnNb = turnNb;
 			this.commands = new Command[nbMaxPlayers][];
 		}
+	}
+
+	public void terminateConnection() {
+		server.close();
 	}
 }

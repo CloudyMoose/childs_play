@@ -10,6 +10,8 @@ import cloudymoose.childsplay.networking.Message.Init;
 import cloudymoose.childsplay.networking.Message.TurnRecap;
 import cloudymoose.childsplay.screens.GameScreen;
 import cloudymoose.childsplay.screens.MainMenuScreen;
+import cloudymoose.childsplay.screens.PostGameScreen;
+import cloudymoose.childsplay.screens.PostGameScreen.EndReason;
 import cloudymoose.childsplay.screens.WaitScreen;
 import cloudymoose.childsplay.world.Constants;
 import cloudymoose.childsplay.world.World;
@@ -35,14 +37,16 @@ public class ChildsPlayGame extends Game {
 	private static final String TAG = "ChildsPlayGame";
 
 	public InputMultiplexer multiplexer;
-
-	public GameScreen gameScreen;
-	public WaitScreen waitScreen;
-	public MainMenuScreen mainMenuScreen;
 	public AssetManager assetManager;
+
+	private MainMenuScreen mainMenuScreen;
+	private WaitScreen waitScreen;
+	private GameScreen gameScreen;
+	private PostGameScreen postGameScreen;
 
 	private boolean serverFound;
 	private GameClient client;
+	private GameServer server;
 
 	private World world;
 
@@ -50,9 +54,10 @@ public class ChildsPlayGame extends Game {
 	public void create() {
 		Gdx.app.log(TAG, "Create");
 		assetManager = initializeAssetManager();
-		gameScreen = new GameScreen(this);
-		waitScreen = new WaitScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
+		waitScreen = new WaitScreen(this);
+		gameScreen = new GameScreen(this);
+		postGameScreen = new PostGameScreen(this);
 		multiplexer = new InputMultiplexer();
 		Gdx.input.setInputProcessor(multiplexer);
 		setScreen(mainMenuScreen);
@@ -97,6 +102,7 @@ public class ChildsPlayGame extends Game {
 		world = new World(initData);
 		gameScreen.init(world);
 		setScreen(waitScreen);
+		mainMenuScreen.dispose();
 	}
 
 	public void endTurn() {
@@ -116,15 +122,21 @@ public class ChildsPlayGame extends Game {
 		waitScreen.notifyTurnRecapReceived();
 	}
 
+	public void notifyEndGameReceived() {
+		postGameScreen.setReason(EndReason.Forfeit);
+		setScreen(postGameScreen);
+	}
+
 	public void startServer(int nbPlayers) {
-		GameServer server;
 		try {
 			server = new GameServer(nbPlayers);
 			server.start();
 			serverFound = true;
 			mainMenuScreen.notifyServerState(serverFound);
+			mainMenuScreen.addNotification("Server started.");
 		} catch (BindException e) {
-			System.out.println("Address already in use. The server must be already started.");
+			Gdx.app.log(TAG, "Address already in use. The server must be already started.");
+			serverFound = true;
 		} catch (IOException e) {
 			Gdx.app.log(TAG, e.getMessage(), e);
 		}
@@ -133,9 +145,13 @@ public class ChildsPlayGame extends Game {
 	public void connectToServer() {
 		try {
 			client = new GameClient(this);
-			client.connect();
-			client.init();
-			setScreen(waitScreen);
+			serverFound = client.connect();
+			if (serverFound) {
+				client.init();
+				setScreen(waitScreen);
+			} else {
+				mainMenuScreen.addNotification("Server not found");
+			}
 		} catch (IOException e) {
 			Gdx.app.error(TAG, e.getMessage(), e);
 			Gdx.app.exit();
@@ -144,5 +160,45 @@ public class ChildsPlayGame extends Game {
 
 	public void startTurn() {
 		setScreen(gameScreen);
+	}
+
+	public void endGame(boolean isWinner) {
+		client.send(world.exportCommands());
+		postGameScreen.setReason(isWinner ? EndReason.Win : EndReason.Lose);
+		setScreen(postGameScreen);
+	}
+
+	public void toMainMenu() {
+		toMainMenu(null);
+	}
+
+	public void toMainMenu(String notification) {
+		terminateGame();
+		setScreen(mainMenuScreen);
+		if (notification != null) mainMenuScreen.addNotification(notification);
+	}
+
+	private void terminateGame() {
+		waitScreen.dispose();
+		postGameScreen.dispose();
+		gameScreen.dispose();
+		world = null;
+		if (client != null) {
+			client.terminateConnection();
+			client = null;
+		}
+		if (server != null) {
+			server.terminateConnection();
+			server = null;
+		}
+	}
+
+	public void onClientDisconnection() {
+		if (getScreen() == waitScreen && waitScreen.receivedTurnRecap() || getScreen() == gameScreen) {
+			// Delay the disconnection in case the client is replaying the game end context.
+			gameScreen.isDisconnected();
+		} else {
+			toMainMenu("Disconnected");
+		}
 	}
 }

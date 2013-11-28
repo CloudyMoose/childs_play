@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -21,8 +22,13 @@ public class MainMenuScreen extends AbstractMenuScreen<MainMenuScreen.StageManag
 		mMenuStageManager.startServerButton.setDisabled(started);
 	}
 
+	public void addNotification(String notification) {
+		mMenuStageManager.lblNotification.setText(notification);
+	}
+
 	static class StageManager extends AbstractMenuStageManager {
 		public TextButton startServerButton;
+		public Label lblNotification;
 
 		public StageManager(ChildsPlayGame game, Screen screen) {
 			super(game, screen);
@@ -78,7 +84,11 @@ public class MainMenuScreen extends AbstractMenuScreen<MainMenuScreen.StageManag
 					Gdx.app.exit();
 				}
 			});
-			table.add(quitButton).uniform().fill();
+			table.add(quitButton).uniform().fill().spaceBottom(10);
+
+			table.row();
+			lblNotification = new Label("", getSkin());
+			table.add(lblNotification).fill().spaceTop(40);
 
 			return table;
 		}

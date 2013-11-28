@@ -16,6 +16,7 @@ public class GameScreen extends FixedTimestepScreen {
 	private WorldRenderer renderer;
 	private PlayerController playerController;
 	private GameHUD hud;
+	private boolean disconnected;
 
 	public GameScreen(ChildsPlayGame game) {
 		super(ChildsPlayGame.FIXED_FPS, ChildsPlayGame.MAX_UPDATES);
@@ -27,6 +28,7 @@ public class GameScreen extends FixedTimestepScreen {
 		renderer = new WorldRenderer(world);
 		hud = new GameHUD(game, this, world);
 		playerController = new PlayerController(game, renderer, hud);
+		disconnected = false;
 	}
 
 	@Override
@@ -71,6 +73,11 @@ public class GameScreen extends FixedTimestepScreen {
 	@Override
 	public void fixedUpdate(float dt) {
 
+		if (disconnected && world.getPhase() != World.Phase.Replay) {
+			Gdx.app.log(TAG, "Disconnected");
+			game.toMainMenu("Disconnected");
+		}
+
 		switch (world.getPhase()) {
 		case Replay:
 			prepareReplayUpdate();
@@ -79,13 +86,18 @@ public class GameScreen extends FixedTimestepScreen {
 			prepareEnvironmentUpdate();
 			break;
 		case Command:
-			prepareDefaultUpdate();
+			prepareCommandUpdate();
 			break;
 		case Wait:
 			break;
 		}
 
 		world.fixedUpdate(dt);
+
+		if (world.isEndGameState()) {
+			boolean isWinner = !(world.getPhase() == World.Phase.Replay);
+			game.endGame(isWinner);
+		}
 	}
 
 	private void prepareEnvironmentUpdate() {
@@ -93,7 +105,7 @@ public class GameScreen extends FixedTimestepScreen {
 	}
 
 	/** Method called before {@link World#fixedUpdate(float)}, when in Default mode */
-	private void prepareDefaultUpdate() {
+	private void prepareCommandUpdate() {
 		if (world.hasRunningCommand()) {
 			playerController.enabled = false;
 		} else {
@@ -119,5 +131,9 @@ public class GameScreen extends FixedTimestepScreen {
 		renderer.render(dt);
 		hud.update();
 		hud.render(dt);
+	}
+
+	public void isDisconnected() {
+		this.disconnected = true;
 	}
 }
