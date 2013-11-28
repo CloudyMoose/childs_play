@@ -54,9 +54,6 @@ public class World {
 	public final Set<HexTile<?>> targetableTiles = new HashSet<HexTile<?>>();
 	private Vector3 preferredCameraFocus;
 
-	// Other
-	private boolean disconnected;
-
 	// =================================================================================================================
 	// Initialization
 	// =================================================================================================================
@@ -64,6 +61,7 @@ public class World {
 	public World(Init initData) {
 		Gdx.app.log(TAG, "Init data: " + initData.toString());
 		createDemoWorld(initData);
+		currentPlayer = localPlayer;
 	}
 
 	/** TODO: will be replaced by a proper initialization from the map info */
@@ -149,6 +147,8 @@ public class World {
 		currentPhase = Phase.Replay;
 
 		commands.clear();
+
+		if (turnData.commands.length == 0) return;
 
 		for (int i = 0; i < turnData.playerCommands.length; i++) {
 			int nbCommands = turnData.playerCommands[i];
@@ -300,10 +300,6 @@ public class World {
 
 	public Vector3 getPreferredCameraFocus() {
 		return preferredCameraFocus;
-	}
-
-	public void isDisconnected() {
-		disconnected = true;
 	}
 
 }

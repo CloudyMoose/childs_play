@@ -23,6 +23,7 @@ public class GameServer {
 	private int currentPlayer;
 	private List<TurnCommands> actionLog;
 	private boolean gameStarted;
+	private boolean terminating = false;
 
 	/**
 	 * Connections are stored there because Kryo's ones are weirdly managed: the lastest one is the first, array
@@ -105,6 +106,8 @@ public class GameServer {
 
 			if (isLastConnected) {
 				cpc.sendTCP(new Message.EndGame());
+				currentPlayer = -1;
+				terminating = true;
 			} else {
 				log("Sending StartTurn #%d to player %d, (%s) with %d commands.", currentTurn.turnNb, currentPlayer,
 						cpc, (commandsToSend != null ? commandsToSend.length : 0));
@@ -117,11 +120,13 @@ public class GameServer {
 	}
 
 	protected void removePlayer(int playerId) {
+		if (terminating) return;
 		synchronized (connections) {
 			log("Removing player #%d", playerId);
 			Connection c = connections.remove(playerId);
 			if (c != null) c.close();
 		}
+		if (playerId == currentPlayer) startNextPlayerTurn(null);
 	}
 
 	/** When a new client connects, sends him the init info, and starts the game if all clients are connected. */
@@ -215,6 +220,7 @@ public class GameServer {
 	}
 
 	public void terminateConnection() {
+		terminating = true;
 		server.close();
 	}
 }

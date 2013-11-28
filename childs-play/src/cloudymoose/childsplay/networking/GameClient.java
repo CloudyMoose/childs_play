@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 
 import cloudymoose.childsplay.ChildsPlayGame;
+import cloudymoose.childsplay.NotificationService;
 import cloudymoose.childsplay.networking.Message.EndGame;
 import cloudymoose.childsplay.networking.Message.TurnRecap;
 import cloudymoose.childsplay.world.commands.Command;
@@ -24,9 +25,11 @@ public class GameClient {
 	private int playerId;
 	private int nbPlayers;
 	private boolean terminating = false;
+	private NotificationService notificationService;
 
-	public GameClient(ChildsPlayGame game) {
+	public GameClient(ChildsPlayGame game, NotificationService notificationService) {
 		this.game = game;
+		this.notificationService = notificationService;
 	}
 
 	/** @return <code>true</code> is the client found a server and is successfully connected */
@@ -95,6 +98,10 @@ public class GameClient {
 			}
 
 			if (object instanceof TurnRecap) {
+
+				// On android the gdx thread is paused, the notification will not fire.
+				if (!game.hasFocus()) notificationService.notifySomething();
+
 				// For calls to libgdx, use postRunnable to make sure it will be run in the gdx thread
 				Gdx.app.postRunnable(new Runnable() {
 					public void run() {

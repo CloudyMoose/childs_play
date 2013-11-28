@@ -21,7 +21,7 @@ public class Main {
 		cfg.x = (screenSize.width - cfg.width) / 2;
 		cfg.y = 20;
 
-		new LwjglApplication(new ChildsPlayGame(), cfg);
+		new LwjglApplication(new ChildsPlayGame(new DesktopNotificationService()), cfg);
 
 	}
 }

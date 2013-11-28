@@ -45,14 +45,22 @@ public class ChildsPlayGame extends Game {
 	private PostGameScreen postGameScreen;
 
 	private boolean serverFound;
+	private boolean hasFocus;
 	private GameClient client;
 	private GameServer server;
 
 	private World world;
 
+	private NotificationService notificationService;
+
+	public ChildsPlayGame(NotificationService ns) {
+		notificationService = ns;
+	}
+
 	@Override
 	public void create() {
 		Gdx.app.log(TAG, "Create");
+		hasFocus = true;
 		assetManager = initializeAssetManager();
 		mainMenuScreen = new MainMenuScreen(this);
 		waitScreen = new WaitScreen(this);
@@ -72,12 +80,14 @@ public class ChildsPlayGame extends Game {
 	@Override
 	public void pause() {
 		Gdx.app.log(TAG, "Pause");
+		hasFocus = false;
 		super.pause();
 	}
 
 	@Override
 	public void resume() {
 		Gdx.app.log(TAG, "Resume");
+		hasFocus = true;
 		super.resume();
 	}
 
@@ -119,6 +129,8 @@ public class ChildsPlayGame extends Game {
 			world.startReplayPhase(turnData);
 		}
 
+		if (!hasFocus) notificationService.notifySomething();
+
 		waitScreen.notifyTurnRecapReceived();
 	}
 
@@ -139,22 +151,29 @@ public class ChildsPlayGame extends Game {
 			serverFound = true;
 		} catch (IOException e) {
 			Gdx.app.log(TAG, e.getMessage(), e);
+			mainMenuScreen.addNotification(e.getMessage());
+		} finally {
+			if (!serverFound) server = null;
 		}
 	}
 
 	public void connectToServer() {
+		boolean success = false;
 		try {
-			client = new GameClient(this);
+			client = new GameClient(this, notificationService);
 			serverFound = client.connect();
 			if (serverFound) {
 				client.init();
+				success = true;
 				setScreen(waitScreen);
 			} else {
 				mainMenuScreen.addNotification("Server not found");
 			}
 		} catch (IOException e) {
 			Gdx.app.error(TAG, e.getMessage(), e);
-			Gdx.app.exit();
+			mainMenuScreen.addNotification(e.getMessage());
+		} finally {
+			if (!success) client = null;
 		}
 	}
 
@@ -195,10 +214,16 @@ public class ChildsPlayGame extends Game {
 
 	public void onClientDisconnection() {
 		if (getScreen() == waitScreen && waitScreen.receivedTurnRecap() || getScreen() == gameScreen) {
+			Gdx.app.log(TAG, "Delaying disconnection");
 			// Delay the disconnection in case the client is replaying the game end context.
 			gameScreen.isDisconnected();
 		} else {
+			Gdx.app.log(TAG, "Disconnection!");
 			toMainMenu("Disconnected");
 		}
+	}
+
+	public boolean hasFocus() {
+		return hasFocus;
 	}
 }
