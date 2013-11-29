@@ -1,5 +1,8 @@
 package cloudymoose.childsplay.world;
 
+import java.util.EnumSet;
+
+import cloudymoose.childsplay.world.hextiles.Direction;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
 import com.badlogic.gdx.Gdx;
@@ -45,6 +48,8 @@ public class WorldRenderer {
 
 			if (selectedTile == tile) {
 				debugRenderer.setColor(Color.WHITE);
+			} else if (tile.value.getArea().getControlTile() == tile) {
+				debugRenderer.setColor(Color.MAGENTA);
 			} else if (world.targetableTiles.contains(tile)) {
 				debugRenderer.setColor(Color.ORANGE);
 			}
@@ -66,6 +71,15 @@ public class WorldRenderer {
 							center.y + height / 2, center.x + width / 2, center.y + height / 4, center.x + width / 2,
 							center.y - height / 4, center.x, center.y - height / 2, center.x - width / 2,
 							center.y - height / 4 });
+
+			// TODO: horrible but w/e
+			if (!tile.value.borders.isEmpty()) {
+				debugRenderer.setColor(Color.RED);
+				for (float[] line : getEdges(center, tile.value.borders)) {
+					debugRenderer.polyline(line);
+				}
+				Gdx.gl10.glLineWidth(1);
+			}
 
 			debugRenderer.end();
 
@@ -123,6 +137,48 @@ public class WorldRenderer {
 
 	public void dispose() {
 		debugRenderer.dispose();
+	}
+
+	private float[][] getEdges(Vector3 center, EnumSet<Direction> borders) {
+		float height = 2 * world.getMap().getTileSize();
+		float width = (float) (Math.sqrt(3) / 2f * height);
+		// center.x - width / 2, center.y + height / 4
+		// center.x, center.y + height / 2
+		// center.x + width / 2, center.y + height / 4
+		// center.x + width / 2, center.y - height / 4
+		// center.x,center.y - height / 2
+		// center.x - width / 2, center.y - height / 4
+
+		float[][] edges = new float[borders.size()][];
+		int i = 0;
+		for (Direction d : borders) {
+			switch (d) {
+			case DownLeft:
+				edges[i] = new float[] { center.x, center.y - height / 2, center.x - width / 2, center.y - height / 4 };
+				break;
+			case DownRight:
+				edges[i] = new float[] { center.x + width / 2, center.y - height / 4, center.x, center.y - height / 2 };
+				break;
+			case Left:
+				edges[i] = new float[] { center.x - width / 2, center.y - height / 4, center.x - width / 2,
+						center.y + height / 4 };
+				break;
+			case Right:
+				edges[i] = new float[] { center.x + width / 2, center.y + height / 4, center.x + width / 2,
+						center.y - height / 4 };
+				break;
+			case UpLeft:
+				edges[i] = new float[] { center.x - width / 2, center.y + height / 4, center.x, center.y + height / 2 };
+				break;
+			case UpRight:
+				edges[i] = new float[] { center.x, center.y + height / 2, center.x + width / 2, center.y + height / 4 };
+				break;
+			}
+			i++;
+		}
+
+		return edges;
+
 	}
 
 }

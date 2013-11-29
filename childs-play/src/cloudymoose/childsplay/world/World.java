@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Set;
 
 import cloudymoose.childsplay.networking.Message.Init;
@@ -66,7 +67,7 @@ public class World {
 
 	/** TODO: will be replaced by a proper initialization from the map info */
 	private void createDemoWorld(Init initData) {
-		map = createEmptyMap(10, 10);
+		map = createEmptyMap(12, 10);
 
 		players = new ArrayList<Player>(initData.nbPlayers + 1);
 
@@ -93,18 +94,61 @@ public class World {
 	}
 
 	private WorldMap createEmptyMap(int width, int height) {
-		WorldMap newMap = new WorldMap();
+		final int nbAreas = Constants.NB_MAP_AREAS;
+		WorldMap newMap = new WorldMap(nbAreas);
+
+		List<List<HexTile<TileData>>> areaTiles = new ArrayList<List<HexTile<TileData>>>(nbAreas);
+		areaTiles.add(new ArrayList<HexTile<TileData>>());
+		areaTiles.add(new ArrayList<HexTile<TileData>>());
+		areaTiles.add(new ArrayList<HexTile<TileData>>());
+
+		int[] areaLimits = new int[] { (width / nbAreas), width - (width / nbAreas) };
+		Gdx.app.log(TAG, "areaLimits: " + areaLimits[0] + " " + areaLimits[1]);
+
 		HexTile<TileData> columnHead = newMap.addValue(0, 0, new TileData(Color.GREEN));
 		for (int y = 0; y < height; y++) {
+			areaTiles.get(0).add(columnHead);
 			HexTile<TileData> tmp = columnHead;
-			for (int x = 0; x < width; x++) {
-				tmp = tmp.setNeighbor(Direction.Right, new TileData(Color.GREEN));
+			for (int x = 1 /* The first tile is manually added */; x < width; x++) {
+				TileData tileData = new TileData(Color.GREEN);
+				tmp = tmp.setNeighbor(Direction.Right, tileData);
+				if (x <= areaLimits[0] - 1) {
+					areaTiles.get(0).add(tmp);
+					if (x == areaLimits[0] - 1) {
+						tileData.addBorders(Direction.Right);
+						if (y % 2 == 1) tileData.addBorders(Direction.UpRight, Direction.DownRight);
+					}
+				} else if (x >= areaLimits[1]) {
+					areaTiles.get(2).add(tmp);
+					// tileData.color = Color.MAGENTA;
+					if (x == areaLimits[1]) {
+						tileData.addBorders(Direction.Left);
+						if (y % 2 == 0) tileData.addBorders(Direction.UpLeft, Direction.DownLeft);
+					}
+
+				} else {
+					areaTiles.get(1).add(tmp);
+					tileData.color = Color.LIGHT_GRAY;
+					if (x == areaLimits[0]) {
+						tileData.addBorders(Direction.Left);
+						if (y % 2 == 0) tileData.addBorders(Direction.UpLeft, Direction.DownLeft);
+					} else if (x == areaLimits[1] - 1) {
+						tileData.addBorders(Direction.Right);
+						if (y % 2 == 1) tileData.addBorders(Direction.UpRight, Direction.DownRight);
+					}
+				}
 			}
 			if (y != height - 1) {
 				Direction indentation = y % 2 == 0 ? Direction.DownRight : Direction.DownLeft;
 				columnHead = columnHead.setNeighbor(indentation, new TileData(Color.GREEN));
 			}
 		}
+
+		Random r = new Random();
+		for (int i = 0; i < nbAreas; i++) {
+			newMap.areas[i] = new Area(areaTiles.get(i), areaTiles.get(i).get(r.nextInt(areaTiles.get(i).size())));
+		}
+
 		return newMap;
 	}
 

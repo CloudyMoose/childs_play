@@ -12,8 +12,11 @@ import cloudymoose.childsplay.world.hextiles.HexTile;
 
 public class WorldMap extends HexGrid<TileData> {
 
-	public WorldMap() {
+	public final Area[] areas;
+
+	public WorldMap(int nbAreas) {
 		super(Constants.TILE_SIZE);
+		areas = new Area[nbAreas];
 	}
 
 	public Set<HexTile<TileData>> findTiles(TargetConstraints targetConstraints) {
