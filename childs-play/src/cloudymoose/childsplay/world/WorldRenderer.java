@@ -32,16 +32,16 @@ public class WorldRenderer {
 		debugRenderer.setProjectionMatrix(cam.combined);
 
 		// Render background hexagons
-		HexTile<Color> selectedTile = world.getLocalPlayer().getSelectedTile();
+		HexTile<TileData> selectedTile = world.getLocalPlayer().getSelectedTile();
 
-		for (HexTile<Color> tile : world.getMap()) {
+		for (HexTile<TileData> tile : world.getMap()) {
 			float size = world.getMap().getTileSize();
 			float height = 2 * size;
 			float width = (float) (Math.sqrt(3) / 2f * height);
 			Vector3 center = tile.getPosition();
 
 			debugRenderer.begin(ShapeType.Filled);
-			debugRenderer.setColor(tile.getValue());
+			debugRenderer.setColor(tile.value.color);
 
 			if (selectedTile == tile) {
 				debugRenderer.setColor(Color.WHITE);

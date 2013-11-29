@@ -1,5 +1,6 @@
 package cloudymoose.childsplay.world.commands;
 
+import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
 /**
@@ -8,8 +9,8 @@ import cloudymoose.childsplay.world.hextiles.HexTile;
  */
 public abstract class CommandBuilder {
 
-	protected HexTile<?> originTile;
-	protected HexTile<?> targetTile;
+	protected HexTile<TileData> originTile;
+	protected HexTile<TileData> targetTile;
 	protected TargetConstraints targetConstraints;
 
 	/** Overrride it to return the max range of the command. Uses the {@link #targetConstraints}' range */
@@ -17,12 +18,12 @@ public abstract class CommandBuilder {
 		return getTargetConstraints().maxRange;
 	}
 
-	public CommandBuilder from(HexTile<?> originTile) {
+	public CommandBuilder from(HexTile<TileData> originTile) {
 		this.originTile = originTile;
 		return this;
 	}
 
-	public void setTarget(HexTile<?> target) {
+	public void setTarget(HexTile<TileData> target) {
 		targetTile = target;
 	}
 

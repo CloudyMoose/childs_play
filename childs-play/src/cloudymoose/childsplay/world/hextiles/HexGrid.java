@@ -10,8 +10,8 @@ import java.util.Set;
 import com.badlogic.gdx.math.Vector3;
 
 /**
- * Represents a hexagonal grid, where each of the tiles holds a value of a
- * generic type. Contains methods to add and get tiles
+ * Represents a hexagonal grid, where each of the tiles holds a value of a generic type. Contains methods to add and get
+ * tiles
  * 
  * @param <T>
  *            the value type to store in the tiles.
@@ -70,7 +70,7 @@ public class HexGrid<T> extends AbstractCollection<HexTile<T>> {
 	 */
 	public T getValue(int q, int r) {
 		HexTile<T> tile = getTile(q, r);
-		return tile == null ? null : tile.getValue();
+		return tile == null ? null : tile.value;
 	}
 
 	private void addTile(HexTile<T> tile) {
@@ -97,8 +97,7 @@ public class HexGrid<T> extends AbstractCollection<HexTile<T>> {
 	public HexTile<T> getTile(int q, int r) {
 		Map<Integer, HexTile<T>> qAxis = tiles.get(q);
 
-		if (qAxis == null)
-			return null;
+		if (qAxis == null) return null;
 
 		return qAxis.get(r);
 	}
@@ -108,14 +107,11 @@ public class HexGrid<T> extends AbstractCollection<HexTile<T>> {
 	 * 
 	 * @param position
 	 *            the world position.
-	 * @return the tile that contains that world position, or null, if no tile
-	 *         exists there.
+	 * @return the tile that contains that world position, or null, if no tile exists there.
 	 */
 	public HexTile<T> getTileFromPosition(Vector3 position) {
 		float x = -position.y * 2f / (3f * tileSize);
-		float y = (float) (1f / 3f * Math.sqrt(3) * position.x + (1f / 3f)
-				* position.y)
-				/ tileSize;
+		float y = (float) (1f / 3f * Math.sqrt(3) * position.x + (1f / 3f) * position.y) / tileSize;
 		return getTile(Math.round(x), Math.round(y));
 	}
 

@@ -9,7 +9,7 @@ public abstract class Unit {
 
 	/** center */
 	public final Vector3 position;
-	protected HexTile<?> occupiedTile;
+	protected HexTile<TileData> occupiedTile;
 	public final int id;
 	public final int size;
 	public final Rectangle hitbox;
@@ -20,7 +20,7 @@ public abstract class Unit {
 	public final int attackDamage;
 	public final int movementRange;
 
-	public Unit(int id, HexTile<?> tile, int size, int hp, int moveRange, int atkRange, int atkDamage) {
+	public Unit(int id, HexTile<TileData> tile, int size, int hp, int moveRange, int atkRange, int atkDamage) {
 		position = new Vector3(tile.getPosition());
 		occupiedTile = tile;
 		this.id = id;
@@ -33,12 +33,11 @@ public abstract class Unit {
 		attackRange = atkRange;
 		attackDamage = atkDamage;
 		movementRange = moveRange;
-		
 
-		tile.setOccupant(this);
+		tile.value.setOccupant(this);
 	}
 
-	public Unit(Player owner, HexTile<?> tile, int size, int hp, int moveRange, int atkRange, int atkDamage) {
+	public Unit(Player owner, HexTile<TileData> tile, int size, int hp, int moveRange, int atkRange, int atkDamage) {
 		this(owner.generateUnitId(), tile, size, hp, moveRange, atkRange, atkDamage);
 	}
 
@@ -71,18 +70,18 @@ public abstract class Unit {
 	}
 
 	/** Remember to call this at the end of any movement, to keep the world state coherent */
-	public void updateOccupiedTile(HexTile<?> newOccupiedTile) {
-		occupiedTile.setOccupant(null);
+	public void updateOccupiedTile(HexTile<TileData> newOccupiedTile) {
+		occupiedTile.value.setOccupant(null);
 		occupiedTile = newOccupiedTile;
 		if (newOccupiedTile != null) {
-			occupiedTile.setOccupant(this);
+			occupiedTile.value.setOccupant(this);
 		}
 	}
 
 	public void attack(Unit target) {
 		target.currentHealthPoints -= attackDamage;
 	}
-	
+
 	public boolean isDead() {
 		return currentHealthPoints <= 0;
 	}

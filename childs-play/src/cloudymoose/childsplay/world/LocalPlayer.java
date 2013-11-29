@@ -3,14 +3,13 @@ package cloudymoose.childsplay.world;
 import cloudymoose.childsplay.world.commands.CommandBuilder;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 
 public class LocalPlayer extends Player {
 
 	protected World world;
 	protected Vector3 currentPosition;
-	protected HexTile<Color> selectedTile;
+	protected HexTile<TileData> selectedTile;
 
 	public LocalPlayer(int id, World world) {
 		super(id);
@@ -18,17 +17,17 @@ public class LocalPlayer extends Player {
 		this.currentPosition = new Vector3();
 	}
 
-//	public void select(Unit unit) {
-//		selection = unit;
-//	}
-//
-//	public void clearSelectedUnit() {
-//		selection = null;
-//	}
-//
-//	public boolean hasSelectedUnit() {
-//		return selection != null;
-//	}
+	// public void select(Unit unit) {
+	// selection = unit;
+	// }
+	//
+	// public void clearSelectedUnit() {
+	// selection = null;
+	// }
+	//
+	// public boolean hasSelectedUnit() {
+	// return selection != null;
+	// }
 
 	public boolean owns(Unit unit) {
 		return id == unit.getPlayerId();
@@ -42,11 +41,11 @@ public class LocalPlayer extends Player {
 		world.setSelectedCommand(commandBuilder);
 	}
 
-	public void selectTile(HexTile<Color> tile) {
+	public void selectTile(HexTile<TileData> tile) {
 		selectedTile = tile;
 	}
-	
-	public HexTile<Color> getSelectedTile() {
+
+	public HexTile<TileData> getSelectedTile() {
 		return selectedTile;
 	}
 }

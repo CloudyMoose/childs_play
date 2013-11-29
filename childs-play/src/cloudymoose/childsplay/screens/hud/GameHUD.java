@@ -3,6 +3,7 @@ package cloudymoose.childsplay.screens.hud;
 import cloudymoose.childsplay.ChildsPlayGame;
 import cloudymoose.childsplay.screens.AbstractMenuStageManager;
 import cloudymoose.childsplay.world.Constants;
+import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
@@ -73,7 +74,7 @@ public class GameHUD extends AbstractMenuStageManager {
 				Constants.NB_TICKETS));
 	}
 
-	public void displayCommandMenu(int screenX, int screenY, HexTile<?> clickedTile) {
+	public void displayCommandMenu(int screenX, int screenY, HexTile<TileData> clickedTile) {
 		Gdx.app.log(TAG, "displayCommandMenu");
 		commandMenu.setClickedTile(clickedTile);
 		commandMenu.setPosition(screenX, screenY);

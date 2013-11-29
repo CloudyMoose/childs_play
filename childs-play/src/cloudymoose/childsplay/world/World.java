@@ -94,15 +94,15 @@ public class World {
 
 	private WorldMap createEmptyMap(int width, int height) {
 		WorldMap newMap = new WorldMap();
-		HexTile<Color> columnHead = newMap.addValue(0, 0, Color.GREEN);
+		HexTile<TileData> columnHead = newMap.addValue(0, 0, new TileData(Color.GREEN));
 		for (int y = 0; y < height; y++) {
-			HexTile<Color> tmp = columnHead;
+			HexTile<TileData> tmp = columnHead;
 			for (int x = 0; x < width; x++) {
-				tmp = tmp.setNeighbor(Direction.Right, Color.GREEN);
+				tmp = tmp.setNeighbor(Direction.Right, new TileData(Color.GREEN));
 			}
 			if (y != height - 1) {
 				Direction indentation = y % 2 == 0 ? Direction.DownRight : Direction.DownLeft;
-				columnHead = columnHead.setNeighbor(indentation, Color.GREEN);
+				columnHead = columnHead.setNeighbor(indentation, new TileData(Color.GREEN));
 			}
 		}
 		return newMap;
@@ -239,7 +239,7 @@ public class World {
 		targetableTiles.clear();
 	}
 
-	public void selectTargetTile(HexTile<Color> target) {
+	public void selectTargetTile(HexTile<TileData> target) {
 		selectedCommandBuilder.setTarget(target);
 		runCommand(selectedCommandBuilder.build(), false);
 		cancelCommand();

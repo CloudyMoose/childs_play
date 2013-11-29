@@ -10,27 +10,25 @@ import cloudymoose.childsplay.world.hextiles.Direction;
 import cloudymoose.childsplay.world.hextiles.HexGrid;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
-import com.badlogic.gdx.graphics.Color;
-
-public class WorldMap extends HexGrid<Color> {
+public class WorldMap extends HexGrid<TileData> {
 
 	public WorldMap() {
 		super(Constants.TILE_SIZE);
 	}
 
-	public Set<HexTile<?>> findTiles(TargetConstraints targetConstraints) {
-		Set<HexTile<?>> results = new HashSet<HexTile<?>>();
+	public Set<HexTile<TileData>> findTiles(TargetConstraints targetConstraints) {
+		Set<HexTile<TileData>> results = new HashSet<HexTile<TileData>>();
 
-		Queue<HexTile<?>> fringe = new LinkedList<HexTile<?>>();
-		Queue<HexTile<?>> fringe2 = new LinkedList<HexTile<?>>();
+		Queue<HexTile<TileData>> fringe = new LinkedList<HexTile<TileData>>();
+		Queue<HexTile<TileData>> fringe2 = new LinkedList<HexTile<TileData>>();
 		fringe.add(targetConstraints.origin);
 
 		for (int i = 0; i < targetConstraints.maxRange; i++) {
-			HexTile<?> fringeTile;
+			HexTile<TileData> fringeTile;
 			while (!fringe.isEmpty()) {
 				fringeTile = fringe.remove();
 				for (Direction d : Direction.values()) {
-					HexTile<?> tile = fringeTile.getNeighbor(d);
+					HexTile<TileData> tile = fringeTile.getNeighbor(d);
 
 					if (tile != null && targetConstraints.isTileTargetable(tile)) {
 						boolean isNew = results.add(tile);

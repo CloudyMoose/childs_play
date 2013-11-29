@@ -3,6 +3,7 @@ package cloudymoose.childsplay;
 import cloudymoose.childsplay.screens.hud.GameHUD;
 import cloudymoose.childsplay.world.Constants;
 import cloudymoose.childsplay.world.LocalPlayer;
+import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.Unit;
 import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.WorldRenderer;
@@ -11,7 +12,6 @@ import cloudymoose.childsplay.world.hextiles.HexTile;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 
 public class PlayerController implements InputProcessor {
@@ -22,7 +22,7 @@ public class PlayerController implements InputProcessor {
 	private ChildsPlayGame game;
 	private GameHUD hud;
 
-	private HexTile<Color> touchedTile;
+	private HexTile<TileData> touchedTile;
 	private Vector3 touchedPosition;
 	private boolean dragged;
 
@@ -103,7 +103,7 @@ public class PlayerController implements InputProcessor {
 	}
 
 	private void handleTileSelectTouch(int screenX, int screenY) {
-		Unit clicked = touchedTile.getOccupant();
+		Unit clicked = touchedTile.value.getOccupant();
 		if (clicked != null && player.owns(clicked)) {
 			player.selectTile(touchedTile);
 			hud.displayCommandMenu(screenX, screenY, touchedTile);

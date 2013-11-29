@@ -1,5 +1,6 @@
 package cloudymoose.childsplay.world.commands;
 
+import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.Unit;
 import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.hextiles.HexTile;
@@ -44,12 +45,12 @@ public class MoveCommand extends Command {
 
 		@Override
 		protected TargetConstraints constraints() {
-			return new TargetConstraints.Empty(true, originTile.getOccupant().movementRange, originTile);
+			return new TargetConstraints.Empty(true, originTile.value.getOccupant().movementRange, originTile);
 		}
 
 		@Override
 		public Command build() {
-			return new MoveCommand(originTile.getOccupant().id, targetTile.getQ(), targetTile.getR());
+			return new MoveCommand(originTile.value.getOccupant().id, targetTile.getQ(), targetTile.getR());
 		}
 
 	}
@@ -57,7 +58,7 @@ public class MoveCommand extends Command {
 	public static class MoveRunner extends CommandRunner {
 		private Vector3 destination;
 		private Vector3 currentMovement;
-		private HexTile<?> destTile;
+		private HexTile<TileData> destTile;
 		private Unit unit;
 		protected final float POSITION_EPSILON = 5f; // Position accuracy
 

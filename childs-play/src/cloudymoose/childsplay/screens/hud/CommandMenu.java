@@ -1,6 +1,7 @@
 package cloudymoose.childsplay.screens.hud;
 
 import cloudymoose.childsplay.world.LocalPlayer;
+import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.commands.AttackCommand;
 import cloudymoose.childsplay.world.commands.Command;
 import cloudymoose.childsplay.world.commands.MoveCommand;
@@ -18,7 +19,7 @@ public class CommandMenu extends Group {
 
 	private static final String TAG = "CommandMenu";
 
-	private HexTile<?> clickedTile;
+	private HexTile<TileData> clickedTile;
 	private LocalPlayer player;
 
 	private TextButton btnMove;
@@ -49,7 +50,7 @@ public class CommandMenu extends Group {
 		setVisible(false);
 	}
 
-	public void setClickedTile(HexTile<?> selectedTile) {
+	public void setClickedTile(HexTile<TileData> selectedTile) {
 		this.clickedTile = selectedTile;
 	}
 
@@ -68,10 +69,10 @@ public class CommandMenu extends Group {
 	public void resize(int width, int height) {
 		Gdx.app.log(TAG, "resize");
 	}
-	
-	protected class CommandListener extends ClickListener{
+
+	protected class CommandListener extends ClickListener {
 		private final Class<? extends Command> commandClass;
-		
+
 		public CommandListener(Class<? extends Command> commandClass) {
 			this.commandClass = commandClass;
 		}
