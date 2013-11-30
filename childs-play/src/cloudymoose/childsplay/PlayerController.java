@@ -4,10 +4,10 @@ import cloudymoose.childsplay.screens.hud.GameHUD;
 import cloudymoose.childsplay.world.Constants;
 import cloudymoose.childsplay.world.LocalPlayer;
 import cloudymoose.childsplay.world.TileData;
-import cloudymoose.childsplay.world.Unit;
 import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.WorldRenderer;
 import cloudymoose.childsplay.world.hextiles.HexTile;
+import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -88,7 +88,7 @@ public class PlayerController implements InputProcessor {
 
 		if (touchedTile == null) return false; // Clicked outside the map
 
-		Gdx.app.log(TAG, "Touched tile: " + touchedTile.toString());
+		Gdx.app.log(TAG, "Touched tile: " + touchedTile.value.toString());
 
 		if (!world.targetableTiles.isEmpty()) {
 			handleTargetSelectTouch(screenX, screenY);

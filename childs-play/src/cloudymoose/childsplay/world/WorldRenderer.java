@@ -4,6 +4,7 @@ import java.util.EnumSet;
 
 import cloudymoose.childsplay.world.hextiles.Direction;
 import cloudymoose.childsplay.world.hextiles.HexTile;
+import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;

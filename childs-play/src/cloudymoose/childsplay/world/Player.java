@@ -3,11 +3,14 @@ package cloudymoose.childsplay.world;
 import java.util.HashMap;
 import java.util.Map;
 
+import cloudymoose.childsplay.world.units.Unit;
+
 public class Player {
 
 	public static final int UNIT_ID_OFFSET = 1000;
 	/** Player owning the npcs */
 	public static final int GAIA_ID = 0;
+	private static Player GAIA;
 
 	public final int id;
 	public final Map<Integer, Unit> units;
@@ -46,6 +49,16 @@ public class Player {
 
 	public void resetTickets() {
 		remainingTickets = Constants.NB_TICKETS;
+	}
+
+	/** Initialize the NPC player. */
+	public static void setGaia(Player player) {
+		GAIA = player;
+	}
+
+	public static Player Gaia() {
+		if (GAIA == null) throw new NullPointerException("GAIA is not initialized");
+		return GAIA;
 	}
 
 }

@@ -17,6 +17,8 @@ import cloudymoose.childsplay.world.commands.CommandBuilder;
 import cloudymoose.childsplay.world.commands.CommandRunner;
 import cloudymoose.childsplay.world.hextiles.Direction;
 import cloudymoose.childsplay.world.hextiles.HexTile;
+import cloudymoose.childsplay.world.units.Child;
+import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -67,11 +69,19 @@ public class World {
 
 	/** TODO: will be replaced by a proper initialization from the map info */
 	private void createDemoWorld(Init initData) {
+		Player.setGaia(new Player(Player.GAIA_ID));
 		map = createEmptyMap(12, 10);
 
 		players = new ArrayList<Player>(initData.nbPlayers + 1);
 
-		for (int i = 0; i < initData.nbPlayers + 1; i++) {
+		// Gaia init
+		Player gaia = Player.Gaia();
+		gaia.addUnit(new Child(gaia, map.getTile(4, 2)));
+		players.add(gaia);
+
+		// Other players
+		int idOffset = Player.GAIA_ID + 1;
+		for (int i = idOffset; i < initData.nbPlayers + idOffset; i++) {
 			Player player;
 			if (initData.playerId == i) {
 				localPlayer = new LocalPlayer(i, this);
@@ -80,14 +90,9 @@ public class World {
 				player = new Player(i);
 			}
 
-			if (i == 0) {
-				// NPCs
-				player.addUnit(new Child(player, map.getTile(4, 2)));
-			} else {
-				int r = (i == 1) ? 1 : 9;
-				player.addUnit(new Child(player, map.getTile(1, r)));
-				player.addUnit(new Child(player, map.getTile(7, r - 3)));
-			}
+			int r = (i == 1) ? 1 : 9;
+			player.addUnit(new Child(player, map.getTile(1, r)));
+			player.addUnit(new Child(player, map.getTile(7, r - 3)));
 
 			players.add(player);
 		}

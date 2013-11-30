@@ -2,6 +2,7 @@ package cloudymoose.childsplay.world;
 
 import cloudymoose.childsplay.world.commands.CommandBuilder;
 import cloudymoose.childsplay.world.hextiles.HexTile;
+import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.math.Vector3;
 

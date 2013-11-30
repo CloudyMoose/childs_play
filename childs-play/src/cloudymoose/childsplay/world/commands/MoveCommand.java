@@ -1,9 +1,9 @@
 package cloudymoose.childsplay.world.commands;
 
 import cloudymoose.childsplay.world.TileData;
-import cloudymoose.childsplay.world.Unit;
 import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.hextiles.HexTile;
+import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.math.Vector3;
 

@@ -1,7 +1,7 @@
 package cloudymoose.childsplay.world.commands;
 
-import cloudymoose.childsplay.world.Unit;
 import cloudymoose.childsplay.world.World;
+import cloudymoose.childsplay.world.units.Unit;
 
 public class AttackCommand extends Command {
 	public final int unitId;

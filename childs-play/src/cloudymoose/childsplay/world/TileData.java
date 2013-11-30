@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 
 import cloudymoose.childsplay.world.hextiles.Direction;
+import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -41,5 +42,9 @@ public class TileData {
 
 	public void setArea(Area area) {
 		this.area = area;
+	}
+
+	public String toString() {
+		return String.format("{area: %s, occupant: %s}", area, occupant);
 	}
 }
