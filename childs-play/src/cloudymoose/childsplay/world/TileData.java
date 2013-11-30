@@ -47,4 +47,9 @@ public class TileData {
 	public String toString() {
 		return String.format("{area: %s, occupant: %s}", area, occupant);
 	}
+
+	public boolean isControlTile() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

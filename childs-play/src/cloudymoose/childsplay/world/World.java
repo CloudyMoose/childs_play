@@ -151,7 +151,14 @@ public class World {
 
 		Random r = new Random();
 		for (int i = 0; i < nbAreas; i++) {
-			newMap.areas[i] = new Area(areaTiles.get(i), areaTiles.get(i).get(r.nextInt(areaTiles.get(i).size())));
+			int nbControlPoints = 1 + r.nextInt(3);
+			List<HexTile<TileData>> pickPool = new LinkedList<HexTile<TileData>>(areaTiles.get(i));
+			List<HexTile<TileData>> controlPoints = new ArrayList<HexTile<TileData>>(nbControlPoints);
+			for (int j = 0; j < nbControlPoints; j++) {
+				controlPoints.add(pickPool.remove(r.nextInt(pickPool.size())));
+			}
+			newMap.areas[i] = new Area(areaTiles.get(i), controlPoints);
+			Gdx.app.debug(TAG, newMap.areas[i].toString() + " " + controlPoints);
 		}
 
 		return newMap;

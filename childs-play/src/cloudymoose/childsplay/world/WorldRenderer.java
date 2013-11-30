@@ -49,10 +49,10 @@ public class WorldRenderer {
 
 			if (selectedTile == tile) {
 				debugRenderer.setColor(Color.WHITE);
-			} else if (tile.value.getArea().getControlTile() == tile) {
-				debugRenderer.setColor(Color.MAGENTA);
 			} else if (world.targetableTiles.contains(tile)) {
 				debugRenderer.setColor(Color.ORANGE);
+			} else if (world.getMap().isControlPoint(tile)) {
+				debugRenderer.setColor(Color.MAGENTA);
 			}
 
 			// Draw hexagon with one rectangle and two triangles for now

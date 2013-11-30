@@ -48,4 +48,8 @@ public class WorldMap extends HexGrid<TileData> {
 
 		return results;
 	}
+
+	public boolean isControlPoint(HexTile<TileData> tile) {
+		return tile.value.getArea().getControlTiles().contains(tile);
+	}
 }

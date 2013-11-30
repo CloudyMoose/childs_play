@@ -4,9 +4,10 @@ import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import cloudymoose.childsplay.world.hextiles.HexTile;
-import cloudymoose.childsplay.world.units.AreaControlUnit;
 
 public class Area extends AbstractCollection<HexTile<TileData>> {
 
@@ -14,21 +15,21 @@ public class Area extends AbstractCollection<HexTile<TileData>> {
 
 	public final int id;
 	private final HashSet<HexTile<TileData>> tiles;
-	/** Tile that has to be occupied to get the control of the area */
-	private final HexTile<TileData> controlTile;
+
+	/** Tiles that have to be occupied to get the control of the area */
+	private final Set<HexTile<TileData>> controlTiles;
 
 	private Player owner;
 
-	public Area(Collection<HexTile<TileData>> tiles, HexTile<TileData> controlTile) {
+	public Area(Collection<HexTile<TileData>> tiles, List<HexTile<TileData>> controlTiles) {
 		id = areaCount++;
 		this.tiles = new HashSet<HexTile<TileData>>(tiles);
-		this.controlTile = controlTile;
+		this.controlTiles = new HashSet<HexTile<TileData>>(controlTiles);
 
 		for (HexTile<TileData> tile : tiles) {
 			tile.value.setArea(this);
 		}
 
-		Player.Gaia().addUnit(new AreaControlUnit(Player.Gaia(), controlTile));
 	}
 
 	public Player getOwner() {
@@ -40,8 +41,8 @@ public class Area extends AbstractCollection<HexTile<TileData>> {
 		this.owner = owner;
 	}
 
-	public HexTile<TileData> getControlTile() {
-		return controlTile;
+	public Set<HexTile<TileData>> getControlTiles() {
+		return controlTiles;
 	}
 
 	@Override
