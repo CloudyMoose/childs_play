@@ -10,6 +10,7 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 
+import cloudymoose.childsplay.ChildsPlayGame;
 import cloudymoose.childsplay.networking.Message.Init;
 import cloudymoose.childsplay.networking.Message.TurnRecap;
 import cloudymoose.childsplay.world.commands.Command;
@@ -31,6 +32,7 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class World {
 	public enum Phase {
+		ReplayEnvironment,
 		Replay,
 		Environment,
 		Command,
@@ -50,6 +52,7 @@ public class World {
 	private Phase currentPhase = Phase.Wait;
 	private Player currentPlayer; // will be the enemy during the replay phase
 	private final Queue<Command> commands = new LinkedList<Command>();
+	private boolean phaseFinished;
 
 	// Command execution and creation data
 	private CommandBuilder selectedCommandBuilder;
@@ -149,7 +152,7 @@ public class World {
 			}
 		}
 
-		Random r = new Random();
+		Random r = ChildsPlayGame.getRandom();
 		for (int i = 0; i < nbAreas; i++) {
 			int nbControlPoints = 1 + r.nextInt(3);
 			List<HexTile<TileData>> pickPool = new LinkedList<HexTile<TileData>>(areaTiles.get(i));
@@ -169,6 +172,14 @@ public class World {
 	// =================================================================================================================
 
 	public void fixedUpdate(float dt) {
+		if (currentPhase == Phase.Command || currentPhase == Phase.Replay) {
+			updateCommandState(dt);
+		} else {
+			updateEnvironmentState(dt);
+		}
+	}
+
+	private void updateCommandState(float dt) {
 		if (ongoingCommand != null) {
 			boolean running = ongoingCommand.run(dt);
 			preferredCameraFocus = ongoingCommand.getPreferredCameraFocus();
@@ -191,17 +202,33 @@ public class World {
 		}
 	}
 
+	/** Environment stuff: area control etc. */
+	private void updateEnvironmentState(float dt) {
+		// Do whatever each area controlled by the player has to do
+		for (Area a : map.areas) {
+			if (a.getOwner() == currentPlayer && !a.isContested()) {
+				Gdx.app.log(TAG,
+						String.format("Player %d is getting the benefits of controlling %s", currentPlayer.id, a));
+			}
+		}
+
+		// Update the area ownership
+		for (Unit unit : currentPlayer.units.values()) {
+			HexTile<TileData> position = unit.getOccupiedTile();
+			if (map.isControlPoint(position)) {
+				position.value.getArea().doControlAttempt(currentPlayer);
+			}
+		}
+
+		phaseFinished = true;
+
+	}
+
 	// =================================================================================================================
 	// Phase switch
 	// =================================================================================================================
 
-	/**
-	 * Registers the commands and prepares the world to play them (reset tickets). Warning: there must actually be
-	 * commands to replay in the turn data, as the non nullity of the command array is not checked.
-	 */
-	public void startReplayPhase(TurnRecap turnData) {
-		currentPhase = Phase.Replay;
-
+	public void prepareReplays(TurnRecap turnData) {
 		commands.clear();
 
 		if (turnData.commands.length == 0) return;
@@ -217,13 +244,21 @@ public class World {
 		for (int i = 0; i < turnData.commands.length; i++) {
 			commands.add(turnData.commands[i]);
 		}
+	}
 
+	/**
+	 * Registers the commands and prepares the world to play them (reset tickets). Warning: there must actually be
+	 * commands to replay in the turn data, as the non nullity of the command array is not checked.
+	 */
+	public void startReplayPhase() {
+		currentPhase = Phase.Replay;
+		phaseFinished = false;
 		startTurn();
-
 	}
 
 	public void startCommandPhase() {
 		currentPhase = Phase.Command;
+		phaseFinished = false;
 		currentPlayer = localPlayer;
 		startTurn();
 		Gdx.app.log(TAG, "Player #" + localPlayer.id + " can now give his commands.");
@@ -231,7 +266,13 @@ public class World {
 
 	public void startEnvironmentPhase() {
 		currentPhase = Phase.Environment;
+		phaseFinished = false;
 		currentPlayer = localPlayer;
+	}
+
+	public void startReplayEnvironmentPhase() {
+		currentPhase = Phase.ReplayEnvironment;
+		phaseFinished = false;
 	}
 
 	// =================================================================================================================
@@ -240,6 +281,7 @@ public class World {
 
 	public boolean replayNextCommand() {
 		if (commands.isEmpty()) {
+			phaseFinished = true;
 			return false;
 		} else {
 			Command c = commands.remove();
@@ -356,6 +398,10 @@ public class World {
 
 	public Vector3 getPreferredCameraFocus() {
 		return preferredCameraFocus;
+	}
+
+	public boolean isPhaseFinished() {
+		return phaseFinished;
 	}
 
 }

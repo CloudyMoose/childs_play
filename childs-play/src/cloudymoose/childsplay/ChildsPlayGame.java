@@ -3,6 +3,7 @@ package cloudymoose.childsplay;
 import java.io.IOException;
 import java.net.BindException;
 import java.util.Arrays;
+import java.util.Random;
 
 import cloudymoose.childsplay.networking.GameClient;
 import cloudymoose.childsplay.networking.GameServer;
@@ -35,6 +36,7 @@ public class ChildsPlayGame extends Game {
 	public static final int VIEWPORT_HEIGHT = 768;
 
 	private static final String TAG = "ChildsPlayGame";
+	private static Random rand;
 
 	public InputMultiplexer multiplexer;
 	public AssetManager assetManager;
@@ -109,6 +111,7 @@ public class ChildsPlayGame extends Game {
 	}
 
 	public void initWorld(Init initData) {
+		rand = new Random(initData.randomSeed);
 		world = new World(initData);
 		gameScreen.init(world);
 		setScreen(waitScreen);
@@ -126,7 +129,8 @@ public class ChildsPlayGame extends Game {
 			world.startEnvironmentPhase();
 		} else {
 			Gdx.app.log(TAG, "Turn recap : " + Arrays.asList(turnData.commands));
-			world.startReplayPhase(turnData);
+			world.prepareReplays(turnData);
+			world.startReplayEnvironmentPhase();
 		}
 
 		if (!hasFocus) notificationService.notifySomething();
@@ -210,6 +214,7 @@ public class ChildsPlayGame extends Game {
 			server.terminateConnection();
 			server = null;
 		}
+		rand = null;
 	}
 
 	public void onClientDisconnection() {
@@ -225,5 +230,10 @@ public class ChildsPlayGame extends Game {
 
 	public boolean hasFocus() {
 		return hasFocus;
+	}
+
+	public static Random getRandom() {
+		if (rand == null) throw new NullPointerException("Rand not initialized");
+		return rand;
 	}
 }

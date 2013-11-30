@@ -87,4 +87,9 @@ public abstract class Unit {
 	public boolean isDead() {
 		return currentHealthPoints <= 0;
 	}
+
+	public HexTile<TileData> getOccupiedTile() {
+		return occupiedTile;
+	}
+
 }

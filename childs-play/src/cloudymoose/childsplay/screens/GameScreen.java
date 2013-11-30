@@ -73,12 +73,15 @@ public class GameScreen extends FixedTimestepScreen {
 	@Override
 	public void fixedUpdate(float dt) {
 
-		if (disconnected && world.getPhase() != World.Phase.Replay) {
+		if (disconnected && world.getPhase() == World.Phase.Command) {
 			Gdx.app.log(TAG, "Disconnected");
 			game.toMainMenu("Disconnected");
 		}
 
 		switch (world.getPhase()) {
+		case ReplayEnvironment:
+			prepareReplayEnvironmentUpdate();
+			break;
 		case Replay:
 			prepareReplayUpdate();
 			break;
@@ -95,13 +98,17 @@ public class GameScreen extends FixedTimestepScreen {
 		world.fixedUpdate(dt);
 
 		if (world.isEndGameState()) {
-			boolean isWinner = !(world.getPhase() == World.Phase.Replay);
+			boolean isWinner = (world.getCurrentPlayer() == world.getLocalPlayer());
 			game.endGame(isWinner);
 		}
 	}
 
+	private void prepareReplayEnvironmentUpdate() {
+		if (world.isPhaseFinished()) world.startReplayPhase();
+	}
+
 	private void prepareEnvironmentUpdate() {
-		world.startCommandPhase();
+		if (world.isPhaseFinished()) world.startCommandPhase();
 	}
 
 	/** Method called before {@link World#fixedUpdate(float)}, when in Default mode */
@@ -117,8 +124,8 @@ public class GameScreen extends FixedTimestepScreen {
 	private void prepareReplayUpdate() {
 		playerController.enabled = false;
 		if (!world.hasRunningCommand()) {
-			boolean replayOver = !world.replayNextCommand();
-			if (replayOver) {
+			world.replayNextCommand();
+			if (world.isPhaseFinished()) {
 				world.startEnvironmentPhase();
 			}
 		}

@@ -34,17 +34,19 @@ public abstract class Message {
 	}
 
 	public static class Init extends Message {
-		public static final Init INIT_REQUEST = new Init(-1, -1);
+		public static final Init INIT_REQUEST = new Init(-1, -1, 0);
 		public final int playerId;
 		public final int nbPlayers;
+		public final long randomSeed;
 
 		public Init() {
-			this(0, 0);
+			this(0, 0, 0);
 		}
 
-		public Init(int playerId, int nbPlayers) {
+		public Init(int playerId, int nbPlayers, long randomSeed) {
 			this.playerId = playerId;
 			this.nbPlayers = nbPlayers;
+			this.randomSeed = randomSeed;
 		}
 
 		@Override

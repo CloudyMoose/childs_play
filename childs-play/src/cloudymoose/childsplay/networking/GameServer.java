@@ -96,6 +96,8 @@ public class GameServer {
 		}
 
 		if (cpc == null) {
+			if (previousPlayer == currentPlayer) return;
+
 			removePlayer(currentPlayer);
 			startNextPlayerTurn(null); // Go to the next player
 		} else {
@@ -131,6 +133,8 @@ public class GameServer {
 
 	/** When a new client connects, sends him the init info, and starts the game if all clients are connected. */
 	private class ConnectionListener extends Listener {
+		private long randomSeed = System.currentTimeMillis();
+
 		@Override
 		public void connected(Connection connection) {
 			connection.addListener(new Listener() {
@@ -146,7 +150,7 @@ public class GameServer {
 							connections.put(playerId, connection);
 							nbConnectedPlayers = connections.size(); // redundant, but clearer I guess
 						}
-						connection.sendTCP(new Message.Init(playerId, nbMaxPlayers));
+						connection.sendTCP(new Message.Init(playerId, nbMaxPlayers, randomSeed));
 
 						if (nbConnectedPlayers == nbMaxPlayers) {
 							startGame();
