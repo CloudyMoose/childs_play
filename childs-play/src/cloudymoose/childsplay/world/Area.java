@@ -68,7 +68,7 @@ public class Area extends AbstractCollection<HexTile<TileData>> {
 	}
 
 	public String toString() {
-		return String.valueOf(id);
+		return "Area " + id;
 	}
 
 	/**
@@ -102,5 +102,21 @@ public class Area extends AbstractCollection<HexTile<TileData>> {
 	/** An area is considered contested when its control points are lower than the max. */
 	public boolean isContested() {
 		return controlPoints < controlTiles.size();
+	}
+
+	public String getStatusMessage(Player currentPlayer) {
+		String controlPointStatus = " (" + controlPoints + "/" + controlTiles.size() + ")";
+		if (owner == null) {
+			return "Area " + id + " is neutral" + controlPointStatus;
+		} else if (controlPoints == controlTiles.size()) {
+			return "The area is completely reinforced for " + owner + controlPointStatus;
+		} else {
+			if (owner == currentPlayer) {
+				return "The area is being reinforced" + controlPointStatus;
+			} else {
+				return "The area is under attack" + controlPointStatus;
+			}
+
+		}
 	}
 }

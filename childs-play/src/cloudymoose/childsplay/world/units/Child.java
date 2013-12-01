@@ -10,4 +10,9 @@ public class Child extends Unit {
 		super(owner, position, 20, 1, 5, 1, 1);
 	}
 
+	@Override
+	public String toString() {
+		return "Child " + id;
+	}
+
 }

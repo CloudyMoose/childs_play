@@ -28,7 +28,7 @@ public class WorldRenderer {
 		this.world = world;
 	}
 
-	public void render(float dt) {
+	public boolean render(float dt) {
 		if (world.getPreferredCameraFocus() != null) {
 			// TODO: jumps at the beginning. It should be smoothed or something...
 			setCameraPosition(world.getPreferredCameraFocus());
@@ -66,12 +66,13 @@ public class WorldRenderer {
 			debugRenderer.end();
 
 			debugRenderer.begin(ShapeType.Line);
-			debugRenderer.setColor(Color.BLACK);
-			debugRenderer
-					.polygon(new float[] { center.x - width / 2, center.y + height / 4, center.x,
-							center.y + height / 2, center.x + width / 2, center.y + height / 4, center.x + width / 2,
-							center.y - height / 4, center.x, center.y - height / 2, center.x - width / 2,
-							center.y - height / 4 });
+			if (Constants.SHOW_GRID) {
+				debugRenderer.setColor(Color.BLACK);
+				debugRenderer.polygon(new float[] { center.x - width / 2, center.y + height / 4, center.x,
+						center.y + height / 2, center.x + width / 2, center.y + height / 4, center.x + width / 2,
+						center.y - height / 4, center.x, center.y - height / 2, center.x - width / 2,
+						center.y - height / 4 });
+			}
 
 			// TODO: horrible but w/e
 			if (!tile.value.borders.isEmpty()) {
@@ -107,6 +108,7 @@ public class WorldRenderer {
 
 		debugRenderer.end();
 
+		return false;
 	}
 
 	public void resize(int width, int height) {

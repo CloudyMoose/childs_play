@@ -61,4 +61,8 @@ public class Player {
 		return GAIA;
 	}
 
+	public String toString() {
+		return "Player " + id;
+	}
+
 }

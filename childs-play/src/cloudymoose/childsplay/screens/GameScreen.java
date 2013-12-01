@@ -17,6 +17,7 @@ public class GameScreen extends FixedTimestepScreen {
 	private PlayerController playerController;
 	private GameHUD hud;
 	private boolean disconnected;
+	private boolean waitingForVisualEffect;
 
 	public GameScreen(ChildsPlayGame game) {
 		super(ChildsPlayGame.FIXED_FPS, ChildsPlayGame.MAX_UPDATES);
@@ -78,29 +79,35 @@ public class GameScreen extends FixedTimestepScreen {
 			game.toMainMenu("Disconnected");
 		}
 
-		switch (world.getPhase()) {
-		case ReplayEnvironment:
-			prepareReplayEnvironmentUpdate();
-			break;
-		case Replay:
-			prepareReplayUpdate();
-			break;
-		case Environment:
-			prepareEnvironmentUpdate();
-			break;
-		case Command:
-			prepareCommandUpdate();
-			break;
-		case Wait:
-			break;
-		}
-
-		world.fixedUpdate(dt);
-
 		if (world.isEndGameState()) {
 			boolean isWinner = (world.getCurrentPlayer() == world.getLocalPlayer());
 			game.endGame(isWinner);
+			return;
 		}
+
+		if (!waitingForVisualEffect) {
+
+			switch (world.getPhase()) {
+			case ReplayEnvironment:
+				prepareReplayEnvironmentUpdate();
+				break;
+			case Replay:
+				prepareReplayUpdate();
+				break;
+			case Environment:
+				prepareEnvironmentUpdate();
+				break;
+			case Command:
+				prepareCommandUpdate();
+				break;
+			case Wait:
+				return;
+			}
+
+			world.fixedUpdate(dt);
+		}
+
+		hud.update();
 	}
 
 	private void prepareReplayEnvironmentUpdate() {
@@ -111,7 +118,7 @@ public class GameScreen extends FixedTimestepScreen {
 		if (world.isPhaseFinished()) world.startCommandPhase();
 	}
 
-	/** Method called before {@link World#fixedUpdate(float)}, when in Default mode */
+	/** Method called before {@link World#fixedUpdate(float)}, when in Command mode */
 	private void prepareCommandUpdate() {
 		if (world.hasRunningCommand()) {
 			playerController.enabled = false;
@@ -135,9 +142,8 @@ public class GameScreen extends FixedTimestepScreen {
 	public void renderScreen(float dt) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		renderer.render(dt);
-		hud.update();
-		hud.render(dt);
+		waitingForVisualEffect = renderer.render(dt);
+		waitingForVisualEffect = hud.render(dt) || waitingForVisualEffect;
 	}
 
 	public void isDisconnected() {

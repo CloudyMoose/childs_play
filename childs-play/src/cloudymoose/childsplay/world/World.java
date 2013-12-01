@@ -45,6 +45,7 @@ public class World {
 	private WorldMap map;
 	private List<Player> players;
 	private LocalPlayer localPlayer;
+	private Queue<String> infoLog = new LinkedList<String>();
 
 	// Current turn data
 
@@ -192,6 +193,7 @@ public class World {
 						Entry<Integer, Unit> entry = it.next();
 
 						if (entry.getValue().isDead()) {
+							infoLog.add(entry.getValue().toString() + " has been defeated.");
 							entry.getValue().updateOccupiedTile(null);
 							it.remove();
 						}
@@ -205,19 +207,29 @@ public class World {
 	/** Environment stuff: area control etc. */
 	private void updateEnvironmentState(float dt) {
 		// Do whatever each area controlled by the player has to do
+		Set<Area> areaSet = new HashSet<Area>();
 		for (Area a : map.areas) {
 			if (a.getOwner() == currentPlayer && !a.isContested()) {
-				Gdx.app.log(TAG,
-						String.format("Player %d is getting the benefits of controlling %s", currentPlayer.id, a));
+				areaSet.add(a);
 			}
+		}
+		if (!areaSet.isEmpty()) {
+			infoLog.add(String.format("%s is getting the benefits of controlling %s", currentPlayer, areaSet));
 		}
 
 		// Update the area ownership
+		areaSet.clear();
 		for (Unit unit : currentPlayer.units.values()) {
 			HexTile<TileData> position = unit.getOccupiedTile();
 			if (map.isControlPoint(position)) {
-				position.value.getArea().doControlAttempt(currentPlayer);
+				Area a = position.value.getArea();
+				a.doControlAttempt(currentPlayer);
+				areaSet.add(a);
 			}
+		}
+
+		for (Area a : areaSet) {
+			infoLog.add(a.getStatusMessage(currentPlayer));
 		}
 
 		phaseFinished = true;
@@ -402,6 +414,15 @@ public class World {
 
 	public boolean isPhaseFinished() {
 		return phaseFinished;
+	}
+
+	/**
+	 * Returns the next log entry. There can be many of them waiting to be displayed.
+	 * 
+	 * @return <code>null</code> if there is no log entry
+	 */
+	public String getInfoLogEntry() {
+		return infoLog.poll();
 	}
 
 }

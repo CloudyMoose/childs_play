@@ -73,11 +73,13 @@ public abstract class AbstractMenuStageManager {
 		return stage;
 	}
 
-	public void render(float delta) {
+	/** @return <code>false</code> (in case extending classes want to return something) */
+	public boolean render(float delta) {
 		stage.act(delta);
 		stage.draw();
 
 		Table.drawDebug(stage); // TODO: Remove to hide the all debug lines
+		return false;
 	}
 
 	public void resize(int width, int height) {
