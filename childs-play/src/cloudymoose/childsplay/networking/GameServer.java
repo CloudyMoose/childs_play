@@ -30,6 +30,7 @@ public class GameServer {
 	 * recreated at every new connection, etc.
 	 */
 	Map<Integer, Connection> connections;
+	public boolean lastTurn;
 
 	public GameServer() {
 		this(2);
@@ -106,7 +107,7 @@ public class GameServer {
 				isLastConnected = nbMaxPlayers > 1 && (connections.size() == 1);
 			}
 
-			if (isLastConnected) {
+			if (isLastConnected && !lastTurn) {
 				cpc.sendTCP(new Message.EndGame());
 				currentPlayer = -1;
 				terminating = true;
@@ -195,8 +196,12 @@ public class GameServer {
 			if (currentPlayer != playerId) return;
 
 			if (object instanceof Message.TurnRecap) {
+				Message.TurnRecap tr = (Message.TurnRecap) object;
+				if (tr.turn == NetworkUtils.LAST_TURN) {
+					lastTurn = true;
+				}
 				connection.sendTCP(new Message.Ack());
-				startNextPlayerTurn(((Message.TurnRecap) object).commands);
+				startNextPlayerTurn(tr.commands);
 			}
 
 			if (object instanceof Message.EndGame) {

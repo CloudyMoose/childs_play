@@ -8,6 +8,9 @@ import com.esotericsoftware.kryo.Kryo;
 
 public abstract class NetworkUtils {
 
+	public static int LAST_TURN = Integer.MAX_VALUE;
+	public static int IDGAF_TURN = -1;
+	
 	private NetworkUtils() {
 	}
 

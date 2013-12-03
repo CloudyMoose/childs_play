@@ -81,7 +81,11 @@ public class GameClient {
 	}
 
 	public void send(Command[] commands) {
-		connection.sendTCP(new Message.TurnRecap(-1 /* No one cares here */, commands, playerId, nbPlayers));
+		send(commands, false);
+	}
+	
+	public void send(Command[] commands, boolean isLast) {
+		connection.sendTCP(new Message.TurnRecap(isLast? NetworkUtils.LAST_TURN: NetworkUtils.IDGAF_TURN, commands, playerId, nbPlayers));
 		turnListener.enabled = true;
 	}
 
@@ -98,7 +102,7 @@ public class GameClient {
 			}
 
 			if (object instanceof TurnRecap) {
-
+				
 				// On android the gdx thread is paused, the notification will not fire.
 				if (!game.hasFocus()) notificationService.notifySomething();
 

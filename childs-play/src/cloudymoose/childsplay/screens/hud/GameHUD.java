@@ -149,10 +149,13 @@ public class GameHUD extends AbstractMenuStageManager {
 		updatePhase();
 		tsp.update();
 	}
+	
+	public void setButtonsEnabled(boolean enabled) {
+		btnEnd.setDisabled(!enabled);
+	}
 
 	private void updatePhase() {
-			labelPhase.setText(world.getPhase().toString() + "(" + world.getCurrentPlayer() + ")");
-		
+		labelPhase.setText(world.getPhase().toString() + "(" + world.getCurrentPlayer() + ")");
 	}
 
 	private void updateInfoLog() {

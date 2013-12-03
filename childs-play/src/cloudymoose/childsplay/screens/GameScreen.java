@@ -80,7 +80,8 @@ public class GameScreen extends FixedTimestepScreen {
 		}
 
 		if (!waitingForVisualEffect) {
-
+			hud.setButtonsEnabled(true);
+			
 			if (world.isEndGameState()) {
 				boolean isWinner = (world.getCurrentPlayer() == world.getLocalPlayer());
 				game.endGame(isWinner);
@@ -106,6 +107,8 @@ public class GameScreen extends FixedTimestepScreen {
 			}
 
 			world.fixedUpdate(dt);
+		} else {
+			hud.setButtonsEnabled(false);
 		}
 
 		hud.update();

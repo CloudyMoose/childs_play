@@ -186,7 +186,7 @@ public class ChildsPlayGame extends Game {
 	}
 
 	public void endGame(boolean isWinner) {
-		client.send(world.exportCommands());
+		client.send(world.exportCommands(), true);
 		postGameScreen.setReason(isWinner ? EndReason.Win : EndReason.Lose);
 		setScreen(postGameScreen);
 	}
