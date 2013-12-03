@@ -13,6 +13,7 @@ import java.util.Set;
 import cloudymoose.childsplay.ChildsPlayGame;
 import cloudymoose.childsplay.networking.Message.Init;
 import cloudymoose.childsplay.networking.Message.TurnRecap;
+import cloudymoose.childsplay.screens.hud.AppleTree;
 import cloudymoose.childsplay.world.commands.Command;
 import cloudymoose.childsplay.world.commands.CommandBuilder;
 import cloudymoose.childsplay.world.commands.CommandRunner;
@@ -81,7 +82,7 @@ public class World {
 
 		// Gaia init
 		Player gaia = Player.Gaia();
-		gaia.addUnit(new Child(gaia, map.getTile(4, 2)));
+		gaia.addUnit(new AppleTree(map.getTile(4, 2)));
 		players.add(gaia);
 
 		// Other players
