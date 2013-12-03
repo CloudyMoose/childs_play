@@ -1,5 +1,7 @@
 package cloudymoose.childsplay.networking;
 
+import java.util.Arrays;
+
 import cloudymoose.childsplay.world.commands.Command;
 
 /**
@@ -89,6 +91,7 @@ public abstract class Message {
 				this.playerCommands = null;
 			} else {
 				this.playerCommands = new int[nbPlayers + 1];
+				Arrays.fill(playerCommands, -1); // Flag players whose turns aren't to be replayed
 				playerCommands[currentPlayerId] = lastCommands.length;
 			}
 

@@ -78,10 +78,12 @@ public class Area extends AbstractCollection<HexTile<TileData>> {
 	public void doControlAttempt(Player player) {
 		if (player != owner) {
 			Gdx.app.log(TAG, "Control attempt on area " + id);
-			controlPoints -= 1;
-			if (controlPoints == 0) {
+			if (controlPoints <= 1) {
 				Gdx.app.log(TAG, "Area in control!");
 				owner = player;
+				controlPoints = 0;
+			} else {
+				controlPoints -= 1;				
 			}
 		} else {
 			if (controlPoints < controlTiles.size()) {

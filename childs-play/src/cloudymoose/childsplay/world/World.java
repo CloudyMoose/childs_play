@@ -250,11 +250,9 @@ public class World {
 	public void prepareReplays(TurnRecap turnData) {
 		commands.clear();
 
-		if (turnData.commands.length == 0) return;
-
 		for (int i = 0; i < turnData.playerCommands.length; i++) {
 			int nbCommands = turnData.playerCommands[i];
-			if (nbCommands > 0) {
+			if (nbCommands >= 0) {
 				currentPlayer = players.get(i);
 				break;
 			}

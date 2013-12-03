@@ -82,7 +82,7 @@ public class GameHUD extends AbstractMenuStageManager {
 		super.resize(width, height);
 		labelUnitCount.setPosition(0, height - 20);
 		labelTicketCount.setPosition(0, height - 40);
-		labelPhase.setPosition(width - 150, height - 20);
+		labelPhase.setPosition(width - 250, height - 50);
 		labelPlayerHP.setPosition(width / 2, height - 20);
 		labelInfoLog.setPosition(width / 2, height - 50);
 		btnEnd.setPosition(200, 20);
@@ -151,7 +151,7 @@ public class GameHUD extends AbstractMenuStageManager {
 	}
 
 	private void updatePhase() {
-			labelPhase.setText(world.getPhase().toString());
+			labelPhase.setText(world.getPhase().toString() + "(" + world.getCurrentPlayer() + ")");
 		
 	}
 
