@@ -17,11 +17,14 @@ public class Player {
 
 	private int unitCreationCount;
 	private int remainingTickets;
+	
+	private int healthPoints;
 
 	public Player(int id) {
 		units = new HashMap<Integer, Unit>();
 		this.id = id;
 		unitCreationCount = 0;
+		healthPoints = 5;
 	}
 
 	public Unit addUnit(Unit u) {
@@ -63,6 +66,14 @@ public class Player {
 
 	public String toString() {
 		return "Player " + id;
+	}
+	
+	public void hit() {
+		healthPoints-= 1;
+	}
+
+	public int getHp() {
+		return healthPoints;
 	}
 
 }

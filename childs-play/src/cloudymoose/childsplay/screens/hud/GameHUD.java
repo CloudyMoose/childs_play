@@ -22,6 +22,7 @@ public class GameHUD extends AbstractMenuStageManager {
 	Label labelUnitCount;
 	Label labelTicketCount;
 	Label labelInfoLog;
+	Label labelPhase;
 	CommandMenu commandMenu;
 	TextButton btnEnd;
 
@@ -44,6 +45,10 @@ public class GameHUD extends AbstractMenuStageManager {
 		labelTicketCount = new Label("", getSkin());
 		updateTicketCount();
 		stage.addActor(labelTicketCount);
+
+		labelPhase = new Label("Wait", getSkin());
+		labelPhase.setVisible(false);
+		stage.addActor(labelPhase);
 
 		btnEnd = new TextButton("End Turn", getSkin());
 		btnEnd.setSize(200, 50);
@@ -69,6 +74,7 @@ public class GameHUD extends AbstractMenuStageManager {
 		super.resize(width, height);
 		labelUnitCount.setPosition(0, 20);
 		labelTicketCount.setPosition(0, 40);
+		labelPhase.setPosition(width - 40, height - 20);
 		labelInfoLog.setPosition(width / 2, height - 20);
 		btnEnd.setPosition(200, 20);
 		commandMenu.resize(width, height);
@@ -118,6 +124,9 @@ public class GameHUD extends AbstractMenuStageManager {
 			labelInfoLog.setText(txt);
 			if (txt != null) {
 				remainingInfoLogDisplayTime = ChildsPlayGame.FIXED_FPS * MSG_DISPLAY_TIME;
+				labelPhase.setVisible(true);
+			}else {
+				labelPhase.setVisible(false);
 			}
 		}
 	}

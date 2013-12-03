@@ -79,13 +79,14 @@ public class GameScreen extends FixedTimestepScreen {
 			game.toMainMenu("Disconnected");
 		}
 
-		if (world.isEndGameState()) {
-			boolean isWinner = (world.getCurrentPlayer() == world.getLocalPlayer());
-			game.endGame(isWinner);
-			return;
-		}
-
 		if (!waitingForVisualEffect) {
+
+			if (world.isEndGameState()) {
+				boolean isWinner = (world.getCurrentPlayer() == world.getLocalPlayer());
+				game.endGame(isWinner);
+				return;
+			}
+
 
 			switch (world.getPhase()) {
 			case ReplayEnvironment:

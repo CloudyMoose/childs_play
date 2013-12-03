@@ -206,15 +206,26 @@ public class World {
 
 	/** Environment stuff: area control etc. */
 	private void updateEnvironmentState(float dt) {
+		List<Player> enemyPlayers = new ArrayList<Player>(players);
+		enemyPlayers.remove(currentPlayer);
+		enemyPlayers.remove(Player.Gaia());
 		// Do whatever each area controlled by the player has to do
 		Set<Area> areaSet = new HashSet<Area>();
 		for (Area a : map.areas) {
 			if (a.getOwner() == currentPlayer && !a.isContested()) {
 				areaSet.add(a);
+				for (Player p : enemyPlayers) {
+					p.hit();
+				}
 			}
 		}
+		
 		if (!areaSet.isEmpty()) {
 			infoLog.add(String.format("%s is getting the benefits of controlling %s", currentPlayer, areaSet));
+		}
+		
+		for (Player p : enemyPlayers) {
+			infoLog.add(p.toString() + " remaining HP: " + p.getHp());
 		}
 
 		// Update the area ownership
@@ -362,10 +373,10 @@ public class World {
 	public boolean isEndGameState() {
 		for (Player p : players) {
 			if (p.id == Player.GAIA_ID && players.size() > 2) {
-				// Single player (current + GAIA): we stil want to end when the NPCs are defeated
+				// Single player (current + GAIA): we still want to end when the NPCs are defeated
 				continue;
 			}
-			if (p.units.isEmpty()) return true;
+			if (p.units.isEmpty() || p.getHp() == 0) return true;
 		}
 		return false;
 	}

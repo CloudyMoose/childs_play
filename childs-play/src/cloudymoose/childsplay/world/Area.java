@@ -112,9 +112,9 @@ public class Area extends AbstractCollection<HexTile<TileData>> {
 			return "The area is completely reinforced for " + owner + controlPointStatus;
 		} else {
 			if (owner == currentPlayer) {
-				return "The area is being reinforced" + controlPointStatus;
+				return "Area " + id + " is being reinforced by " + owner + controlPointStatus;
 			} else {
-				return "The area is under attack" + controlPointStatus;
+				return "Area " + id + " is under attack" + controlPointStatus;
 			}
 
 		}
