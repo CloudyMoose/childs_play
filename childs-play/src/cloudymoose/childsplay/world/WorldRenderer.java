@@ -85,28 +85,21 @@ public class WorldRenderer {
 
 			debugRenderer.end();
 
-		}
-
-		debugRenderer.begin(ShapeType.Filled);
-
-		LocalPlayer localPlayer = world.getLocalPlayer();
-
-		for (Player player : world.getPlayers()) {
-
-			if (player == localPlayer) {
-				debugRenderer.setColor(Color.BLUE);
-			} else if (player.id == Player.GAIA_ID) {
-				debugRenderer.setColor(Color.GRAY);
-			} else {
-				debugRenderer.setColor(Color.RED);
-			}
-
-			for (Unit unit : player.units.values()) {
+			Unit unit = tile.value.getOccupant();
+			if (unit != null) {
+				debugRenderer.begin(ShapeType.Filled);
+				if (unit.getPlayerId() == world.getLocalPlayer().id) {
+					debugRenderer.setColor(Color.BLUE);
+				} else if (unit.getPlayerId() == Player.GAIA_ID) {
+					debugRenderer.setColor(Color.GRAY);
+				} else {
+					debugRenderer.setColor(Color.RED);
+				}
 				debugRenderer.rect(unit.hitbox.x, unit.hitbox.y, unit.hitbox.width, unit.hitbox.height);
+				debugRenderer.end();
 			}
-		}
 
-		debugRenderer.end();
+		}
 
 		return false;
 	}

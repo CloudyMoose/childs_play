@@ -64,10 +64,10 @@ public class GameHUD extends AbstractMenuStageManager {
 
 		commandMenu = new CommandMenu(world.getLocalPlayer(), getSkin());
 		stage.addActor(commandMenu);
-		
+
 		tsp = new TileStatusPreview(world.getLocalPlayer(), getSkin());
 		stage.addActor(tsp);
-		
+
 		labelInfoLog = new Label("", getSkin());
 		stage.addActor(labelInfoLog);
 
@@ -90,7 +90,7 @@ public class GameHUD extends AbstractMenuStageManager {
 		Gdx.app.log(TAG, tsp.getWidth() + " " + tsp.getHeight());
 		tsp.validate();
 		Gdx.app.log(TAG, tsp.getWidth() + " " + tsp.getHeight());
-		tsp.setPosition(100,100);
+		tsp.setPosition(100, 100);
 	}
 
 	private void updateUnitCount() {
@@ -101,22 +101,22 @@ public class GameHUD extends AbstractMenuStageManager {
 		labelTicketCount.setText(String.format("%d/%d tickets", world.getCurrentPlayer().getRemainingTickets(),
 				Constants.NB_TICKETS));
 	}
-	
+
 	private void updatePlayerHP() {
 		Player p1 = world.getLocalPlayer();
 		Player p2 = null;
-		
+
 		if (world.getPlayers().size() == 2) {
 			p2 = Player.Gaia();
 		} else {
 			for (Player p : world.getPlayers()) {
 				if (p != p1 && p != Player.Gaia()) {
-					p2 = p; 
+					p2 = p;
 					break;
 				}
 			}
 		}
-		
+
 		labelPlayerHP.setText(String.format("%s - %d                  %d - %s ", p1, p1.getHp(), p2.getHp(), p2));
 	}
 
@@ -128,9 +128,16 @@ public class GameHUD extends AbstractMenuStageManager {
 			return;
 		}
 
+		if (clickedTile.value.getOccupant() == null || clickedTile.value.getOccupant().getSupportedCommands() == null
+				|| clickedTile.value.getOccupant().getSupportedCommands().isEmpty()) {
+			Gdx.app.error(TAG, "Can't display the command menu, there is no valid command for the unit "
+					+ clickedTile.value.getOccupant());
+			return;
+		}
+
 		commandMenu.setClickedTile(clickedTile);
-		commandMenu.setPosition(screenX, screenY);
 		commandMenu.setVisible(true);
+		commandMenu.setPosition(screenX, screenY);
 	}
 
 	public boolean isCommandMenuVisible() {
@@ -149,7 +156,7 @@ public class GameHUD extends AbstractMenuStageManager {
 		updatePhase();
 		tsp.update();
 	}
-	
+
 	public void setButtonsEnabled(boolean enabled) {
 		btnEnd.setDisabled(!enabled);
 	}

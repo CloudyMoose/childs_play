@@ -1,7 +1,10 @@
 package cloudymoose.childsplay.world.units;
 
+import java.util.List;
+
 import cloudymoose.childsplay.world.Player;
 import cloudymoose.childsplay.world.TileData;
+import cloudymoose.childsplay.world.commands.Command;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
 import com.badlogic.gdx.math.Rectangle;
@@ -81,7 +84,11 @@ public abstract class Unit {
 	}
 
 	public void attack(Unit target) {
-		target.currentHealthPoints -= attackDamage;
+		target.takeDamage(attackDamage);
+	}
+
+	protected void takeDamage(int damage) {
+		currentHealthPoints -= damage;
 	}
 
 	public boolean isDead() {
@@ -91,5 +98,7 @@ public abstract class Unit {
 	public HexTile<TileData> getOccupiedTile() {
 		return occupiedTile;
 	}
+
+	public abstract List<Class<? extends Command>> getSupportedCommands();
 
 }

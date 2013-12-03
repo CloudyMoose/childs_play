@@ -18,6 +18,7 @@ import cloudymoose.childsplay.world.commands.CommandBuilder;
 import cloudymoose.childsplay.world.commands.CommandRunner;
 import cloudymoose.childsplay.world.hextiles.Direction;
 import cloudymoose.childsplay.world.hextiles.HexTile;
+import cloudymoose.childsplay.world.units.Castle;
 import cloudymoose.childsplay.world.units.Child;
 import cloudymoose.childsplay.world.units.Unit;
 
@@ -94,7 +95,14 @@ public class World {
 				player = new Player(i);
 			}
 
-			int r = (i == 1) ? 1 : 9;
+			int r;
+			if (i == 1) {
+				r = 1;
+				new Castle(player, map.getTile(4, -2));
+			} else {
+				r = 9;
+				new Castle(player, map.getTile(5, 9));
+			}
 			player.addUnit(new Child(player, map.getTile(1, r)));
 			player.addUnit(new Child(player, map.getTile(7, r - 3)));
 
@@ -219,7 +227,7 @@ public class World {
 				}
 			}
 		}
-		
+
 		if (!areaSet.isEmpty()) {
 			infoLog.add(String.format("%s is getting the benefits of controlling %s", currentPlayer, areaSet));
 		}

@@ -1,5 +1,8 @@
 package cloudymoose.childsplay.screens.hud;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import cloudymoose.childsplay.world.LocalPlayer;
 import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.commands.AttackCommand;
@@ -22,12 +25,13 @@ public class CommandMenu extends Group {
 	private HexTile<TileData> clickedTile;
 	private LocalPlayer player;
 
-	private TextButton btnMove;
-	private TextButton btnAttack;
 	private Table table;
+
+	Map<Class<? extends Command>, TextButton> commandButtons;
 
 	public CommandMenu(LocalPlayer player, Skin uiSkin) {
 		this.player = player;
+		commandButtons = new HashMap<Class<? extends Command>, TextButton>();
 		setTransform(false);
 		build(uiSkin);
 	}
@@ -36,12 +40,14 @@ public class CommandMenu extends Group {
 		table = new Table();
 		table.debug();
 
-		btnMove = new TextButton("Move", uiSkin);
+		TextButton btnMove = new TextButton("Move", uiSkin);
+		commandButtons.put(MoveCommand.class, btnMove);
 		btnMove.addListener(new CommandListener(MoveCommand.class));
 		table.add(btnMove).size(80, 40).uniform().spaceBottom(10);
 		table.row();
 
-		btnAttack = new TextButton("Attack", uiSkin);
+		TextButton btnAttack = new TextButton("Attack", uiSkin);
+		commandButtons.put(AttackCommand.class, btnAttack);
 		btnAttack.addListener(new CommandListener(AttackCommand.class));
 		table.add(btnAttack).size(80, 40).uniform().spaceBottom(10);
 		table.row();
@@ -52,6 +58,19 @@ public class CommandMenu extends Group {
 
 	public void setClickedTile(HexTile<TileData> selectedTile) {
 		this.clickedTile = selectedTile;
+	}
+
+	public void setVisible(boolean visible) {
+		if (visible) {
+			for (Class<? extends Command> clazz : clickedTile.value.getOccupant().getSupportedCommands()) {
+				commandButtons.get(clazz).setVisible(true);
+			}
+		} else {
+			for (TextButton tb : commandButtons.values()) {
+				tb.setVisible(false);
+			}
+		}
+		super.setVisible(visible);
 	}
 
 	@Override

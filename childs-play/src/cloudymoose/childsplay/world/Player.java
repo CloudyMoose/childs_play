@@ -17,7 +17,7 @@ public class Player {
 
 	private int unitCreationCount;
 	private int remainingTickets;
-	
+
 	private int healthPoints;
 
 	public Player(int id) {
@@ -68,12 +68,12 @@ public class Player {
 		if (id == GAIA_ID) {
 			return "Gaia";
 		} else {
-			return "Player " + id;			
+			return "Player " + id;
 		}
 	}
-	
+
 	public void hit() {
-		healthPoints-= 1;
+		healthPoints -= 1;
 	}
 
 	public int getHp() {

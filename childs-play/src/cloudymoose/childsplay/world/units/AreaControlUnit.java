@@ -5,7 +5,7 @@ import cloudymoose.childsplay.world.Player;
 import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
-public class AreaControlUnit extends Unit {
+public abstract class AreaControlUnit extends Unit {
 
 	protected final Area area;
 	protected Player owner;
