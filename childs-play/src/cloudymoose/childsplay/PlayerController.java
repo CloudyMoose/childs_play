@@ -105,8 +105,8 @@ public class PlayerController implements InputProcessor {
 	private void handleTileSelectTouch(int screenX, int screenY) {
 		Unit clicked = touchedTile.value.getOccupant();
 		Gdx.app.log(TAG, "Touched tile with borders: " + touchedTile.value.borders);
+		player.selectTile(touchedTile);
 		if (clicked != null && player.owns(clicked)) {
-			player.selectTile(touchedTile);
 			hud.displayCommandMenu(screenX, screenY, touchedTile);
 		} else {
 			hud.hideCommandMenu();

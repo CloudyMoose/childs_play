@@ -103,18 +103,22 @@ public class Area extends AbstractCollection<HexTile<TileData>> {
 	public boolean isContested() {
 		return controlPoints < controlTiles.size();
 	}
+	
+	public String getControlPointStatus() {
+		return "(" + controlPoints + "/" + controlTiles.size() + ")";
+	}
 
 	public String getStatusMessage(Player currentPlayer) {
-		String controlPointStatus = " (" + controlPoints + "/" + controlTiles.size() + ")";
+		String areaStatus = "Area " + id + " " + getControlPointStatus();
 		if (owner == null) {
-			return "Area " + id + " is neutral" + controlPointStatus;
+			return areaStatus + " is neutral";
 		} else if (controlPoints == controlTiles.size()) {
-			return "The area is completely reinforced for " + owner + controlPointStatus;
+			return areaStatus + " is completely reinforced for " + owner;
 		} else {
 			if (owner == currentPlayer) {
-				return "Area " + id + " is being reinforced by " + owner + controlPointStatus;
+				return areaStatus + " is being reinforced by " + owner;
 			} else {
-				return "Area " + id + " is under attack" + controlPointStatus;
+				return areaStatus + " is under attack";
 			}
 
 		}

@@ -83,5 +83,4 @@ public class CommandMenu extends Group {
 			player.setSelectedCommand(Command.builder(commandClass).from(clickedTile));
 		}
 	}
-
 }

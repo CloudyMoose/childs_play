@@ -65,7 +65,11 @@ public class Player {
 	}
 
 	public String toString() {
-		return "Player " + id;
+		if (id == GAIA_ID) {
+			return "Gaia";
+		} else {
+			return "Player " + id;			
+		}
 	}
 	
 	public void hit() {

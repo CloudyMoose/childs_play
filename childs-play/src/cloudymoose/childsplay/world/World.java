@@ -223,10 +223,6 @@ public class World {
 		if (!areaSet.isEmpty()) {
 			infoLog.add(String.format("%s is getting the benefits of controlling %s", currentPlayer, areaSet));
 		}
-		
-		for (Player p : enemyPlayers) {
-			infoLog.add(p.toString() + " remaining HP: " + p.getHp());
-		}
 
 		// Update the area ownership
 		areaSet.clear();

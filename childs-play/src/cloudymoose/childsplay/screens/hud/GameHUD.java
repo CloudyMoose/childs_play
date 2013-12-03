@@ -3,6 +3,7 @@ package cloudymoose.childsplay.screens.hud;
 import cloudymoose.childsplay.ChildsPlayGame;
 import cloudymoose.childsplay.screens.AbstractMenuStageManager;
 import cloudymoose.childsplay.world.Constants;
+import cloudymoose.childsplay.world.Player;
 import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.hextiles.HexTile;
@@ -23,8 +24,10 @@ public class GameHUD extends AbstractMenuStageManager {
 	Label labelTicketCount;
 	Label labelInfoLog;
 	Label labelPhase;
+	Label labelPlayerHP;
 	CommandMenu commandMenu;
 	TextButton btnEnd;
+	TileStatusPreview tsp;
 
 	private int remainingInfoLogDisplayTime;
 	/** In seconds */
@@ -47,7 +50,6 @@ public class GameHUD extends AbstractMenuStageManager {
 		stage.addActor(labelTicketCount);
 
 		labelPhase = new Label("Wait", getSkin());
-		labelPhase.setVisible(false);
 		stage.addActor(labelPhase);
 
 		btnEnd = new TextButton("End Turn", getSkin());
@@ -62,9 +64,15 @@ public class GameHUD extends AbstractMenuStageManager {
 
 		commandMenu = new CommandMenu(world.getLocalPlayer(), getSkin());
 		stage.addActor(commandMenu);
-
+		
+		tsp = new TileStatusPreview(world.getLocalPlayer(), getSkin());
+		stage.addActor(tsp);
+		
 		labelInfoLog = new Label("", getSkin());
 		stage.addActor(labelInfoLog);
+
+		labelPlayerHP = new Label("", getSkin());
+		stage.addActor(labelPlayerHP);
 
 		return null; /* We're adding the objects to the scene manually here */
 	}
@@ -72,21 +80,44 @@ public class GameHUD extends AbstractMenuStageManager {
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
-		labelUnitCount.setPosition(0, 20);
-		labelTicketCount.setPosition(0, 40);
-		labelPhase.setPosition(width - 40, height - 20);
-		labelInfoLog.setPosition(width / 2, height - 20);
+		labelUnitCount.setPosition(0, height - 20);
+		labelTicketCount.setPosition(0, height - 40);
+		labelPhase.setPosition(width - 150, height - 20);
+		labelPlayerHP.setPosition(width / 2, height - 20);
+		labelInfoLog.setPosition(width / 2, height - 50);
 		btnEnd.setPosition(200, 20);
 		commandMenu.resize(width, height);
+		Gdx.app.log(TAG, tsp.getWidth() + " " + tsp.getHeight());
+		tsp.validate();
+		Gdx.app.log(TAG, tsp.getWidth() + " " + tsp.getHeight());
+		tsp.setPosition(100,100);
 	}
 
-	public void updateUnitCount() {
+	private void updateUnitCount() {
 		labelUnitCount.setText(String.format("%d units", world.getCurrentPlayer().units.size()));
 	}
 
 	private void updateTicketCount() {
 		labelTicketCount.setText(String.format("%d/%d tickets", world.getCurrentPlayer().getRemainingTickets(),
 				Constants.NB_TICKETS));
+	}
+	
+	private void updatePlayerHP() {
+		Player p1 = world.getLocalPlayer();
+		Player p2 = null;
+		
+		if (world.getPlayers().size() == 2) {
+			p2 = Player.Gaia();
+		} else {
+			for (Player p : world.getPlayers()) {
+				if (p != p1 && p != Player.Gaia()) {
+					p2 = p; 
+					break;
+				}
+			}
+		}
+		
+		labelPlayerHP.setText(String.format("%s - %d                  %d - %s ", p1, p1.getHp(), p2.getHp(), p2));
 	}
 
 	public void displayCommandMenu(int screenX, int screenY, HexTile<TileData> clickedTile) {
@@ -114,6 +145,14 @@ public class GameHUD extends AbstractMenuStageManager {
 		updateUnitCount();
 		updateTicketCount();
 		updateInfoLog();
+		updatePlayerHP();
+		updatePhase();
+		tsp.update();
+	}
+
+	private void updatePhase() {
+			labelPhase.setText(world.getPhase().toString());
+		
 	}
 
 	private void updateInfoLog() {
@@ -124,9 +163,6 @@ public class GameHUD extends AbstractMenuStageManager {
 			labelInfoLog.setText(txt);
 			if (txt != null) {
 				remainingInfoLogDisplayTime = ChildsPlayGame.FIXED_FPS * MSG_DISPLAY_TIME;
-				labelPhase.setVisible(true);
-			}else {
-				labelPhase.setVisible(false);
 			}
 		}
 	}
