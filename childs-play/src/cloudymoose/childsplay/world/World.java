@@ -25,6 +25,7 @@ import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -123,12 +124,15 @@ public class World {
 		int[] areaLimits = new int[] { (width / nbAreas), width - (width / nbAreas) };
 		Gdx.app.log(TAG, "areaLimits: " + areaLimits[0] + " " + areaLimits[1]);
 
-		HexTile<TileData> columnHead = newMap.addValue(0, 0, new TileData(Color.GREEN));
+		Texture grass = new Texture(Gdx.files.internal("graphics/grass.png"));
+		Texture sand = new Texture(Gdx.files.internal("graphics/sand.png"));
+
+		HexTile<TileData> columnHead = newMap.addValue(0, 0, new TileData(grass));
 		for (int y = 0; y < height; y++) {
 			areaTiles.get(0).add(columnHead);
 			HexTile<TileData> tmp = columnHead;
 			for (int x = 1 /* The first tile is manually added */; x < width; x++) {
-				TileData tileData = new TileData(Color.GREEN);
+				TileData tileData = new TileData(grass);
 				tmp = tmp.setNeighbor(Direction.Right, tileData);
 				if (x <= areaLimits[0] - 1) {
 					areaTiles.get(0).add(tmp);
@@ -146,7 +150,8 @@ public class World {
 
 				} else {
 					areaTiles.get(1).add(tmp);
-					tileData.color = Color.LIGHT_GRAY;
+					tileData.setTexture(sand);
+
 					if (x == areaLimits[0]) {
 						tileData.addBorders(Direction.Left);
 						if (y % 2 == 0) tileData.addBorders(Direction.UpLeft, Direction.DownLeft);
@@ -158,7 +163,7 @@ public class World {
 			}
 			if (y != height - 1) {
 				Direction indentation = y % 2 == 0 ? Direction.DownRight : Direction.DownLeft;
-				columnHead = columnHead.setNeighbor(indentation, new TileData(Color.GREEN));
+				columnHead = columnHead.setNeighbor(indentation, new TileData(grass));
 			}
 		}
 

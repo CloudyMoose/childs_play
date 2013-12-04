@@ -10,6 +10,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
@@ -33,46 +35,38 @@ public class WorldRenderer {
 			// TODO: jumps at the beginning. It should be smoothed or something...
 			setCameraPosition(world.getPreferredCameraFocus());
 		}
-		debugRenderer.setProjectionMatrix(cam.combined);
 
 		// Render background hexagons
 		HexTile<TileData> selectedTile = world.getLocalPlayer().getSelectedTile();
 
+		SpriteBatch sb = new SpriteBatch();
+		sb.begin();
+		sb.setProjectionMatrix(cam.combined);
 		for (HexTile<TileData> tile : world.getMap()) {
-			float size = world.getMap().getTileSize();
-			float height = 2 * size;
-			float width = (float) (Math.sqrt(3) / 2f * height);
-			Vector3 center = tile.getPosition();
 
-			debugRenderer.begin(ShapeType.Filled);
-			debugRenderer.setColor(tile.value.color);
+			Sprite sprite = tile.value.getSprite(tile);
 
 			if (selectedTile == tile) {
-				debugRenderer.setColor(Color.WHITE);
+				sprite.setColor(Color.WHITE);
 			} else if (world.targetableTiles.contains(tile)) {
-				debugRenderer.setColor(Color.ORANGE);
+				sprite.setColor(Color.ORANGE);
 			} else if (world.getMap().isControlPoint(tile)) {
-				debugRenderer.setColor(Color.MAGENTA);
+				sprite.setColor(Color.MAGENTA);
 			}
 
-			// Draw hexagon with one rectangle and two triangles for now
-			debugRenderer.rect(center.x - width / 2, center.y - height / 4, width, height / 2);
+			sprite.draw(sb);
 
-			debugRenderer.triangle(center.x - width / 2, center.y + height / 4, center.x, center.y + height / 2,
-					center.x + width / 2, center.y + height / 4);
 
-			debugRenderer.triangle(center.x - width / 2, center.y - height / 4, center.x, center.y - height / 2,
-					center.x + width / 2, center.y - height / 4);
-			debugRenderer.end();
+		}
 
+		sb.end();
+
+		// Render overlays
+		debugRenderer.setProjectionMatrix(cam.combined);
+
+		for (HexTile<TileData> tile : world.getMap()) {
+			Vector3 center = tile.getPosition();
 			debugRenderer.begin(ShapeType.Line);
-			if (Constants.SHOW_GRID) {
-				debugRenderer.setColor(Color.BLACK);
-				debugRenderer.polygon(new float[] { center.x - width / 2, center.y + height / 4, center.x,
-						center.y + height / 2, center.x + width / 2, center.y + height / 4, center.x + width / 2,
-						center.y - height / 4, center.x, center.y - height / 2, center.x - width / 2,
-						center.y - height / 4 });
-			}
 
 			// TODO: horrible but w/e
 			if (!tile.value.borders.isEmpty()) {
