@@ -4,19 +4,43 @@ import java.util.Arrays;
 import java.util.EnumSet;
 
 import cloudymoose.childsplay.world.hextiles.Direction;
+import cloudymoose.childsplay.world.hextiles.HexTile;
 import cloudymoose.childsplay.world.units.Unit;
 
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector3;
 
 public class TileData {
-	public Color color;
+	private Texture texture;
+	private Sprite sprite;
 	protected Unit occupant;
 	public final EnumSet<Direction> borders;
 	protected Area area;
 
-	public TileData(Color color) {
-		this.color = color;
+	public TileData(Texture texture) {
+		this.texture = texture;
 		borders = EnumSet.noneOf(Direction.class);
+	}
+
+	public Sprite getSprite(HexTile<TileData> tile) {
+		// Only generate the sprite once
+		if (sprite == null) {
+			float size = Constants.TILE_SIZE;
+			float height = 2 * size;
+			float width = (float) (Math.sqrt(3) / 2f * height);
+			sprite = new Sprite(texture);
+			Vector3 position = tile.getPosition();
+			sprite.setBounds(position.x - width / 2, position.y - height / 2, width, height);
+			sprite.setSize(width, height);
+		}
+
+		return sprite;
+	}
+
+	public void setTexture(Texture texture) {
+		this.texture = texture;
+		this.sprite = null;
 	}
 
 	public Unit getOccupant() {

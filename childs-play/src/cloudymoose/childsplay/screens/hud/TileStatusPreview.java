@@ -58,8 +58,7 @@ public class TileStatusPreview extends Table {
 		HexTile<TileData> tile = player.getSelectedTile();
 		if (tile == null) {
 			setVisible(false);	
-		} else {			
-			lblType.setText(tile.value.color.toString());
+		} else {
 			lblCoords.setText(tile.getQ() + " " + tile.getR());
 			lblOccupant.setText(toStringOr(tile.value.getOccupant(), ""));
 			lblAreaName.setText(tile.value.getArea().toString());

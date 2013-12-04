@@ -11,5 +11,4 @@ public class Constants {
 
 	// Texture paths
 	public static final String SKIN_JSON_PATH = "uiskin.json";
-	public static final boolean SHOW_GRID = true;
 }
