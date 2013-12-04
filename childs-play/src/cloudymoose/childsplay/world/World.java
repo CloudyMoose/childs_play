@@ -24,6 +24,7 @@ import cloudymoose.childsplay.world.units.Child;
 import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
@@ -64,12 +65,19 @@ public class World {
 	public final Set<HexTile<?>> targetableTiles = new HashSet<HexTile<?>>();
 	private Vector3 preferredCameraFocus;
 
+	// Materials
+	private Texture grass, sand;
+
 	// =================================================================================================================
 	// Initialization
 	// =================================================================================================================
 
-	public World(Init initData) {
+	public World(Init initData, AssetManager assetManager) {
 		Gdx.app.log(TAG, "Init data: " + initData.toString());
+
+		grass = assetManager.get("data/grass.png");
+		sand = assetManager.get("data/sand.png");
+
 		createDemoWorld(initData);
 		currentPlayer = localPlayer;
 	}
@@ -123,9 +131,6 @@ public class World {
 
 		int[] areaLimits = new int[] { (width / nbAreas), width - (width / nbAreas) };
 		Gdx.app.log(TAG, "areaLimits: " + areaLimits[0] + " " + areaLimits[1]);
-
-		Texture grass = new Texture(Gdx.files.internal("graphics/grass.png"));
-		Texture sand = new Texture(Gdx.files.internal("graphics/sand.png"));
 
 		HexTile<TileData> columnHead = newMap.addValue(0, 0, new TileData(grass));
 		for (int y = 0; y < height; y++) {
