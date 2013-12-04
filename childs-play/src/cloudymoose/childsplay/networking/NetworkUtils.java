@@ -1,6 +1,7 @@
 package cloudymoose.childsplay.networking;
 
 import cloudymoose.childsplay.world.commands.AttackCommand;
+import cloudymoose.childsplay.world.commands.CollectCommand;
 import cloudymoose.childsplay.world.commands.Command;
 import cloudymoose.childsplay.world.commands.MoveCommand;
 import cloudymoose.childsplay.world.commands.RecruitCommand;
@@ -27,5 +28,6 @@ public abstract class NetworkUtils {
 		kryo.register(MoveCommand.class);
 		kryo.register(AttackCommand.class);
 		kryo.register(RecruitCommand.class);
+		kryo.register(CollectCommand.class);
 	}
 }

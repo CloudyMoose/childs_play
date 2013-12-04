@@ -6,6 +6,7 @@ import java.util.Map;
 import cloudymoose.childsplay.world.LocalPlayer;
 import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.commands.AttackCommand;
+import cloudymoose.childsplay.world.commands.CollectCommand;
 import cloudymoose.childsplay.world.commands.Command;
 import cloudymoose.childsplay.world.commands.MoveCommand;
 import cloudymoose.childsplay.world.commands.RecruitCommand;
@@ -57,6 +58,12 @@ public class CommandMenu extends Group {
 		commandButtons.put(RecruitCommand.class, btnRecruit);
 		btnRecruit.addListener(new CommandListener(RecruitCommand.class));
 		table.add(btnRecruit).size(80, 40).uniform().spaceBottom(10);
+		table.row();
+
+		TextButton btnCollect = new TextButton("Collect", uiSkin);
+		commandButtons.put(CollectCommand.class, btnCollect);
+		btnCollect.addListener(new CommandListener(CollectCommand.class));
+		table.add(btnCollect).size(80, 40).uniform().spaceBottom(10);
 		table.row();
 
 		addActor(table);

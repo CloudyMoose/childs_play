@@ -1,4 +1,4 @@
-package cloudymoose.childsplay.screens.hud;
+package cloudymoose.childsplay.world.units;
 
 import java.util.List;
 
@@ -6,7 +6,6 @@ import cloudymoose.childsplay.world.Player;
 import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.commands.Command;
 import cloudymoose.childsplay.world.hextiles.HexTile;
-import cloudymoose.childsplay.world.units.StaticUnit;
 
 public class AppleTree extends StaticUnit {
 
