@@ -19,12 +19,14 @@ public class Player {
 	private int remainingTickets;
 
 	private int healthPoints;
+	private int resourcePoints;
 
 	public Player(int id) {
 		units = new HashMap<Integer, Unit>();
 		this.id = id;
 		unitCreationCount = 0;
 		healthPoints = 5;
+		resourcePoints = 0;
 	}
 
 	public Unit addUnit(Unit u) {
@@ -64,6 +66,7 @@ public class Player {
 		return GAIA;
 	}
 
+	@Override
 	public String toString() {
 		if (id == GAIA_ID) {
 			return "Gaia";
@@ -78,6 +81,10 @@ public class Player {
 
 	public int getHp() {
 		return healthPoints;
+	}
+
+	public void setResourcePoints(int newValue) {
+		resourcePoints = newValue;
 	}
 
 }

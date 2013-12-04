@@ -54,7 +54,7 @@ public class AttackCommand extends Command {
 		@Override
 		protected boolean update(float dt) {
 			// Here we delay applying the command to allow the camera to be repositionned first.
-			if (preferredCameraFocus != attacker.position) {
+			if (!attacker.position.equals(preferredCameraFocus)) {
 				preferredCameraFocus = attacker.position;
 				return true;
 			}

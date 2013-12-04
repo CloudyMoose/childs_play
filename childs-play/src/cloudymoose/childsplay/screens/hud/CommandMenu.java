@@ -8,6 +8,7 @@ import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.commands.AttackCommand;
 import cloudymoose.childsplay.world.commands.Command;
 import cloudymoose.childsplay.world.commands.MoveCommand;
+import cloudymoose.childsplay.world.commands.RecruitCommand;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
 import com.badlogic.gdx.Gdx;
@@ -52,6 +53,12 @@ public class CommandMenu extends Group {
 		table.add(btnAttack).size(80, 40).uniform().spaceBottom(10);
 		table.row();
 
+		TextButton btnRecruit = new TextButton("Recruit", uiSkin);
+		commandButtons.put(RecruitCommand.class, btnRecruit);
+		btnRecruit.addListener(new CommandListener(RecruitCommand.class));
+		table.add(btnRecruit).size(80, 40).uniform().spaceBottom(10);
+		table.row();
+
 		addActor(table);
 		setVisible(false);
 	}
@@ -60,6 +67,7 @@ public class CommandMenu extends Group {
 		this.clickedTile = selectedTile;
 	}
 
+	@Override
 	public void setVisible(boolean visible) {
 		if (visible) {
 			for (Class<? extends Command> clazz : clickedTile.value.getOccupant().getSupportedCommands()) {

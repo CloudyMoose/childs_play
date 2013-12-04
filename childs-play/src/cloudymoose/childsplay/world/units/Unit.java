@@ -70,6 +70,7 @@ public abstract class Unit {
 		return id / Player.UNIT_ID_OFFSET;
 	}
 
+	@Override
 	public String toString() {
 		return "{id:" + id + " pos:(" + position.x + ", " + position.y + ")}";
 	}

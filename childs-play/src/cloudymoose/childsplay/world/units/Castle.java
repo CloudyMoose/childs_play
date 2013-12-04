@@ -1,13 +1,23 @@
 package cloudymoose.childsplay.world.units;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import cloudymoose.childsplay.world.Player;
 import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.commands.Command;
+import cloudymoose.childsplay.world.commands.RecruitCommand;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
 public class Castle extends StaticUnit {
+
+	private static final List<Class<? extends Command>> supportedCommands;
+	static {
+		List<Class<? extends Command>> l = new ArrayList<Class<? extends Command>>();
+		l.add(RecruitCommand.class);
+		supportedCommands = Collections.unmodifiableList(l);
+	}
 
 	private Player owner;
 
@@ -28,7 +38,7 @@ public class Castle extends StaticUnit {
 
 	@Override
 	public List<Class<? extends Command>> getSupportedCommands() {
-		return null;
+		return supportedCommands;
 	}
 
 }

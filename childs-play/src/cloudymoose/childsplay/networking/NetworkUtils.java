@@ -3,6 +3,7 @@ package cloudymoose.childsplay.networking;
 import cloudymoose.childsplay.world.commands.AttackCommand;
 import cloudymoose.childsplay.world.commands.Command;
 import cloudymoose.childsplay.world.commands.MoveCommand;
+import cloudymoose.childsplay.world.commands.RecruitCommand;
 
 import com.esotericsoftware.kryo.Kryo;
 
@@ -10,7 +11,7 @@ public abstract class NetworkUtils {
 
 	public static int LAST_TURN = Integer.MAX_VALUE;
 	public static int IDGAF_TURN = -1;
-	
+
 	private NetworkUtils() {
 	}
 
@@ -25,5 +26,6 @@ public abstract class NetworkUtils {
 		kryo.register(int[].class);
 		kryo.register(MoveCommand.class);
 		kryo.register(AttackCommand.class);
+		kryo.register(RecruitCommand.class);
 	}
 }
