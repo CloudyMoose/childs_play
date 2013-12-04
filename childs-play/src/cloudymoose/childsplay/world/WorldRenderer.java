@@ -45,18 +45,15 @@ public class WorldRenderer {
 		for (HexTile<TileData> tile : world.getMap()) {
 
 			Sprite sprite = tile.value.getSprite(tile);
-
-			if (selectedTile == tile) {
-				sprite.setColor(Color.WHITE);
-			} else if (world.targetableTiles.contains(tile)) {
+			sprite.setColor(Color.WHITE);
+			
+			if (world.targetableTiles.contains(tile)) {
 				sprite.setColor(Color.ORANGE);
 			} else if (world.getMap().isControlPoint(tile)) {
 				sprite.setColor(Color.MAGENTA);
 			}
 
 			sprite.draw(sb);
-
-
 		}
 
 		sb.end();
