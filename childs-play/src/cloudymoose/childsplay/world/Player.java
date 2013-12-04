@@ -48,8 +48,12 @@ public class Player {
 	 * @return <code>true</code> if there were tickets left to use.
 	 */
 	public boolean useTicket() {
-		remainingTickets -= 1;
-		return remainingTickets >= 0;
+		if (remainingTickets <= 0) {
+			return false;
+		} else {
+			remainingTickets -= 1;
+			return true;
+		}
 	}
 
 	public void resetTickets() {
