@@ -87,4 +87,8 @@ public class Player {
 		resourcePoints = newValue;
 	}
 
+	public int getResourcePoints() {
+		return resourcePoints;
+	}
+
 }

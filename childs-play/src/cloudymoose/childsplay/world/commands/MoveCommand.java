@@ -49,7 +49,7 @@ public class MoveCommand extends Command {
 		}
 
 		@Override
-		public Command build() {
+		public Command build(World world) {
 			return new MoveCommand(originTile.value.getOccupant().id, targetTile.getQ(), targetTile.getR());
 		}
 

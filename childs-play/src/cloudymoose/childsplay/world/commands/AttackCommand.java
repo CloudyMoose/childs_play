@@ -35,7 +35,7 @@ public class AttackCommand extends Command {
 		}
 
 		@Override
-		public Command build() {
+		public Command build(World world) {
 			return new AttackCommand(originTile.value.getOccupant().id, targetTile.value.getOccupant().id);
 		}
 

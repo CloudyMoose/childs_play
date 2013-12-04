@@ -31,4 +31,8 @@ public class Child extends Unit {
 		return supportedCommands;
 	}
 
+	public static int getCost() {
+		return 1;
+	}
+
 }

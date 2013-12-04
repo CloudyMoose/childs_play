@@ -16,6 +16,7 @@ import cloudymoose.childsplay.networking.Message.TurnRecap;
 import cloudymoose.childsplay.screens.hud.AppleTree;
 import cloudymoose.childsplay.world.commands.Command;
 import cloudymoose.childsplay.world.commands.CommandBuilder;
+import cloudymoose.childsplay.world.commands.CommandCreationException;
 import cloudymoose.childsplay.world.commands.CommandRunner;
 import cloudymoose.childsplay.world.hextiles.Direction;
 import cloudymoose.childsplay.world.hextiles.HexTile;
@@ -24,7 +25,6 @@ import cloudymoose.childsplay.world.units.Child;
 import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 
@@ -100,13 +100,15 @@ public class World {
 			int r;
 			if (i == 1) {
 				r = 1;
-				new Castle(player, map.getTile(4, -2));
+				player.addUnit(new Castle(player, map.getTile(4, -2)));
 			} else {
 				r = 9;
-				new Castle(player, map.getTile(5, 9));
+				player.addUnit(new Castle(player, map.getTile(5, 9)));
 			}
 			player.addUnit(new Child(player, map.getTile(1, r)));
 			player.addUnit(new Child(player, map.getTile(7, r - 3)));
+
+			player.setResourcePoints(Constants.STARTING_RESOURCE_POINTS);
 
 			players.add(player);
 		}
@@ -370,8 +372,14 @@ public class World {
 
 	public void selectTargetTile(HexTile<TileData> target) {
 		selectedCommandBuilder.setTarget(target);
-		runCommand(selectedCommandBuilder.build(), false);
-		cancelCommand();
+
+		try {
+			runCommand(selectedCommandBuilder.build(this), false);
+		} catch (CommandCreationException e) {
+			infoLog.add(e.getMessage());
+		} finally {
+			cancelCommand();
+		}
 	}
 
 	/**
@@ -442,6 +450,13 @@ public class World {
 	 */
 	public String getInfoLogEntry() {
 		return infoLog.poll();
+	}
+
+	public Player getPlayerById(int id) {
+		for (Player p : players) {
+			if (p.id == id) return p;
+		}
+		return null;
 	}
 
 }

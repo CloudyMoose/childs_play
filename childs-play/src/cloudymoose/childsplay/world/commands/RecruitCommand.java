@@ -35,9 +35,12 @@ public class RecruitCommand extends Command {
 		}
 
 		@Override
-		public Command build() {
-			return new RecruitCommand(originTile.value.getOccupant().getPlayerId(), targetTile.getQ(),
-					targetTile.getR());
+		public Command build(World world) throws CommandCreationException {
+			Player p = world.getPlayerById(originTile.value.getOccupant().getPlayerId());
+			if (p.getResourcePoints() < Child.getCost()) { throw new CommandCreationException(
+					"Not enough resources to recruit. (" + Child.getCost() + " required.)"); }
+
+			return new RecruitCommand(p.id, targetTile.getQ(), targetTile.getR());
 		}
 
 	}
@@ -64,6 +67,7 @@ public class RecruitCommand extends Command {
 				preferredCameraFocus = destinationTile.getPosition();
 				return true;
 			}
+			player.setResourcePoints(player.getResourcePoints() - Child.getCost());
 			player.addUnit(new Child(player, destinationTile));
 			return false;
 		}

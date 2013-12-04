@@ -117,7 +117,8 @@ public class GameHUD extends AbstractMenuStageManager {
 			}
 		}
 
-		labelPlayerHP.setText(String.format("%s - %d                  %d - %s ", p1, p1.getHp(), p2.getHp(), p2));
+		labelPlayerHP.setText(String.format("%s - %d HP | %d RP                %d RP | %d HP - %s ", p1, p1.getHp(),
+				p1.getResourcePoints(), p2.getResourcePoints(), p2.getHp(), p2));
 	}
 
 	public void displayCommandMenu(int screenX, int screenY, HexTile<TileData> clickedTile) {
@@ -178,6 +179,7 @@ public class GameHUD extends AbstractMenuStageManager {
 	}
 
 	/** @return <code>true</code> if there is an animation or something running */
+	@Override
 	public boolean render(float dt) {
 		super.render(dt);
 		return remainingInfoLogDisplayTime > 0;

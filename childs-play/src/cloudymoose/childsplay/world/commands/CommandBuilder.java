@@ -1,6 +1,7 @@
 package cloudymoose.childsplay.world.commands;
 
 import cloudymoose.childsplay.world.TileData;
+import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
 /**
@@ -13,7 +14,7 @@ public abstract class CommandBuilder {
 	protected HexTile<TileData> targetTile;
 	protected TargetConstraints targetConstraints;
 
-	/** Overrride it to return the max range of the command. Uses the {@link #targetConstraints}' range */
+	/** Overrride it to return the max range of the command. Uses the {@link #targetConstraints}' max range by default */
 	public int getCommandRange() {
 		return getTargetConstraints().maxRange;
 	}
@@ -27,7 +28,7 @@ public abstract class CommandBuilder {
 		targetTile = target;
 	}
 
-	public abstract Command build();
+	public abstract Command build(World world) throws CommandCreationException;
 
 	protected abstract TargetConstraints constraints();
 
