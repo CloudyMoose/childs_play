@@ -1,5 +1,8 @@
 package cloudymoose.childsplay.world.commands;
 
+import java.util.List;
+
+import cloudymoose.childsplay.world.ShortestPathSolver;
 import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.hextiles.HexTile;
@@ -58,23 +61,37 @@ public class MoveCommand extends Command {
 	public static class MoveRunner extends CommandRunner {
 		private Vector3 destination;
 		private Vector3 currentMovement;
-		private HexTile<TileData> destTile;
 		private Unit unit;
 		protected final float POSITION_EPSILON = 5f; // Position accuracy
+		private List<HexTile<TileData>> path;
 
 		public MoveRunner(MoveCommand command, World world) {
 			super(command);
 			this.unit = world.getUnit(command.unitId);
-			this.destTile = world.getMap().getTile(command.destQ, command.destR);
-			this.destination = destTile.getPosition();
+			HexTile<TileData> startTile = world.getMap().getTileFromPosition(unit.position);
+			HexTile<TileData> destTile = world.getMap().getTile(command.destQ, command.destR);
+			this.path = ShortestPathSolver.solve(startTile, destTile);
+			setNextTarget();
+		}
 
-			// TODO replace with pathfinding
-			// angle between the line made by the 2 points and the x-axis
+		private boolean setNextTarget() {
+			HexTile<TileData> current = path.remove(0);
+			unit.updateOccupiedTile(current);
+			destination = current.getPosition();
+			unit.setPosition((int) destination.x, (int) destination.y);
+
+			if (path.isEmpty())
+				return false;
+
+			HexTile<TileData> target = path.get(0);
+			destination = target.getPosition();
+
 			double angle = Math.atan2((destination.y - unit.position.y), destination.x - unit.position.x);
 			currentMovement = new Vector3((float) (unit.movementRange * Math.cos(angle)),
 					(float) (unit.movementRange * Math.sin(angle)), 0);
-		}
 
+			return true;
+		}
 		@Override
 		protected boolean update(float dt) {
 			unit.move(currentMovement);
@@ -84,9 +101,7 @@ public class MoveCommand extends Command {
 					&& Math.abs(unit.position.y - destination.y) < POSITION_EPSILON;
 
 			if (closeEnough) {
-				unit.setPosition((int) destination.x, (int) destination.y);
-				unit.updateOccupiedTile(destTile);
-				return false;
+				return setNextTarget();
 			} else {
 				return true;
 			}
