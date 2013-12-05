@@ -25,8 +25,6 @@ import cloudymoose.childsplay.world.units.Child;
 import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -65,18 +63,12 @@ public class World {
 	public final Set<HexTile<?>> targetableTiles = new HashSet<HexTile<?>>();
 	private Vector3 preferredCameraFocus;
 
-	// Materials
-	private Texture grass, sand;
-
 	// =================================================================================================================
 	// Initialization
 	// =================================================================================================================
 
-	public World(Init initData, AssetManager assetManager) {
+	public World(Init initData) {
 		Gdx.app.log(TAG, "Init data: " + initData.toString());
-
-		grass = assetManager.get("data/grass.png");
-		sand = assetManager.get("data/sand.png");
 
 		createDemoWorld(initData);
 		currentPlayer = localPlayer;
@@ -134,12 +126,12 @@ public class World {
 		int[] areaLimits = new int[] { (width / nbAreas), width - (width / nbAreas) };
 		Gdx.app.log(TAG, "areaLimits: " + areaLimits[0] + " " + areaLimits[1]);
 
-		HexTile<TileData> columnHead = newMap.addValue(0, 0, new TileData(grass));
+		HexTile<TileData> columnHead = newMap.addValue(0, 0, new TileData(TileType.Grass));
 		for (int y = 0; y < height; y++) {
 			areaTiles.get(0).add(columnHead);
 			HexTile<TileData> tmp = columnHead;
 			for (int x = 1 /* The first tile is manually added */; x < width; x++) {
-				TileData tileData = new TileData(grass);
+				TileData tileData = new TileData(TileType.Grass);
 				tmp = tmp.setNeighbor(Direction.Right, tileData);
 				if (x <= areaLimits[0] - 1) {
 					areaTiles.get(0).add(tmp);
@@ -157,7 +149,7 @@ public class World {
 
 				} else {
 					areaTiles.get(1).add(tmp);
-					tileData.setTexture(sand);
+					tileData.type = TileType.Sand;
 
 					if (x == areaLimits[0]) {
 						tileData.addBorders(Direction.Left);
@@ -170,7 +162,7 @@ public class World {
 			}
 			if (y != height - 1) {
 				Direction indentation = y % 2 == 0 ? Direction.DownRight : Direction.DownLeft;
-				columnHead = columnHead.setNeighbor(indentation, new TileData(grass));
+				columnHead = columnHead.setNeighbor(indentation, new TileData(TileType.Grass));
 			}
 		}
 

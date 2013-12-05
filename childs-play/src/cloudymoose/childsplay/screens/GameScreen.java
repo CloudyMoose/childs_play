@@ -26,7 +26,8 @@ public class GameScreen extends FixedTimestepScreen {
 
 	public void init(World world) {
 		this.world = world;
-		renderer = new WorldRenderer(world);
+		renderer = new WorldRenderer(world, game.assetManager);
+		renderer.init();
 		hud = new GameHUD(game, this, world);
 		playerController = new PlayerController(game, renderer, hud);
 		disconnected = false;

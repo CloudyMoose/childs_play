@@ -1,6 +1,7 @@
 package cloudymoose.childsplay.world;
 
 import java.util.EnumSet;
+import java.util.HashMap;
 
 import cloudymoose.childsplay.world.hextiles.Direction;
 import cloudymoose.childsplay.world.hextiles.HexTile;
@@ -10,7 +11,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -22,12 +23,27 @@ public class WorldRenderer {
 	public final World world;
 	public final OrthographicCamera cam = new OrthographicCamera();
 	private final ShapeRenderer debugRenderer = new ShapeRenderer();
-	public static final AssetManager assetManager = new AssetManager();
+	private AssetManager assetManager;
 
 	private static final String TAG = "WorldRenderer";
 
-	public WorldRenderer(World world) {
+	// Materials
+	private Texture conceptKid;
+	private java.util.Map<TileType, Texture> tileTextures;
+
+	public WorldRenderer(World world, AssetManager assetManager) {
 		this.world = world;
+		this.assetManager = assetManager;
+		this.tileTextures = new HashMap<TileType, Texture>();
+	}
+
+	public void init() {
+		Texture grass = assetManager.get("data/grass.png");
+		Texture sand = assetManager.get("data/sand.png");
+		conceptKid = assetManager.get("data/conceptKid.png");
+
+		tileTextures.put(TileType.Grass, grass);
+		tileTextures.put(TileType.Sand, sand);
 	}
 
 	public boolean render(float dt) {
@@ -43,17 +59,15 @@ public class WorldRenderer {
 		sb.begin();
 		sb.setProjectionMatrix(cam.combined);
 		for (HexTile<TileData> tile : world.getMap()) {
-
-			Sprite sprite = tile.value.getSprite(tile);
-			sprite.setColor(Color.WHITE);
+			Color color = Color.WHITE;
 			
 			if (world.targetableTiles.contains(tile)) {
-				sprite.setColor(Color.ORANGE);
+				color = Color.ORANGE;
 			} else if (world.getMap().isControlPoint(tile)) {
-				sprite.setColor(Color.MAGENTA);
+				color = Color.MAGENTA;
 			}
-
-			sprite.draw(sb);
+			
+			this.renderTile(sb, tile, color);
 		}
 
 		sb.end();
@@ -78,21 +92,49 @@ public class WorldRenderer {
 
 			Unit unit = tile.value.getOccupant();
 			if (unit != null) {
-				debugRenderer.begin(ShapeType.Filled);
+				Color color = null;
+
 				if (unit.getPlayerId() == world.getLocalPlayer().id) {
-					debugRenderer.setColor(Color.BLUE);
+					color = Color.BLUE;
 				} else if (unit.getPlayerId() == Player.GAIA_ID) {
-					debugRenderer.setColor(Color.GRAY);
+					color = Color.GRAY;
 				} else {
-					debugRenderer.setColor(Color.RED);
+					color = Color.RED;
 				}
-				debugRenderer.rect(unit.hitbox.x, unit.hitbox.y, unit.hitbox.width, unit.hitbox.height);
+
+				sb.begin();
+				this.renderUnit(sb, unit, color);
+				sb.end();
+
 				debugRenderer.end();
 			}
 
 		}
 
 		return false;
+	}
+
+	private void renderUnit(SpriteBatch sb, Unit unit, Color color) {
+		Texture texture = conceptKid;
+		float aspectRatio = texture.getWidth() / (float) texture.getHeight();
+		sb.setColor(color);
+		sb.draw(texture, unit.hitbox.x, unit.hitbox.y, aspectRatio
+				* unit.hitbox.height, unit.hitbox.height);
+		sb.setColor(Color.WHITE);
+	}
+
+	private void renderTile(SpriteBatch sb, HexTile<TileData> tile, Color color) {
+		float size = Constants.TILE_SIZE;
+		float height = 2 * size;
+		float width = (float) (Math.sqrt(3) / 2f * height);
+
+		Texture texture = this.tileTextures.get(tile.value.type);
+
+		Vector3 position = tile.getPosition();
+		sb.setColor(color);
+		sb.draw(texture, position.x - width / 2, position.y - height / 2,
+				width, height);
+		sb.setColor(Color.WHITE);
 	}
 
 	public void resize(int width, int height) {
