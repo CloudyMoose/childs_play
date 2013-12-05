@@ -2,6 +2,7 @@ package cloudymoose.childsplay.world.commands;
 
 import java.util.List;
 
+import cloudymoose.childsplay.world.Constants;
 import cloudymoose.childsplay.world.ShortestPathSolver;
 import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.World;
@@ -81,8 +82,8 @@ public class MoveCommand extends Command {
 			destination = target.getPosition();
 
 			double angle = Math.atan2((destination.y - actor.position.y), destination.x - actor.position.x);
-			currentMovement = new Vector3((float) (actor.getMovementRange() * Math.cos(angle)),
-					(float) (actor.getMovementRange() * Math.sin(angle)), 0);
+			currentMovement = new Vector3((float) (Constants.UNIT_MOVEMENT_SPEED * Math.cos(angle)),
+					(float) (Constants.UNIT_MOVEMENT_SPEED * Math.sin(angle)), 0);
 
 			return true;
 		}
