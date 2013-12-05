@@ -11,6 +11,13 @@ import com.badlogic.gdx.Gdx;
  */
 public abstract class Command {
 
+	public static final int NO_ACTOR = -1;
+	protected final int actorId;
+
+	public Command(int actorId) {
+		this.actorId = actorId;
+	}
+
 	protected final String TAG = getClass().getSimpleName();
 
 	public abstract CommandRunner execute(World world);

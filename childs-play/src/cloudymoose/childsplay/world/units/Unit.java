@@ -2,6 +2,7 @@ package cloudymoose.childsplay.world.units;
 
 import java.util.List;
 
+import cloudymoose.childsplay.world.Constants;
 import cloudymoose.childsplay.world.Player;
 import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.commands.Command;
@@ -21,9 +22,11 @@ public abstract class Unit {
 
 	public final int maxHealthPoints;
 	private int currentHealthPoints;
-	public final int attackRange;
-	public final int attackDamage;
-	public final int movementRange;
+	private final int attackRange;
+	private final int attackDamage;
+	private final int movementRange;
+
+	private int usedTicketsCount;
 
 	public Unit(int id, HexTile<TileData> tile, int size, int hp, int moveRange, int atkRange, int atkDamage) {
 		position = new Vector3(tile.getPosition());
@@ -38,6 +41,8 @@ public abstract class Unit {
 		attackRange = atkRange;
 		attackDamage = atkDamage;
 		movementRange = moveRange;
+
+		usedTicketsCount = 0;
 
 		tile.value.setOccupant(this);
 	}
@@ -85,7 +90,7 @@ public abstract class Unit {
 	}
 
 	public void attack(Unit target) {
-		target.takeDamage(attackDamage);
+		target.takeDamage(getAttackDamage());
 	}
 
 	protected void takeDamage(int damage) {
@@ -101,5 +106,36 @@ public abstract class Unit {
 	}
 
 	public abstract List<Class<? extends Command>> getSupportedCommands();
+
+	public double getUsedTicketsCount() {
+		return usedTicketsCount;
+	}
+
+	/** Takes efficiency (relative to the number of tickets used by this unit) into account */
+	public int getAttackRange() {
+		return (int) Math.round(attackRange * efficiency());
+	}
+
+	/** Takes efficiency (relative to the number of tickets used by this unit) into account */
+	public int getAttackDamage() {
+		return (int) Math.round(attackDamage * efficiency());
+	}
+
+	/** Takes efficiency (relative to the number of tickets used by this unit) into account */
+	public int getMovementRange() {
+		return (int) Math.round(movementRange * efficiency());
+	}
+
+	protected double efficiency() {
+		return Math.pow(Constants.DIMINISHING_RETURN_BASE, usedTicketsCount);
+	}
+
+	public void useTicket() {
+		usedTicketsCount++;
+	}
+
+	public void resetUsedTicketCount() {
+		usedTicketsCount = 0;
+	}
 
 }

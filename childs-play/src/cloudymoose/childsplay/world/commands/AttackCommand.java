@@ -4,7 +4,6 @@ import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.units.Unit;
 
 public class AttackCommand extends Command {
-	public final int unitId;
 	public final int targetId;
 
 	public AttackCommand() {
@@ -12,7 +11,7 @@ public class AttackCommand extends Command {
 	}
 
 	public AttackCommand(int unitId, int targetId) {
-		this.unitId = unitId;
+		super(unitId);
 		this.targetId = targetId;
 	}
 
@@ -23,14 +22,14 @@ public class AttackCommand extends Command {
 
 	@Override
 	public String toString() {
-		return String.format("Attack unit %d with unit %d", targetId, unitId);
+		return String.format("Attack unit %d with unit %d", targetId, actorId);
 	}
 
 	public static class Builder extends CommandBuilder {
 
 		@Override
 		protected TargetConstraints constraints() {
-			return new TargetConstraints.HasEnemy(false, originTile.value.getOccupant().attackRange, originTile,
+			return new TargetConstraints.HasEnemy(false, originTile.value.getOccupant().getAttackRange(), originTile,
 					originTile.value.getOccupant().getPlayerId());
 		}
 
@@ -42,23 +41,21 @@ public class AttackCommand extends Command {
 	}
 
 	public static class AttackRunner extends CommandRunner {
-		private final Unit attacker;
 		private final Unit target;
 
 		public AttackRunner(AttackCommand command, World world) {
-			super(command);
-			attacker = world.getUnit(command.unitId);
+			super(command, world);
 			target = world.getUnit(command.targetId);
 		}
 
 		@Override
 		protected boolean update(float dt) {
 			// Here we delay applying the command to allow the camera to be repositionned first.
-			if (!attacker.position.equals(preferredCameraFocus)) {
-				preferredCameraFocus = attacker.position;
+			if (!actor.position.equals(preferredCameraFocus)) {
+				preferredCameraFocus = actor.position;
 				return true;
 			}
-			attacker.attack(target);
+			actor.attack(target);
 			return false;
 		}
 

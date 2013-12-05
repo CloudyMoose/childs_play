@@ -6,12 +6,10 @@ import cloudymoose.childsplay.world.ShortestPathSolver;
 import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.hextiles.HexTile;
-import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.math.Vector3;
 
 public class MoveCommand extends Command {
-	public final int unitId;
 	public final int destQ;
 	public final int destR;
 
@@ -28,15 +26,14 @@ public class MoveCommand extends Command {
 	 *            destination tile R coordinate
 	 */
 	public MoveCommand(int unitId, int destQ, int destR) {
-		super();
-		this.unitId = unitId;
+		super(unitId);
 		this.destQ = destQ;
 		this.destR = destR;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Move %d to tile(%d,%d)", unitId, destQ, destR);
+		return String.format("Move %d to tile(%d,%d)", actorId, destQ, destR);
 	}
 
 	@Override
@@ -48,7 +45,7 @@ public class MoveCommand extends Command {
 
 		@Override
 		protected TargetConstraints constraints() {
-			return new TargetConstraints.Empty(true, originTile.value.getOccupant().movementRange, originTile);
+			return new TargetConstraints.Empty(true, originTile.value.getOccupant().getMovementRange(), originTile);
 		}
 
 		@Override
@@ -61,14 +58,12 @@ public class MoveCommand extends Command {
 	public static class MoveRunner extends CommandRunner {
 		private Vector3 destination;
 		private Vector3 currentMovement;
-		private Unit unit;
 		protected final float POSITION_EPSILON = 5f; // Position accuracy
 		private List<HexTile<TileData>> path;
 
 		public MoveRunner(MoveCommand command, World world) {
-			super(command);
-			this.unit = world.getUnit(command.unitId);
-			HexTile<TileData> startTile = world.getMap().getTileFromPosition(unit.position);
+			super(command, world);
+			HexTile<TileData> startTile = world.getMap().getTileFromPosition(actor.position);
 			HexTile<TileData> destTile = world.getMap().getTile(command.destQ, command.destR);
 			this.path = ShortestPathSolver.solve(startTile, destTile);
 			setNextTarget();
@@ -76,29 +71,29 @@ public class MoveCommand extends Command {
 
 		private boolean setNextTarget() {
 			HexTile<TileData> current = path.remove(0);
-			unit.updateOccupiedTile(current);
+			actor.updateOccupiedTile(current);
 			destination = current.getPosition();
-			unit.setPosition((int) destination.x, (int) destination.y);
+			actor.setPosition((int) destination.x, (int) destination.y);
 
-			if (path.isEmpty())
-				return false;
+			if (path.isEmpty()) return false;
 
 			HexTile<TileData> target = path.get(0);
 			destination = target.getPosition();
 
-			double angle = Math.atan2((destination.y - unit.position.y), destination.x - unit.position.x);
-			currentMovement = new Vector3((float) (unit.movementRange * Math.cos(angle)),
-					(float) (unit.movementRange * Math.sin(angle)), 0);
+			double angle = Math.atan2((destination.y - actor.position.y), destination.x - actor.position.x);
+			currentMovement = new Vector3((float) (actor.getMovementRange() * Math.cos(angle)),
+					(float) (actor.getMovementRange() * Math.sin(angle)), 0);
 
 			return true;
 		}
+
 		@Override
 		protected boolean update(float dt) {
-			unit.move(currentMovement);
-			preferredCameraFocus = unit.position;
+			actor.move(currentMovement);
+			preferredCameraFocus = actor.position;
 
-			boolean closeEnough = Math.abs(unit.position.x - destination.x) < POSITION_EPSILON
-					&& Math.abs(unit.position.y - destination.y) < POSITION_EPSILON;
+			boolean closeEnough = Math.abs(actor.position.x - destination.x) < POSITION_EPSILON
+					&& Math.abs(actor.position.y - destination.y) < POSITION_EPSILON;
 
 			if (closeEnough) {
 				return setNextTarget();

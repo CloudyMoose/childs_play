@@ -1,15 +1,24 @@
 package cloudymoose.childsplay.world.commands;
 
+import cloudymoose.childsplay.world.World;
+import cloudymoose.childsplay.world.units.Unit;
+
 import com.badlogic.gdx.math.Vector3;
 
 /** Contains the information required to update the status of the command at each game loop iteration. */
 public abstract class CommandRunner {
 	public final Command command;
+	public final Unit actor;
 	protected boolean running = false;
 	protected Vector3 preferredCameraFocus;
 
-	public CommandRunner(Command command) {
+	public CommandRunner(Command command, World world) {
 		this.command = command;
+		if (command.actorId != Command.NO_ACTOR) {
+			this.actor = world.getUnit(command.actorId);
+		} else {
+			this.actor = null;
+		}
 	}
 
 	public void start() {

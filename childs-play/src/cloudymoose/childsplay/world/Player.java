@@ -1,7 +1,9 @@
 package cloudymoose.childsplay.world;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import cloudymoose.childsplay.world.units.Unit;
 
@@ -17,12 +19,14 @@ public class Player {
 
 	private int unitCreationCount;
 	private int remainingTickets;
+	private final Set<Unit> ticketUsers;
 
 	private int healthPoints;
 	private int resourcePoints;
 
 	public Player(int id) {
 		units = new HashMap<Integer, Unit>();
+		ticketUsers = new HashSet<Unit>();
 		this.id = id;
 		unitCreationCount = 0;
 		healthPoints = 5;
@@ -47,17 +51,20 @@ public class Player {
 	 * 
 	 * @return <code>true</code> if there were tickets left to use.
 	 */
-	public boolean useTicket() {
-		if (remainingTickets <= 0) {
-			return false;
-		} else {
-			remainingTickets -= 1;
-			return true;
+	public void registerTicketUsage(Unit actor) {
+		remainingTickets -= 1;
+		if (actor != null) {
+			actor.useTicket();
+			ticketUsers.add(actor);
 		}
 	}
 
 	public void resetTickets() {
 		remainingTickets = Constants.NB_TICKETS;
+		for (Unit u : ticketUsers) {
+			u.resetUsedTicketCount();
+		}
+		ticketUsers.clear();
 	}
 
 	/** Initialize the NPC player. */

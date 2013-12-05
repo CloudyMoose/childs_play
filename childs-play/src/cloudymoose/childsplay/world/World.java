@@ -324,11 +324,12 @@ public class World {
 	public void runCommand(Command command, boolean replayMode) {
 		Gdx.app.log(TAG, "remainingTickets (before action): " + currentPlayer.getRemainingTickets());
 
-		// Try to use a ticket
-		if (!currentPlayer.useTicket()) return;
+		// See if we can use a ticket
+		if (currentPlayer.getRemainingTickets() <= 0) return;
 
 		// Start the command
 		ongoingCommand = command.execute(this);
+		currentPlayer.registerTicketUsage(ongoingCommand.actor);
 		ongoingCommand.start();
 
 		if (!replayMode) {

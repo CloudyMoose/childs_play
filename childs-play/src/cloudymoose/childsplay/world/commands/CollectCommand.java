@@ -5,11 +5,9 @@ import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 import cloudymoose.childsplay.world.units.AppleTree;
-import cloudymoose.childsplay.world.units.Unit;
 
 public class CollectCommand extends Command {
 
-	public final int unitId;
 	public final int sourceId;
 
 	public CollectCommand() {
@@ -17,7 +15,7 @@ public class CollectCommand extends Command {
 	}
 
 	public CollectCommand(int unitId, int sourceId) {
-		this.unitId = unitId;
+		super(unitId);
 		this.sourceId = sourceId;
 	}
 
@@ -48,19 +46,17 @@ public class CollectCommand extends Command {
 
 	public static class CollectRunner extends CommandRunner {
 		private final Player player;
-		private final Unit unit;
 
 		public CollectRunner(CollectCommand command, World world) {
-			super(command);
-			unit = world.getUnit(command.unitId);
-			player = world.getPlayerById(unit.getPlayerId());
+			super(command, world);
+			player = world.getPlayerById(actor.getPlayerId());
 		}
 
 		@Override
 		protected boolean update(float dt) {
 			// Here we delay applying the command to allow the camera to be repositionned first.
-			if (!unit.position.equals(preferredCameraFocus)) {
-				preferredCameraFocus = unit.position;
+			if (!actor.position.equals(preferredCameraFocus)) {
+				preferredCameraFocus = actor.position;
 				return true;
 			}
 			player.setResourcePoints(player.getResourcePoints() + 1);

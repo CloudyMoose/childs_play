@@ -17,6 +17,7 @@ public class RecruitCommand extends Command {
 	}
 
 	public RecruitCommand(int playerId, int q, int r) {
+		super(Command.NO_ACTOR);
 		this.playerId = playerId;
 		this.tileR = r;
 		this.tileQ = q;
@@ -50,7 +51,7 @@ public class RecruitCommand extends Command {
 		HexTile<TileData> destinationTile;
 
 		public RecruitRunner(RecruitCommand command, World world) {
-			super(command);
+			super(command, world);
 			for (Player p : world.getPlayers()) {
 				if (p.id == command.playerId) {
 					player = p;
