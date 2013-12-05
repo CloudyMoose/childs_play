@@ -11,8 +11,14 @@ public abstract class CommandRunner {
 	public final Unit actor;
 	protected boolean running = false;
 	protected Vector3 preferredCameraFocus;
+	protected boolean autoFocusCamera;
 
 	public CommandRunner(Command command, World world) {
+		this(command, world, true);
+	}
+
+	public CommandRunner(Command command, World world, boolean autoFocusCamera) {
+		this.autoFocusCamera = autoFocusCamera;
 		this.command = command;
 		if (command.actorId != Command.NO_ACTOR) {
 			this.actor = world.getUnit(command.actorId);
@@ -27,7 +33,12 @@ public abstract class CommandRunner {
 
 	public boolean run(float dt) {
 		if (running) {
-			running = update(dt);
+			// Here we delay applying the command to allow the camera to be repositionned first.
+			if (autoFocusCamera && actor != null && !actor.position.equals(preferredCameraFocus)) {
+				preferredCameraFocus = actor.position;
+			} else {
+				running = update(dt);
+			}
 		}
 		return running;
 	}
@@ -40,5 +51,10 @@ public abstract class CommandRunner {
 		return preferredCameraFocus;
 	}
 
+	/**
+	 * Method called at each loop iteration. If {@link #autoFocusCamera} was set to <code>true</code>, the camera will
+	 * be focused on the actor one iteration before calling this method. If the actor is constantly moving, it's better
+	 * to disable the auto focus.
+	 */
 	protected abstract boolean update(float dt);
 }

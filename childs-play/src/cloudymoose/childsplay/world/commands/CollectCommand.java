@@ -54,11 +54,6 @@ public class CollectCommand extends Command {
 
 		@Override
 		protected boolean update(float dt) {
-			// Here we delay applying the command to allow the camera to be repositionned first.
-			if (!actor.position.equals(preferredCameraFocus)) {
-				preferredCameraFocus = actor.position;
-				return true;
-			}
 			player.setResourcePoints(player.getResourcePoints() + 1);
 			return false;
 		}

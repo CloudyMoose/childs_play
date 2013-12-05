@@ -62,7 +62,7 @@ public class MoveCommand extends Command {
 		private List<HexTile<TileData>> path;
 
 		public MoveRunner(MoveCommand command, World world) {
-			super(command, world);
+			super(command, world, false);
 			HexTile<TileData> startTile = world.getMap().getTileFromPosition(actor.position);
 			HexTile<TileData> destTile = world.getMap().getTile(command.destQ, command.destR);
 			this.path = ShortestPathSolver.solve(startTile, destTile);

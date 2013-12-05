@@ -50,11 +50,6 @@ public class AttackCommand extends Command {
 
 		@Override
 		protected boolean update(float dt) {
-			// Here we delay applying the command to allow the camera to be repositionned first.
-			if (!actor.position.equals(preferredCameraFocus)) {
-				preferredCameraFocus = actor.position;
-				return true;
-			}
 			actor.attack(target);
 			return false;
 		}
