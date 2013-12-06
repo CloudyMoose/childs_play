@@ -2,6 +2,7 @@ package cloudymoose.childsplay.world;
 
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Map;
 
 import cloudymoose.childsplay.world.hextiles.Direction;
 import cloudymoose.childsplay.world.hextiles.HexTile;
@@ -24,12 +25,13 @@ public class WorldRenderer {
 	public final OrthographicCamera cam = new OrthographicCamera();
 	private final ShapeRenderer debugRenderer = new ShapeRenderer();
 	private AssetManager assetManager;
+	private final SpriteBatch sb = new SpriteBatch(); // Declared here so that it can be disposed.
 
 	private static final String TAG = "WorldRenderer";
 
 	// Materials
 	private Texture conceptKid;
-	private java.util.Map<TileType, Texture> tileTextures;
+	private Map<TileType, Texture> tileTextures;
 
 	public WorldRenderer(World world, AssetManager assetManager) {
 		this.world = world;
@@ -53,20 +55,18 @@ public class WorldRenderer {
 		}
 
 		// Render background hexagons
-		HexTile<TileData> selectedTile = world.getLocalPlayer().getSelectedTile();
 
-		SpriteBatch sb = new SpriteBatch();
 		sb.begin();
 		sb.setProjectionMatrix(cam.combined);
 		for (HexTile<TileData> tile : world.getMap()) {
 			Color color = Color.WHITE;
-			
+
 			if (world.targetableTiles.contains(tile)) {
 				color = Color.ORANGE;
 			} else if (world.getMap().isControlPoint(tile)) {
 				color = Color.MAGENTA;
 			}
-			
+
 			this.renderTile(sb, tile, color);
 		}
 
@@ -77,6 +77,8 @@ public class WorldRenderer {
 
 		for (HexTile<TileData> tile : world.getMap()) {
 			Vector3 center = tile.getPosition();
+
+			// Drawing area borders
 			debugRenderer.begin(ShapeType.Line);
 
 			// TODO: horrible but w/e
@@ -106,7 +108,6 @@ public class WorldRenderer {
 				this.renderUnit(sb, unit, color);
 				sb.end();
 
-				debugRenderer.end();
 			}
 
 		}
@@ -118,8 +119,7 @@ public class WorldRenderer {
 		Texture texture = conceptKid;
 		float aspectRatio = texture.getWidth() / (float) texture.getHeight();
 		sb.setColor(color);
-		sb.draw(texture, unit.hitbox.x, unit.hitbox.y, aspectRatio
-				* unit.hitbox.height, unit.hitbox.height);
+		sb.draw(texture, unit.hitbox.x, unit.hitbox.y, aspectRatio * unit.hitbox.height, unit.hitbox.height);
 		sb.setColor(Color.WHITE);
 	}
 
@@ -132,8 +132,7 @@ public class WorldRenderer {
 
 		Vector3 position = tile.getPosition();
 		sb.setColor(color);
-		sb.draw(texture, position.x - width / 2, position.y - height / 2,
-				width, height);
+		sb.draw(texture, position.x - width / 2, position.y - height / 2, width, height);
 		sb.setColor(Color.WHITE);
 	}
 
@@ -166,6 +165,7 @@ public class WorldRenderer {
 
 	public void dispose() {
 		debugRenderer.dispose();
+		sb.dispose();
 	}
 
 	private float[][] getEdges(Vector3 center, EnumSet<Direction> borders) {

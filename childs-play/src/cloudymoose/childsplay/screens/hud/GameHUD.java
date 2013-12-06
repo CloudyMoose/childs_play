@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class GameHUD extends AbstractMenuStageManager {
@@ -72,6 +73,7 @@ public class GameHUD extends AbstractMenuStageManager {
 		stage.addActor(labelInfoLog);
 
 		labelPlayerHP = new Label("", getSkin());
+		labelPlayerHP.setAlignment(Align.center);
 		stage.addActor(labelPlayerHP);
 
 		return null; /* We're adding the objects to the scene manually here */
@@ -83,7 +85,11 @@ public class GameHUD extends AbstractMenuStageManager {
 		labelUnitCount.setPosition(0, height - 20);
 		labelTicketCount.setPosition(0, height - 40);
 		labelPhase.setPosition(width - 250, height - 50);
-		labelPlayerHP.setPosition(width / 2, height - 20);
+
+		labelPlayerHP.setPosition(0, height - 30);
+		labelPlayerHP.setWidth(width);
+		labelPlayerHP.setFontScale(1.5f);
+
 		labelInfoLog.setPosition(width / 2, height - 50);
 		btnEnd.setPosition(200, 20);
 		commandMenu.resize(width, height);

@@ -40,34 +40,35 @@ public class CommandMenu extends Group {
 
 	protected void build(Skin uiSkin) {
 		table = new Table();
-		table.debug();
+		// table.debug();
 
 		TextButton btnMove = new TextButton("Move", uiSkin);
 		commandButtons.put(MoveCommand.class, btnMove);
 		btnMove.addListener(new CommandListener(MoveCommand.class));
-		table.add(btnMove).size(80, 40).uniform().spaceBottom(10);
-		table.row();
 
 		TextButton btnAttack = new TextButton("Attack", uiSkin);
 		commandButtons.put(AttackCommand.class, btnAttack);
 		btnAttack.addListener(new CommandListener(AttackCommand.class));
-		table.add(btnAttack).size(80, 40).uniform().spaceBottom(10);
-		table.row();
 
 		TextButton btnRecruit = new TextButton("Recruit", uiSkin);
 		commandButtons.put(RecruitCommand.class, btnRecruit);
 		btnRecruit.addListener(new CommandListener(RecruitCommand.class));
-		table.add(btnRecruit).size(80, 40).uniform().spaceBottom(10);
-		table.row();
 
 		TextButton btnCollect = new TextButton("Collect", uiSkin);
 		commandButtons.put(CollectCommand.class, btnCollect);
 		btnCollect.addListener(new CommandListener(CollectCommand.class));
-		table.add(btnCollect).size(80, 40).uniform().spaceBottom(10);
-		table.row();
 
 		addActor(table);
 		setVisible(false);
+	}
+
+	private void addCommandButtons() {
+		table.clear();
+
+		for (Class<? extends Command> clazz : clickedTile.value.getOccupant().getSupportedCommands()) {
+			table.row();
+			table.add(commandButtons.get(clazz)).size(80, 40).uniform().spaceBottom(10);
+		}
 	}
 
 	public void setClickedTile(HexTile<TileData> selectedTile) {
@@ -77,13 +78,7 @@ public class CommandMenu extends Group {
 	@Override
 	public void setVisible(boolean visible) {
 		if (visible) {
-			for (Class<? extends Command> clazz : clickedTile.value.getOccupant().getSupportedCommands()) {
-				commandButtons.get(clazz).setVisible(true);
-			}
-		} else {
-			for (TextButton tb : commandButtons.values()) {
-				tb.setVisible(false);
-			}
+			addCommandButtons();
 		}
 		super.setVisible(visible);
 	}
