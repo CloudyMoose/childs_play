@@ -110,18 +110,7 @@ public class GameHUD extends AbstractMenuStageManager {
 
 	private void updatePlayerHP() {
 		Player p1 = world.getLocalPlayer();
-		Player p2 = null;
-
-		if (world.getPlayers().size() == 2) {
-			p2 = Player.Gaia();
-		} else {
-			for (Player p : world.getPlayers()) {
-				if (p != p1 && p != Player.Gaia()) {
-					p2 = p;
-					break;
-				}
-			}
-		}
+		Player p2 = world.getEnemyPlayers(p1, true).get(0);
 
 		labelPlayerHP.setText(String.format("%s - %d HP | %d RP                %d RP | %d HP - %s ", p1, p1.getHp(),
 				p1.getResourcePoints(), p2.getResourcePoints(), p2.getHp(), p2));

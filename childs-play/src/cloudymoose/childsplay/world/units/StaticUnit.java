@@ -4,6 +4,7 @@ import cloudymoose.childsplay.world.Player;
 import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
+/** Movement, attack etc is set to 0 */
 public abstract class StaticUnit extends Unit {
 
 	public StaticUnit(Player owner, HexTile<TileData> tile, int size, int hp) {

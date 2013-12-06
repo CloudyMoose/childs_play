@@ -7,7 +7,6 @@ import java.util.List;
 import cloudymoose.childsplay.world.Player;
 import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.commands.AttackCommand;
-import cloudymoose.childsplay.world.commands.CollectCommand;
 import cloudymoose.childsplay.world.commands.Command;
 import cloudymoose.childsplay.world.commands.MoveCommand;
 import cloudymoose.childsplay.world.hextiles.HexTile;
@@ -16,7 +15,7 @@ public class Child extends Unit {
 
 	@SuppressWarnings("unchecked")
 	private static List<Class<? extends Command>> supportedCommands = Collections.unmodifiableList(Arrays.asList(
-			MoveCommand.class, AttackCommand.class, CollectCommand.class));
+			MoveCommand.class, AttackCommand.class));
 
 	public Child(Player owner, HexTile<TileData> position) {
 		super(owner, position, 20, 1, 5, 1, 1);

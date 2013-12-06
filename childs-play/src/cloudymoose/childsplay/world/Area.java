@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import cloudymoose.childsplay.world.hextiles.HexTile;
+import cloudymoose.childsplay.world.units.EnvironmentUnit;
 
 import com.badlogic.gdx.Gdx;
 
@@ -23,14 +24,24 @@ public class Area extends AbstractCollection<HexTile<TileData>> {
 	/** Tiles that have to be occupied to get the control of the area */
 	private final Set<HexTile<TileData>> controlTiles;
 
+	/** Benefits players get by controlling the area */
+	private final Set<EnvironmentUnit> benefitProviders;
+
 	private Player owner;
 	private int controlPoints;
 
 	public Area(Collection<HexTile<TileData>> tiles, List<HexTile<TileData>> controlTiles) {
 		id = areaCount++;
-		controlPoints = controlTiles.size();
+		controlPoints = 0;
 		this.tiles = new HashSet<HexTile<TileData>>(tiles);
 		this.controlTiles = new HashSet<HexTile<TileData>>(controlTiles);
+		this.benefitProviders = new HashSet<EnvironmentUnit>();
+
+		for (HexTile<TileData> tile : tiles) {
+			if (tile.value.isOccupied() && tile.value.getOccupant() instanceof EnvironmentUnit) {
+				benefitProviders.add((EnvironmentUnit) tile.value.getOccupant());
+			}
+		}
 
 		for (HexTile<TileData> tile : tiles) {
 			tile.value.setArea(this);
@@ -67,6 +78,7 @@ public class Area extends AbstractCollection<HexTile<TileData>> {
 		return tiles.size();
 	}
 
+	@Override
 	public String toString() {
 		return "Area " + id;
 	}
@@ -83,7 +95,7 @@ public class Area extends AbstractCollection<HexTile<TileData>> {
 				owner = player;
 				controlPoints = 0;
 			} else {
-				controlPoints -= 1;				
+				controlPoints -= 1;
 			}
 		} else {
 			if (controlPoints < controlTiles.size()) {
@@ -105,7 +117,7 @@ public class Area extends AbstractCollection<HexTile<TileData>> {
 	public boolean isContested() {
 		return controlPoints < controlTiles.size();
 	}
-	
+
 	public String getControlPointStatus() {
 		return "(" + controlPoints + "/" + controlTiles.size() + ")";
 	}
@@ -123,6 +135,12 @@ public class Area extends AbstractCollection<HexTile<TileData>> {
 				return areaStatus + " is under attack";
 			}
 
+		}
+	}
+
+	public void getBenefits(World world) {
+		for (EnvironmentUnit eu : benefitProviders) {
+			eu.doEnvironmentalEffect(world);
 		}
 	}
 }

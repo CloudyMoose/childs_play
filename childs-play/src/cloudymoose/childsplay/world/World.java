@@ -21,6 +21,7 @@ import cloudymoose.childsplay.world.hextiles.Direction;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 import cloudymoose.childsplay.world.units.AppleTree;
 import cloudymoose.childsplay.world.units.Castle;
+import cloudymoose.childsplay.world.units.Catapult;
 import cloudymoose.childsplay.world.units.Child;
 import cloudymoose.childsplay.world.units.Unit;
 
@@ -80,11 +81,7 @@ public class World {
 		map = createEmptyMap(12, 10);
 
 		players = new ArrayList<Player>(initData.nbPlayers + 1);
-
-		// Gaia init
-		Player gaia = Player.Gaia();
-		gaia.addUnit(new AppleTree(map.getTile(4, 2)));
-		players.add(gaia);
+		players.add(Player.Gaia());
 
 		// Other players
 		int idOffset = Player.GAIA_ID + 1;
@@ -166,6 +163,10 @@ public class World {
 			}
 		}
 
+		new Catapult(newMap.getTile(4, 2));
+		new AppleTree(newMap.getTile(5, 2));
+		new AppleTree(newMap.getTile(6, 2));
+
 		Random r = ChildsPlayGame.getRandom();
 		for (int i = 0; i < nbAreas; i++) {
 			int nbControlPoints = 1 + r.nextInt(3);
@@ -219,17 +220,12 @@ public class World {
 
 	/** Environment stuff: area control etc. */
 	private void updateEnvironmentState(float dt) {
-		List<Player> enemyPlayers = new ArrayList<Player>(players);
-		enemyPlayers.remove(currentPlayer);
-		enemyPlayers.remove(Player.Gaia());
 		// Do whatever each area controlled by the player has to do
 		Set<Area> areaSet = new HashSet<Area>();
 		for (Area a : map.areas) {
 			if (a.getOwner() == currentPlayer && !a.isContested()) {
+				a.getBenefits(this);
 				areaSet.add(a);
-				for (Player p : enemyPlayers) {
-					p.hit();
-				}
 			}
 		}
 
@@ -390,7 +386,7 @@ public class World {
 				// Single player (current + GAIA): we still want to end when the NPCs are defeated
 				continue;
 			}
-			if (p.units.isEmpty() || p.getHp() == 0) return true;
+			if (p.getHp() == 0) return true;
 		}
 		return false;
 	}
@@ -455,6 +451,22 @@ public class World {
 			if (p.id == id) return p;
 		}
 		return null;
+	}
+
+	/**
+	 * Returns the list of enemies of the player
+	 * 
+	 * @param p1
+	 *            player that will have his enemies listed
+	 * @param orGaia
+	 *            if <code>true</code>, at least Gaia will be returned in the list (ignored otherwise)
+	 */
+	public List<Player> getEnemyPlayers(Player p1, boolean orGaia) {
+		List<Player> enemyPlayers = new ArrayList<Player>(players);
+		enemyPlayers.remove(p1);
+		enemyPlayers.remove(Player.Gaia());
+		if (orGaia && enemyPlayers.isEmpty()) enemyPlayers.add(Player.Gaia());
+		return enemyPlayers;
 	}
 
 }
