@@ -28,9 +28,9 @@ public abstract class Unit {
 
 	private int usedTicketsCount;
 
-	public Unit(int id, HexTile<TileData> tile, int size, int hp, int moveRange, int atkRange, int atkDamage) {
-		position = new Vector3(tile.getPosition());
-		occupiedTile = tile;
+	public Unit(int id, int size, int hp, int moveRange, int atkRange, int atkDamage) {
+		position = new Vector3(0, 0, 0);
+		occupiedTile = null;
 		this.id = id;
 		this.size = size;
 		hitbox = new Rectangle(0, 0, size, size);
@@ -43,18 +43,22 @@ public abstract class Unit {
 		movementRange = moveRange;
 
 		usedTicketsCount = 0;
-
-		tile.value.setOccupant(this);
 	}
 
-	public Unit(Player owner, HexTile<TileData> tile, int size, int hp, int moveRange, int atkRange, int atkDamage) {
-		this(owner.generateUnitId(), tile, size, hp, moveRange, atkRange, atkDamage);
+	public Unit(Player owner, int size, int hp, int moveRange, int atkRange, int atkDamage) {
+		this(owner.generateUnitId(), size, hp, moveRange, atkRange, atkDamage);
 	}
 
 	/** Update the position of the center and the hitbox */
 	public void setPosition(int x, int y) {
 		position.set(x, y, 0);
 		hitbox.setCenter(x, y);
+	}
+
+	/** Update the position of the center and the hitbox */
+	public void setPosition(Vector3 newPosition) {
+		position.set(newPosition.x, newPosition.y, 0);
+		hitbox.setCenter(newPosition.x, newPosition.y);
 	}
 
 	public void move(Vector3 motion) {
@@ -136,6 +140,19 @@ public abstract class Unit {
 
 	public void resetUsedTicketCount() {
 		usedTicketsCount = 0;
+	}
+
+	/** Convenience method to set the tile and return the {@link Unit} instance */
+	public Unit onTile(HexTile<TileData> tile) {
+		if (occupiedTile != null) {
+			occupiedTile.value.setOccupant(null);
+		}
+
+		occupiedTile = tile;
+		tile.value.setOccupant(this);
+		setPosition(tile.getPosition());
+
+		return this;
 	}
 
 }

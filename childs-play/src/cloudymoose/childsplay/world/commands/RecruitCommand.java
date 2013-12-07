@@ -69,7 +69,7 @@ public class RecruitCommand extends Command {
 				return true;
 			}
 			player.setResourcePoints(player.getResourcePoints() - Child.getCost());
-			player.addUnit(new Child(player, destinationTile));
+			player.addUnit(new Child(player).onTile(destinationTile));
 			return false;
 		}
 

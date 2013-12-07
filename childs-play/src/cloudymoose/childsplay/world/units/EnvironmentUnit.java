@@ -3,16 +3,14 @@ package cloudymoose.childsplay.world.units;
 import java.util.List;
 
 import cloudymoose.childsplay.world.Player;
-import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.commands.Command;
-import cloudymoose.childsplay.world.hextiles.HexTile;
 
 /** Units that give some benefits to the player controlling the area they are in. */
 public abstract class EnvironmentUnit extends StaticUnit {
 
-	public EnvironmentUnit(HexTile<TileData> tile) {
-		super(Player.Gaia(), tile, 25, 1);
+	public EnvironmentUnit() {
+		super(Player.Gaia(), 25, 1);
 	}
 
 	@Override

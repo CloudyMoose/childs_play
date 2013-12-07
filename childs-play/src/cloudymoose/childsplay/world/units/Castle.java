@@ -5,10 +5,8 @@ import java.util.Collections;
 import java.util.List;
 
 import cloudymoose.childsplay.world.Player;
-import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.commands.Command;
 import cloudymoose.childsplay.world.commands.RecruitCommand;
-import cloudymoose.childsplay.world.hextiles.HexTile;
 
 public class Castle extends StaticUnit {
 
@@ -21,8 +19,8 @@ public class Castle extends StaticUnit {
 
 	private Player owner;
 
-	public Castle(Player owner, HexTile<TileData> tile) {
-		super(owner, tile, 25, 1);
+	public Castle(Player owner) {
+		super(owner, 25, 1);
 		this.owner = owner;
 	}
 

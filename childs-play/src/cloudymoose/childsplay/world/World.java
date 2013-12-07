@@ -96,13 +96,13 @@ public class World {
 			int r;
 			if (i == 1) {
 				r = 1;
-				player.addUnit(new Castle(player, map.getTile(4, -2)));
+				player.addUnit(new Castle(player).onTile(map.getTile(4, -2)));
 			} else {
 				r = 13;
-				player.addUnit(new Castle(player, map.getTile(4, 12)));
+				player.addUnit(new Castle(player).onTile(map.getTile(4, 12)));
 			}
-			player.addUnit(new Child(player, map.getTile(1, r)));
-			player.addUnit(new Child(player, map.getTile(7, r - 3)));
+			player.addUnit(new Child(player).onTile(map.getTile(1, r)));
+			player.addUnit(new Child(player).onTile(map.getTile(7, r - 3)));
 
 			player.setResourcePoints(Constants.STARTING_RESOURCE_POINTS);
 
@@ -146,9 +146,9 @@ public class World {
 
 				if (tmp.getQ() == 4 && tmp.getR() == currentArea * 5) {
 					if (currentArea % 2 == 0) {
-						new AppleTree(tmp);
+						new AppleTree().onTile(tmp);
 					} else {
-						new Catapult(tmp);
+						new Catapult().onTile(tmp);
 					}
 				}
 
