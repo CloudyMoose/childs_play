@@ -14,5 +14,6 @@ public class Constants {
 	public static final int NB_MAP_AREAS = 3;
 
 	// Texture paths
-	public static final String SKIN_JSON_PATH = "uiskin.json";
+	public static final String MENU_SKIN_JSON_PATH = "menu_skin/uiskin.json";
+	public static final String GAME_ATLAS_PATH = "game/pack.atlas";
 }

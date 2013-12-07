@@ -1,0 +1,193 @@
+pack.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+big_ball_of_violence
+  rotate: false
+  xy: 384, 390
+  size: 124, 63
+  orig: 128, 63
+  offset: 3, 0
+  index: 14
+big_ball_of_violence
+  rotate: false
+  xy: 124, 516
+  size: 118, 59
+  orig: 128, 63
+  offset: 6, 0
+  index: 9
+big_ball_of_violence
+  rotate: false
+  xy: 250, 455
+  size: 120, 63
+  orig: 128, 63
+  offset: 6, 0
+  index: 10
+sand
+  rotate: false
+  xy: 244, 2
+  size: 128, 126
+  orig: 128, 128
+  offset: 0, 1
+  index: -1
+big_ball_of_violence
+  rotate: false
+  xy: 374, 197
+  size: 128, 61
+  orig: 128, 63
+  offset: 0, 0
+  index: 24
+big_ball_of_violence
+  rotate: false
+  xy: 2, 443
+  size: 124, 63
+  orig: 128, 63
+  offset: 3, 0
+  index: 20
+big_ball_of_violence
+  rotate: false
+  xy: 390, 260
+  size: 120, 63
+  orig: 128, 63
+  offset: 6, 0
+  index: 4
+big_ball_of_violence
+  rotate: false
+  xy: 258, 325
+  size: 126, 63
+  orig: 128, 63
+  offset: 2, 0
+  index: 17
+big_ball_of_violence
+  rotate: false
+  xy: 244, 130
+  size: 128, 63
+  orig: 128, 63
+  offset: 0, 0
+  index: 13
+big_ball_of_violence
+  rotate: false
+  xy: 386, 325
+  size: 124, 63
+  orig: 128, 63
+  offset: 3, 0
+  index: 8
+grass
+  rotate: false
+  xy: 2, 315
+  size: 126, 126
+  orig: 128, 128
+  offset: 1, 1
+  index: -1
+big_ball_of_violence
+  rotate: false
+  xy: 130, 321
+  size: 126, 63
+  orig: 128, 63
+  offset: 2, 0
+  index: 23
+conceptKid
+  rotate: false
+  xy: 2, 2
+  size: 240, 248
+  orig: 256, 256
+  offset: 8, 4
+  index: -1
+big_ball_of_violence
+  rotate: false
+  xy: 2, 573
+  size: 118, 59
+  orig: 128, 63
+  offset: 6, 0
+  index: 3
+big_ball_of_violence
+  rotate: false
+  xy: 2, 508
+  size: 120, 63
+  orig: 128, 63
+  offset: 6, 0
+  index: 16
+big_ball_of_violence
+  rotate: false
+  xy: 374, 2
+  size: 128, 63
+  orig: 128, 63
+  offset: 0, 0
+  index: 7
+big_ball_of_violence
+  rotate: false
+  xy: 132, 258
+  size: 128, 61
+  orig: 128, 63
+  offset: 0, 0
+  index: 12
+big_ball_of_violence
+  rotate: false
+  xy: 128, 451
+  size: 120, 63
+  orig: 128, 63
+  offset: 6, 0
+  index: 22
+big_ball_of_violence
+  rotate: false
+  xy: 258, 390
+  size: 124, 63
+  orig: 128, 63
+  offset: 3, 0
+  index: 2
+big_ball_of_violence
+  rotate: false
+  xy: 374, 67
+  size: 128, 63
+  orig: 128, 63
+  offset: 0, 0
+  index: 19
+big_ball_of_violence
+  rotate: false
+  xy: 372, 516
+  size: 118, 59
+  orig: 128, 63
+  offset: 6, 0
+  index: 15
+big_ball_of_violence
+  rotate: false
+  xy: 130, 386
+  size: 126, 63
+  orig: 128, 63
+  offset: 2, 0
+  index: 11
+big_ball_of_violence
+  rotate: false
+  xy: 244, 195
+  size: 128, 61
+  orig: 128, 63
+  offset: 0, 0
+  index: 6
+big_ball_of_violence
+  rotate: false
+  xy: 372, 455
+  size: 118, 59
+  orig: 128, 63
+  offset: 6, 0
+  index: 21
+big_ball_of_violence
+  rotate: false
+  xy: 262, 260
+  size: 126, 63
+  orig: 128, 63
+  offset: 2, 0
+  index: 5
+big_ball_of_violence
+  rotate: false
+  xy: 374, 132
+  size: 128, 63
+  orig: 128, 63
+  offset: 0, 0
+  index: 1
+big_ball_of_violence
+  rotate: false
+  xy: 2, 252
+  size: 128, 61
+  orig: 128, 63
+  offset: 0, 0
+  index: 18

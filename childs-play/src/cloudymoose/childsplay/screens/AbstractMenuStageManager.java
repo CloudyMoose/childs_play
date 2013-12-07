@@ -64,7 +64,7 @@ public abstract class AbstractMenuStageManager {
 
 	public Skin getSkin() {
 		if (MENU_SKIN == null) {
-			MENU_SKIN = game.assetManager.get(Constants.SKIN_JSON_PATH);
+			MENU_SKIN = game.assetManager.get(Constants.MENU_SKIN_JSON_PATH);
 		}
 		return MENU_SKIN;
 	}

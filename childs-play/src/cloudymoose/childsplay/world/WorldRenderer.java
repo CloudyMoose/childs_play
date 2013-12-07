@@ -12,8 +12,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
@@ -30,22 +32,24 @@ public class WorldRenderer {
 	private static final String TAG = "WorldRenderer";
 
 	// Materials
-	private Texture conceptKid;
-	private Map<TileType, Texture> tileTextures;
+	private TextureRegion conceptKid;
+	private Map<TileType, TextureRegion> tileTextures;
+	private Animation bbov;
+	private float stateTime = 0.1f;
 
 	public WorldRenderer(World world, AssetManager assetManager) {
 		this.world = world;
 		this.assetManager = assetManager;
-		this.tileTextures = new HashMap<TileType, Texture>();
+		this.tileTextures = new HashMap<TileType, TextureRegion>();
 	}
 
 	public void init() {
-		Texture grass = assetManager.get("data/grass.png");
-		Texture sand = assetManager.get("data/sand.png");
-		conceptKid = assetManager.get("data/conceptKid.png");
+		TextureAtlas atlas = assetManager.get(Constants.GAME_ATLAS_PATH);
 
-		tileTextures.put(TileType.Grass, grass);
-		tileTextures.put(TileType.Sand, sand);
+		bbov = new Animation(0.05f, atlas.findRegions("big_ball_of_violence"));
+		conceptKid = atlas.findRegion("conceptKid");
+		tileTextures.put(TileType.Grass, atlas.findRegion("grass"));
+		tileTextures.put(TileType.Sand, atlas.findRegion("sand"));
 	}
 
 	public boolean render(float dt) {
@@ -58,6 +62,16 @@ public class WorldRenderer {
 
 		sb.begin();
 		sb.setProjectionMatrix(cam.combined);
+
+		/*
+		 * // Draw the big ball of violence stateTime += dt;
+		 * 
+		 * TextureRegion currentFrame = bbov.getKeyFrame(stateTime, true);
+		 * 
+		 * sb.draw(currentFrame, world.getMap().getTile(0, 0).getPosition().x, world.getMap().getTile(0,
+		 * 0).getPosition().x);
+		 */
+
 		for (HexTile<TileData> tile : world.getMap()) {
 			Color color = Color.WHITE;
 
@@ -116,10 +130,10 @@ public class WorldRenderer {
 	}
 
 	private void renderUnit(SpriteBatch sb, Unit unit, Color color) {
-		Texture texture = conceptKid;
-		float aspectRatio = texture.getWidth() / (float) texture.getHeight();
+		TextureRegion textureRegion = conceptKid;
+		float aspectRatio = textureRegion.getRegionWidth() / (float) textureRegion.getRegionHeight();
 		sb.setColor(color);
-		sb.draw(texture, unit.hitbox.x, unit.hitbox.y, aspectRatio * unit.hitbox.height, unit.hitbox.height);
+		sb.draw(textureRegion, unit.hitbox.x, unit.hitbox.y, aspectRatio * unit.hitbox.height, unit.hitbox.height);
 		sb.setColor(Color.WHITE);
 	}
 
@@ -128,11 +142,9 @@ public class WorldRenderer {
 		float height = 2 * size;
 		float width = (float) (Math.sqrt(3) / 2f * height);
 
-		Texture texture = this.tileTextures.get(tile.value.type);
-
 		Vector3 position = tile.getPosition();
 		sb.setColor(color);
-		sb.draw(texture, position.x - width / 2, position.y - height / 2, width, height);
+		sb.draw(tileTextures.get(tile.value.type), position.x - width / 2, position.y - height / 2, width, height);
 		sb.setColor(Color.WHITE);
 	}
 

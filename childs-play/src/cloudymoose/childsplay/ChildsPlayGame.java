@@ -21,7 +21,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class ChildsPlayGame extends Game {
@@ -106,10 +106,8 @@ public class ChildsPlayGame extends Game {
 	 */
 	private static AssetManager initializeAssetManager() {
 		AssetManager am = new AssetManager();
-		am.load(Constants.SKIN_JSON_PATH, Skin.class);
-		am.load("data/grass.png", Texture.class);
-		am.load("data/sand.png", Texture.class);
-		am.load("data/conceptKid.png", Texture.class);
+		am.load(Constants.MENU_SKIN_JSON_PATH, Skin.class);
+		am.load(Constants.GAME_ATLAS_PATH, TextureAtlas.class);
 		am.finishLoading();
 		return am;
 	}
