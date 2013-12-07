@@ -12,7 +12,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -34,8 +33,8 @@ public class WorldRenderer {
 	// Materials
 	private TextureRegion conceptKid;
 	private Map<TileType, TextureRegion> tileTextures;
-	private Animation bbov;
-	private float stateTime = 0.1f;
+
+	private AnimationRunner animationRunner;
 
 	public WorldRenderer(World world, AssetManager assetManager) {
 		this.world = world;
@@ -45,8 +44,8 @@ public class WorldRenderer {
 
 	public void init() {
 		TextureAtlas atlas = assetManager.get(Constants.GAME_ATLAS_PATH);
+		animationRunner = new AnimationRunner(atlas);
 
-		bbov = new Animation(0.05f, atlas.findRegions("big_ball_of_violence"));
 		conceptKid = atlas.findRegion("conceptKid");
 		tileTextures.put(TileType.Grass, atlas.findRegion("grass"));
 		tileTextures.put(TileType.Sand, atlas.findRegion("sand"));
@@ -62,15 +61,6 @@ public class WorldRenderer {
 
 		sb.begin();
 		sb.setProjectionMatrix(cam.combined);
-
-		/*
-		 * // Draw the big ball of violence stateTime += dt;
-		 * 
-		 * TextureRegion currentFrame = bbov.getKeyFrame(stateTime, true);
-		 * 
-		 * sb.draw(currentFrame, world.getMap().getTile(0, 0).getPosition().x, world.getMap().getTile(0,
-		 * 0).getPosition().x);
-		 */
 
 		for (HexTile<TileData> tile : world.getMap()) {
 			Color color = Color.WHITE;
@@ -126,7 +116,19 @@ public class WorldRenderer {
 
 		}
 
-		return false;
+		if (animationRunner.hasOngoingAnimation()) {
+			boolean block;
+			sb.begin();
+			block = animationRunner.run(dt, sb);
+			sb.end();
+			return block;
+		} else {
+			return false;
+		}
+	}
+
+	public void addAnimationData(AnimationData data) {
+		animationRunner.addAnimationData(data);
 	}
 
 	private void renderUnit(SpriteBatch sb, Unit unit, Color color) {

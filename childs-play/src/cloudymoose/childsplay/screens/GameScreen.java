@@ -82,13 +82,12 @@ public class GameScreen extends FixedTimestepScreen {
 
 		if (!waitingForVisualEffect) {
 			hud.setButtonsEnabled(true);
-			
+
 			if (world.isEndGameState()) {
 				boolean isWinner = (world.getCurrentPlayer() == world.getLocalPlayer());
 				game.endGame(isWinner);
 				return;
 			}
-
 
 			switch (world.getPhase()) {
 			case ReplayEnvironment:
@@ -108,6 +107,7 @@ public class GameScreen extends FixedTimestepScreen {
 			}
 
 			world.fixedUpdate(dt);
+			renderer.addAnimationData(world.getOngoingAnimationData());
 		} else {
 			hud.setButtonsEnabled(false);
 		}

@@ -8,6 +8,7 @@ import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.commands.Command;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
@@ -122,7 +123,10 @@ public abstract class Unit {
 
 	/** Takes efficiency (relative to the number of tickets used by this unit) into account */
 	public int getAttackDamage() {
-		return (int) Math.round(attackDamage * efficiency());
+		double rawAd = Math.round(attackDamage * efficiency());
+		Gdx.app.log("AD Calculation", String.format("tickets: %d, efficiency: %f, rawAd: %f, rounded: %d",
+				usedTicketsCount, efficiency(), rawAd, (int) rawAd));
+		return (int) rawAd;
 	}
 
 	/** Takes efficiency (relative to the number of tickets used by this unit) into account */

@@ -1,5 +1,6 @@
 package cloudymoose.childsplay.world.commands;
 
+import cloudymoose.childsplay.world.AnimationData;
 import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.units.Unit;
 
@@ -57,4 +58,8 @@ public abstract class CommandRunner {
 	 * to disable the auto focus.
 	 */
 	protected abstract boolean update(float dt);
+
+	public AnimationData getAnimationData() {
+		return null;
+	}
 }

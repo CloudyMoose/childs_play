@@ -81,6 +81,7 @@ public class World {
 
 		players = new ArrayList<Player>(initData.nbPlayers + 1);
 		players.add(Player.Gaia());
+		Player.Gaia().addUnit(new Child(Player.Gaia()).onTile(map.getTile(4, 3)));
 
 		// Players
 		int idOffset = Player.GAIA_ID + 1;
@@ -191,7 +192,10 @@ public class World {
 		if (ongoingCommand != null) {
 			boolean running = ongoingCommand.run(dt);
 			preferredCameraFocus = ongoingCommand.getPreferredCameraFocus();
+
 			if (!running) { // The command just stopped
+				currentPlayer.registerTicketUsage(ongoingCommand.actor);
+
 				preferredCameraFocus = null;
 				ongoingCommand = null;
 
@@ -209,6 +213,11 @@ public class World {
 				}
 			}
 		}
+	}
+
+	public AnimationData getOngoingAnimationData() {
+		if (ongoingCommand == null) return null;
+		return ongoingCommand.getAnimationData();
 	}
 
 	/** Environment stuff: area control etc. */
@@ -313,12 +322,11 @@ public class World {
 	public void runCommand(Command command, boolean replayMode) {
 		Gdx.app.log(TAG, "remainingTickets (before action): " + currentPlayer.getRemainingTickets());
 
-		// See if we can use a ticket
+		// See if we can use a ticket. It is actually counted when the command ends
 		if (currentPlayer.getRemainingTickets() <= 0) return;
 
 		// Start the command
 		ongoingCommand = command.execute(this);
-		currentPlayer.registerTicketUsage(ongoingCommand.actor);
 		ongoingCommand.start();
 
 		if (!replayMode) {
@@ -384,6 +392,22 @@ public class World {
 		return false;
 	}
 
+	/**
+	 * Returns the list of enemies of the player
+	 * 
+	 * @param p1
+	 *            player that will have his enemies listed
+	 * @param orGaia
+	 *            if <code>true</code>, at least Gaia will be returned in the list (ignored otherwise)
+	 */
+	public List<Player> getEnemyPlayers(Player p1, boolean orGaia) {
+		List<Player> enemyPlayers = new ArrayList<Player>(players);
+		enemyPlayers.remove(p1);
+		enemyPlayers.remove(Player.Gaia());
+		if (orGaia && enemyPlayers.isEmpty()) enemyPlayers.add(Player.Gaia());
+		return enemyPlayers;
+	}
+
 	// =================================================================================================================
 	// Getters and Setters
 	// =================================================================================================================
@@ -444,22 +468,6 @@ public class World {
 			if (p.id == id) return p;
 		}
 		return null;
-	}
-
-	/**
-	 * Returns the list of enemies of the player
-	 * 
-	 * @param p1
-	 *            player that will have his enemies listed
-	 * @param orGaia
-	 *            if <code>true</code>, at least Gaia will be returned in the list (ignored otherwise)
-	 */
-	public List<Player> getEnemyPlayers(Player p1, boolean orGaia) {
-		List<Player> enemyPlayers = new ArrayList<Player>(players);
-		enemyPlayers.remove(p1);
-		enemyPlayers.remove(Player.Gaia());
-		if (orGaia && enemyPlayers.isEmpty()) enemyPlayers.add(Player.Gaia());
-		return enemyPlayers;
 	}
 
 }
