@@ -10,13 +10,18 @@ import cloudymoose.childsplay.world.hextiles.Direction;
 import cloudymoose.childsplay.world.hextiles.HexGrid;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
+import com.badlogic.gdx.utils.Array;
+
 public class WorldMap extends HexGrid<TileData> {
 
-	public final Area[] areas;
+	public final Array<Area> areas = new Array<Area>(Area.class);
 
-	public WorldMap(int nbAreas) {
+	public WorldMap() {
 		super(Constants.TILE_SIZE);
-		areas = new Area[nbAreas];
+	}
+
+	public void setAreas(Area... areas) {
+		this.areas.addAll(areas);
 	}
 
 	public Set<HexTile<TileData>> findTiles(TargetConstraints targetConstraints) {

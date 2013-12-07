@@ -7,10 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Queue;
-import java.util.Random;
 import java.util.Set;
 
-import cloudymoose.childsplay.ChildsPlayGame;
 import cloudymoose.childsplay.networking.Message.Init;
 import cloudymoose.childsplay.networking.Message.TurnRecap;
 import cloudymoose.childsplay.world.commands.Command;
@@ -27,6 +25,7 @@ import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Holds the state of the units, map, etc. It doesn't do anything on its own. It can start running a {@link Command} by
@@ -78,12 +77,12 @@ public class World {
 	/** TODO: will be replaced by a proper initialization from the map info */
 	private void createDemoWorld(Init initData) {
 		Player.setGaia(new Player(Player.GAIA_ID));
-		map = createEmptyMap(12, 10);
+		map = createEmptyMap(15, 9);
 
 		players = new ArrayList<Player>(initData.nbPlayers + 1);
 		players.add(Player.Gaia());
 
-		// Other players
+		// Players
 		int idOffset = Player.GAIA_ID + 1;
 		for (int i = idOffset; i < initData.nbPlayers + idOffset; i++) {
 			Player player;
@@ -99,8 +98,8 @@ public class World {
 				r = 1;
 				player.addUnit(new Castle(player, map.getTile(4, -2)));
 			} else {
-				r = 9;
-				player.addUnit(new Castle(player, map.getTile(5, 9)));
+				r = 13;
+				player.addUnit(new Castle(player, map.getTile(4, 12)));
 			}
 			player.addUnit(new Child(player, map.getTile(1, r)));
 			player.addUnit(new Child(player, map.getTile(7, r - 3)));
@@ -112,71 +111,65 @@ public class World {
 	}
 
 	private WorldMap createEmptyMap(int width, int height) {
-		final int nbAreas = Constants.NB_MAP_AREAS;
-		WorldMap newMap = new WorldMap(nbAreas);
+		final int nbAreas = 3;
+		WorldMap newMap = new WorldMap();
 
 		List<List<HexTile<TileData>>> areaTiles = new ArrayList<List<HexTile<TileData>>>(nbAreas);
-		areaTiles.add(new ArrayList<HexTile<TileData>>());
-		areaTiles.add(new ArrayList<HexTile<TileData>>());
-		areaTiles.add(new ArrayList<HexTile<TileData>>());
+		Array<Integer> areaLimits = new Array<Integer>(nbAreas);
 
-		int[] areaLimits = new int[] { (width / nbAreas), width - (width / nbAreas) };
-		Gdx.app.log(TAG, "areaLimits: " + areaLimits[0] + " " + areaLimits[1]);
-
-		HexTile<TileData> columnHead = newMap.addValue(0, 0, new TileData(TileType.Grass));
-		for (int y = 0; y < height; y++) {
-			areaTiles.get(0).add(columnHead);
-			HexTile<TileData> tmp = columnHead;
-			for (int x = 1 /* The first tile is manually added */; x < width; x++) {
-				TileData tileData = new TileData(TileType.Grass);
-				tmp = tmp.setNeighbor(Direction.Right, tileData);
-				if (x <= areaLimits[0] - 1) {
-					areaTiles.get(0).add(tmp);
-					if (x == areaLimits[0] - 1) {
-						tileData.addBorders(Direction.Right);
-						if (y % 2 == 1) tileData.addBorders(Direction.UpRight, Direction.DownRight);
-					}
-				} else if (x >= areaLimits[1]) {
-					areaTiles.get(2).add(tmp);
-					// tileData.color = Color.MAGENTA;
-					if (x == areaLimits[1]) {
-						tileData.addBorders(Direction.Left);
-						if (y % 2 == 0) tileData.addBorders(Direction.UpLeft, Direction.DownLeft);
-					}
-
-				} else {
-					areaTiles.get(1).add(tmp);
-					tileData.type = TileType.Sand;
-
-					if (x == areaLimits[0]) {
-						tileData.addBorders(Direction.Left);
-						if (y % 2 == 0) tileData.addBorders(Direction.UpLeft, Direction.DownLeft);
-					} else if (x == areaLimits[1] - 1) {
-						tileData.addBorders(Direction.Right);
-						if (y % 2 == 1) tileData.addBorders(Direction.UpRight, Direction.DownRight);
-					}
-				}
-			}
-			if (y != height - 1) {
-				Direction indentation = y % 2 == 0 ? Direction.DownRight : Direction.DownLeft;
-				columnHead = columnHead.setNeighbor(indentation, new TileData(TileType.Grass));
-			}
+		for (int i = 0; i < nbAreas; i++) {
+			areaTiles.add(new ArrayList<HexTile<TileData>>());
+			areaLimits.add((width * (i + 1) / nbAreas) - 1);
 		}
 
-		new Catapult(newMap.getTile(4, 2));
-		new AppleTree(newMap.getTile(5, 2));
-		new AppleTree(newMap.getTile(6, 2));
+		Gdx.app.log(TAG, "areaLimits: " + areaLimits);
 
-		Random r = ChildsPlayGame.getRandom();
-		for (int i = 0; i < nbAreas; i++) {
-			int nbControlPoints = 1 + r.nextInt(3);
-			List<HexTile<TileData>> pickPool = new LinkedList<HexTile<TileData>>(areaTiles.get(i));
-			List<HexTile<TileData>> controlPoints = new ArrayList<HexTile<TileData>>(nbControlPoints);
-			for (int j = 0; j < nbControlPoints; j++) {
-				controlPoints.add(pickPool.remove(r.nextInt(pickPool.size())));
+		List<HexTile<TileData>> controlTiles = new ArrayList<HexTile<TileData>>();
+		TileType tileType = TileType.Grass;
+		HexTile<TileData> columnHead = newMap.addValue(0, 0, new TileData(tileType));
+		int currentArea = 0;
+		for (int x = 0; x < width; x++) {
+			boolean lastColOfArea = areaLimits.contains(x, false);
+			areaTiles.get(currentArea).add(columnHead);
+			HexTile<TileData> tmp = columnHead;
+
+			// Creation of each tile of the column
+			for (int y = 1; y < height; y++) {
+				TileData tileData = new TileData(tileType);
+				tmp = tmp.setNeighbor(y % 2 == 0 ? Direction.DownLeft : Direction.DownRight, tileData);
+				areaTiles.get(currentArea).add(tmp);
+
+				if ((tmp.getQ() == 3 && tmp.getR() == 1 + currentArea * 5)
+						|| (tmp.getQ() == 5 && tmp.getR() == currentArea * 5)) {
+					controlTiles.add(tmp);
+				}
+
+				if (tmp.getQ() == 4 && tmp.getR() == currentArea * 5) {
+					if (currentArea % 2 == 0) {
+						new AppleTree(tmp);
+					} else {
+						new Catapult(tmp);
+					}
+				}
+
+				if (lastColOfArea) {
+					// Add borders
+					tileData.addBorders(Direction.Right);
+					if (y % 2 == 1) tileData.addBorders(Direction.UpRight, Direction.DownRight);
+				}
+
 			}
-			newMap.areas[i] = new Area(areaTiles.get(i), controlPoints);
-			Gdx.app.debug(TAG, newMap.areas[i].toString() + " " + controlPoints);
+
+			if (lastColOfArea) {
+				newMap.areas.add(new Area(areaTiles.get(currentArea), controlTiles));
+				controlTiles.clear();
+				currentArea += 1;
+			}
+
+			if (x < width - 1) {
+				tileType = ((currentArea) % 2 == 0 ? TileType.Grass : TileType.Sand);
+				columnHead = columnHead.setNeighbor(Direction.Right, new TileData(tileType));
+			}
 		}
 
 		return newMap;

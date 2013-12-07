@@ -13,7 +13,7 @@ public class Catapult extends EnvironmentUnit {
 
 	@Override
 	public String toString() {
-		return "Catapult" + id;
+		return "Catapult " + id;
 	}
 
 	@Override
