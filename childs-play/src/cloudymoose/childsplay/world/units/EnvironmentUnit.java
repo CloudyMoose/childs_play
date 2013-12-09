@@ -10,7 +10,7 @@ import cloudymoose.childsplay.world.commands.Command;
 public abstract class EnvironmentUnit extends StaticUnit {
 
 	public EnvironmentUnit() {
-		super(Player.Gaia(), 25, 1);
+		super(Player.Gaia(), 45, 1);
 	}
 
 	@Override

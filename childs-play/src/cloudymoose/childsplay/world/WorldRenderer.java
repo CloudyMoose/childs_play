@@ -6,12 +6,15 @@ import java.util.Map;
 
 import cloudymoose.childsplay.world.hextiles.Direction;
 import cloudymoose.childsplay.world.hextiles.HexTile;
+import cloudymoose.childsplay.world.units.AppleTree;
+import cloudymoose.childsplay.world.units.Catapult;
 import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -31,7 +34,7 @@ public class WorldRenderer {
 	private static final String TAG = "WorldRenderer";
 
 	// Materials
-	private TextureRegion conceptKid;
+	private TextureRegion conceptKid, appleTree, catapult;
 	private Map<TileType, TextureRegion> tileTextures;
 
 	private AnimationRunner animationRunner;
@@ -47,6 +50,8 @@ public class WorldRenderer {
 		animationRunner = new AnimationRunner(atlas);
 
 		conceptKid = atlas.findRegion("conceptKid");
+		appleTree = new TextureRegion((Texture)assetManager.get("apple_tree.png"));
+		catapult = new TextureRegion((Texture)assetManager.get("catapult.png"));
 		tileTextures.put(TileType.Grass, atlas.findRegion("grass"));
 		tileTextures.put(TileType.Sand, atlas.findRegion("sand"));
 	}
@@ -132,7 +137,16 @@ public class WorldRenderer {
 	}
 
 	private void renderUnit(SpriteBatch sb, Unit unit, Color color) {
-		TextureRegion textureRegion = conceptKid;
+		TextureRegion textureRegion;
+		if (unit instanceof AppleTree) {
+			textureRegion = appleTree;
+		} else if (unit instanceof Catapult) {
+			textureRegion = catapult;
+		} else {
+			textureRegion = conceptKid;
+			
+		}
+ 		
 		float aspectRatio = textureRegion.getRegionWidth() / (float) textureRegion.getRegionHeight();
 		sb.setColor(color);
 		sb.draw(textureRegion, unit.hitbox.x, unit.hitbox.y, aspectRatio * unit.hitbox.height, unit.hitbox.height);
