@@ -18,9 +18,7 @@ import cloudymoose.childsplay.world.commands.CommandRunner;
 import cloudymoose.childsplay.world.hextiles.Direction;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 import cloudymoose.childsplay.world.units.AppleTree;
-import cloudymoose.childsplay.world.units.Castle;
 import cloudymoose.childsplay.world.units.Catapult;
-import cloudymoose.childsplay.world.units.Child;
 import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.Gdx;
@@ -77,11 +75,12 @@ public class World {
 	/** TODO: will be replaced by a proper initialization from the map info */
 	private void createDemoWorld(Init initData) {
 		Player.setGaia(new Player(Player.GAIA_ID));
-		map = createEmptyMap(15, 9);
+		// map = createEmptyMap(15, 9);
+		map = MapParser.fromJson();
 
 		players = new ArrayList<Player>(initData.nbPlayers + 1);
 		players.add(Player.Gaia());
-		Player.Gaia().addUnit(new Child(Player.Gaia()).onTile(map.getTile(4, 3)));
+		// Player.Gaia().addUnit(new Child(Player.Gaia()).onTile(map.getTile(4, 3)));
 
 		// Players
 		int idOffset = Player.GAIA_ID + 1;
@@ -94,18 +93,18 @@ public class World {
 				player = new Player(i);
 			}
 
-			int r;
-			if (i == 1) {
-				r = 1;
-				player.addUnit(new Castle(player).onTile(map.getTile(4, -2)));
-			} else {
-				r = 13;
-				player.addUnit(new Castle(player).onTile(map.getTile(4, 12)));
-			}
-			player.addUnit(new Child(player).onTile(map.getTile(1, r)));
-			player.addUnit(new Child(player).onTile(map.getTile(7, r - 3)));
-
-			player.setResourcePoints(Constants.STARTING_RESOURCE_POINTS);
+			// int r;
+			// if (i == 1) {
+			// r = 1;
+			// player.addUnit(new Castle(player).onTile(map.getTile(4, -2)));
+			// } else {
+			// r = 13;
+			// player.addUnit(new Castle(player).onTile(map.getTile(4, 12)));
+			// }
+			// player.addUnit(new Child(player).onTile(map.getTile(1, r)));
+			// player.addUnit(new Child(player).onTile(map.getTile(7, r - 3)));
+			//
+			// player.setResourcePoints(Constants.STARTING_RESOURCE_POINTS);
 
 			players.add(player);
 		}
