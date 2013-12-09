@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import cloudymoose.childsplay.world.Constants;
 import cloudymoose.childsplay.world.Player;
 import cloudymoose.childsplay.world.commands.AttackCommand;
 import cloudymoose.childsplay.world.commands.Command;
@@ -30,7 +31,7 @@ public class Child extends Unit {
 	}
 
 	public static int getCost() {
-		return 1;
+		return Constants.CHILD_COST;
 	}
 
 }

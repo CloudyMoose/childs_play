@@ -29,7 +29,7 @@ public class Player {
 		ticketUsers = new HashSet<Unit>();
 		this.id = id;
 		unitCreationCount = 0;
-		healthPoints = 5;
+		healthPoints = Constants.PLAYER_HEALTH_POINTS;
 		resourcePoints = 0;
 	}
 
