@@ -36,24 +36,24 @@ public abstract class Message {
 	}
 
 	public static class Init extends Message {
-		public static final Init INIT_REQUEST = new Init(-1, -1, 0);
+		public static final Init INIT_REQUEST = new Init("INIT", -1, 0);
 		public final int playerId;
-		public final int nbPlayers;
 		public final long randomSeed;
+		public final String mapName;
 
 		public Init() {
-			this(0, 0, 0);
+			this("", 0, 0);
 		}
 
-		public Init(int playerId, int nbPlayers, long randomSeed) {
+		public Init(String mapName, int playerId, long randomSeed) {
+			this.mapName = mapName;
 			this.playerId = playerId;
-			this.nbPlayers = nbPlayers;
 			this.randomSeed = randomSeed;
 		}
 
 		@Override
 		public String toString() {
-			return "Init: " + (this == INIT_REQUEST ? "INIT_REQUEST" : playerId + "/" + nbPlayers);
+			return "Init: " + (this == INIT_REQUEST ? "INIT_REQUEST" : playerId);
 		}
 
 		@Override
@@ -62,7 +62,7 @@ public abstract class Message {
 			if (obj == null) return false;
 			if (getClass() != obj.getClass()) return false;
 			Init other = (Init) obj;
-			if (nbPlayers != other.nbPlayers) return false;
+			if (!mapName.equals(mapName)) return false;
 			if (playerId != other.playerId) return false;
 			return true;
 		}

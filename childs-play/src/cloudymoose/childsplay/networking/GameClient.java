@@ -23,7 +23,6 @@ public class GameClient {
 	private ChildsPlayGame game;
 	private TurnListener turnListener;
 	private int playerId;
-	private int nbPlayers;
 	private boolean terminating = false;
 	private NotificationService notificationService;
 
@@ -61,7 +60,6 @@ public class GameClient {
 				if (object instanceof Message.Init) {
 					final Message.Init initData = (Message.Init) object;
 					playerId = initData.playerId;
-					nbPlayers = initData.nbPlayers;
 
 					connection.removeListener(this);
 					turnListener = new TurnListener();
@@ -85,7 +83,7 @@ public class GameClient {
 	}
 	
 	public void send(Command[] commands, boolean isLast) {
-		connection.sendTCP(new Message.TurnRecap(isLast? NetworkUtils.LAST_TURN: NetworkUtils.IDGAF_TURN, commands, playerId, nbPlayers));
+		connection.sendTCP(new Message.TurnRecap(isLast? NetworkUtils.LAST_TURN: NetworkUtils.IDGAF_TURN, commands, playerId, 3));
 		turnListener.enabled = true;
 	}
 

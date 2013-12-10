@@ -151,7 +151,7 @@ public class GameServer {
 							connections.put(playerId, connection);
 							nbConnectedPlayers = connections.size(); // redundant, but clearer I guess
 						}
-						connection.sendTCP(new Message.Init(playerId, nbMaxPlayers, randomSeed));
+						connection.sendTCP(new Message.Init(nbMaxPlayers == 2? "duel_map" : "map",  playerId, randomSeed));
 
 						if (nbConnectedPlayers == nbMaxPlayers) {
 							startGame();
