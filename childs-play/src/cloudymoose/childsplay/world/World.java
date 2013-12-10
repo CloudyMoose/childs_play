@@ -105,7 +105,6 @@ public class World {
 						Entry<Integer, Unit> entry = it.next();
 
 						if (entry.getValue().isDead()) {
-							infoLog.add(entry.getValue().toString() + " has been defeated.");
 							entry.getValue().updateOccupiedTile(null);
 							it.remove();
 						}

@@ -81,7 +81,7 @@ public class GameScreen extends FixedTimestepScreen {
 		}
 
 		if (!waitingForVisualEffect) {
-			hud.setButtonsEnabled(true);
+			hud.setButtonsVisible(true);
 
 			if (world.isEndGameState()) {
 				boolean isWinner = (world.getCurrentPlayer() == world.getLocalPlayer());
@@ -109,17 +109,19 @@ public class GameScreen extends FixedTimestepScreen {
 			world.fixedUpdate(dt);
 			renderer.addAnimationData(world.getOngoingAnimationData());
 		} else {
-			hud.setButtonsEnabled(false);
+			hud.setButtonsVisible(false);
 		}
 
 		hud.update();
 	}
 
 	private void prepareReplayEnvironmentUpdate() {
+		hud.setButtonsVisible(false);
 		if (world.isPhaseFinished()) world.startReplayPhase();
 	}
 
 	private void prepareEnvironmentUpdate() {
+		hud.setButtonsVisible(false);
 		if (world.isPhaseFinished()) world.startCommandPhase();
 	}
 
@@ -127,14 +129,17 @@ public class GameScreen extends FixedTimestepScreen {
 	private void prepareCommandUpdate() {
 		if (world.hasRunningCommand()) {
 			playerController.enabled = false;
+			hud.setButtonsVisible(false);
 		} else {
 			playerController.enabled = true;
+			hud.setButtonsVisible(true);
 		}
 	}
 
 	/** Method called before {@link World#fixedUpdate(float)}, when in Replay mode */
 	private void prepareReplayUpdate() {
 		playerController.enabled = false;
+		hud.setButtonsVisible(false);
 		if (!world.hasRunningCommand()) {
 			world.replayNextCommand();
 			if (world.isPhaseFinished()) {

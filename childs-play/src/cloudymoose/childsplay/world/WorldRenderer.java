@@ -142,8 +142,10 @@ public class WorldRenderer {
 	}
 
 	private void renderUnit(SpriteBatch sb, Unit unit, Color color) {
-		Gdx.app.log(TAG, unit.getClass().getSimpleName());
 		TextureRegion textureRegion = unitTextures.get(unit.getClass());
+		if (textureRegion == null) {
+			throw new RuntimeException("Texture not found for " + unit.getClass().getSimpleName());
+		}
 		float aspectRatio = textureRegion.getRegionWidth() / (float) textureRegion.getRegionHeight();
 		sb.setColor(color);
 		sb.draw(textureRegion, unit.hitbox.x, unit.hitbox.y, aspectRatio * unit.hitbox.height, unit.hitbox.height);

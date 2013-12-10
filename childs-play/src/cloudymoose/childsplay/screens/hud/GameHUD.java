@@ -153,8 +153,8 @@ public class GameHUD extends AbstractMenuStageManager {
 		tsp.update();
 	}
 
-	public void setButtonsEnabled(boolean enabled) {
-		btnEnd.setDisabled(!enabled);
+	public void setButtonsVisible(boolean visible) {
+		btnEnd.setVisible(visible);
 	}
 
 	private void updatePhase() {
