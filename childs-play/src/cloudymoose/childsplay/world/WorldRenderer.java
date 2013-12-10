@@ -67,11 +67,11 @@ public class WorldRenderer {
 			setCameraPosition(world.getPreferredCameraFocus());
 		}
 
-		// Render background hexagons
 
 		sb.begin();
 		sb.setProjectionMatrix(cam.combined);
 
+		// Render background hexagons
 		for (HexTile<TileData> tile : world.getMap()) {
 			Color color = Color.WHITE;
 
@@ -84,47 +84,18 @@ public class WorldRenderer {
 			this.renderTile(sb, tile, color);
 		}
 
-		sb.end();
-
-		// Render overlays
-		debugRenderer.setProjectionMatrix(cam.combined);
-
+		// Render units
 		for (HexTile<TileData> tile : world.getMap()) {
-			Vector3 center = tile.getPosition();
-
-			// Drawing area borders
-			debugRenderer.begin(ShapeType.Line);
-
-			// TODO: horrible but w/e
-			if (!tile.value.borders.isEmpty()) {
-				debugRenderer.setColor(Color.RED);
-				for (float[] line : getEdges(center, tile.value.borders)) {
-					debugRenderer.polyline(line);
-				}
-				Gdx.gl10.glLineWidth(1);
-			}
-
-			debugRenderer.end();
 
 			Unit unit = tile.value.getOccupant();
 			if (unit != null) {
-				Color color = null;
-
-				if (unit.getPlayerId() == world.getLocalPlayer().id) {
-					color = Color.BLUE;
-				} else if (unit.getPlayerId() == Player.GAIA_ID) {
-					color = Color.GRAY;
-				} else {
-					color = Color.RED;
-				}
-
-				sb.begin();
-				this.renderUnit(sb, unit, color);
-				sb.end();
+				this.renderUnit(sb, unit, Constants.PLAYER_COLORS[unit.getPlayerId()]);
 
 			}
 
 		}
+		
+		sb.end();
 
 		if (animationRunner.hasOngoingAnimation()) {
 			boolean block;
