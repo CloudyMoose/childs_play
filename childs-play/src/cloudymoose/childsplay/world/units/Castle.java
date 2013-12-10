@@ -20,7 +20,7 @@ public class Castle extends StaticUnit {
 	private Player owner;
 
 	public Castle(Player owner) {
-		super(owner, 25, 1);
+		super(owner, 65, 1);
 		this.owner = owner;
 	}
 

@@ -10,6 +10,7 @@ import cloudymoose.childsplay.world.units.AppleTree;
 import cloudymoose.childsplay.world.units.Castle;
 import cloudymoose.childsplay.world.units.Catapult;
 import cloudymoose.childsplay.world.units.Child;
+import cloudymoose.childsplay.world.units.EnvironmentUnit;
 import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.Gdx;
@@ -37,14 +38,14 @@ public class WorldRenderer {
 
 	// Materials
 	private Map<TileType, TextureRegion> tileTextures;
-	private Map<Class<? extends Unit>, TextureRegion> unitTextures;
+	private Map<Class<? extends Unit>, TexturePair> unitTextures;
 
 	private AnimationRunner animationRunner;
 
 	public WorldRenderer(World world, AssetManager assetManager) {
 		this.world = world;
 		this.assetManager = assetManager;
-		this.unitTextures = new HashMap<Class<? extends Unit>, TextureRegion>();
+		this.unitTextures = new HashMap<Class<? extends Unit>, TexturePair>();
 		this.tileTextures = new HashMap<TileType, TextureRegion>();
 	}
 
@@ -52,10 +53,10 @@ public class WorldRenderer {
 		TextureAtlas atlas = assetManager.get(Constants.GAME_ATLAS_PATH);
 		animationRunner = new AnimationRunner(atlas);
 
-		unitTextures.put(Catapult.class, new TextureRegion((Texture)assetManager.get("catapult.png")));
-		unitTextures.put(Castle.class, atlas.findRegion("conceptKid"));
-		unitTextures.put(Child.class, atlas.findRegion("conceptKid"));
-		unitTextures.put(AppleTree.class, new TextureRegion((Texture)assetManager.get("apple_tree.png")));
+		unitTextures.put(Catapult.class, new TexturePair(new TextureRegion((Texture)assetManager.get("catapult.png"))));
+		unitTextures.put(Castle.class, new TexturePair(new TextureRegion((Texture)assetManager.get("castle.png"))));
+		unitTextures.put(Child.class, new TexturePair(atlas.findRegion("conceptKid")));
+		unitTextures.put(AppleTree.class, new TexturePair(new TextureRegion((Texture)assetManager.get("apple_tree.png"))));
 
 		tileTextures.put(TileType.Grass, atlas.findRegion("grass"));
 		tileTextures.put(TileType.Sand, atlas.findRegion("sand"));
@@ -113,13 +114,17 @@ public class WorldRenderer {
 	}
 
 	private void renderUnit(SpriteBatch sb, Unit unit, Color color) {
-		TextureRegion textureRegion = unitTextures.get(unit.getClass());
+		boolean flipTexture = false;
+		if (unit.getPlayerId() == 2) flipTexture = true;
+		else if (unit instanceof Catapult && unit.getOccupiedTile().value.getArea().isNeutral() && world.getCurrentPlayer().id == 2) flipTexture = true;
+		
+		TextureRegion textureRegion = unitTextures.get(unit.getClass()).get(flipTexture);
 		if (textureRegion == null) {
 			throw new RuntimeException("Texture not found for " + unit.getClass().getSimpleName());
 		}
 		float aspectRatio = textureRegion.getRegionWidth() / (float) textureRegion.getRegionHeight();
 		sb.setColor(color);
-		sb.draw(textureRegion, unit.hitbox.x, unit.hitbox.y, aspectRatio * unit.hitbox.height, unit.hitbox.height);
+		sb.draw(textureRegion, unit.hitbox.x, unit.hitbox.y, aspectRatio * unit.hitbox.height, unit.hitbox.height );
 		sb.setColor(Color.WHITE);
 	}
 
@@ -206,6 +211,24 @@ public class WorldRenderer {
 
 		return edges;
 
+	}
+	
+	private static class TexturePair {
+		public final TextureRegion normal;
+		public final TextureRegion flipped;
+		
+		public TexturePair(TextureRegion normal) {
+			super();
+			this.normal = normal;
+			flipped = new TextureRegion(normal);
+			flipped.flip(true, false);
+		}
+		
+		public TextureRegion get(boolean flipped) {
+			return flipped ? this.flipped : normal;
+		}
+		
+		
 	}
 
 }

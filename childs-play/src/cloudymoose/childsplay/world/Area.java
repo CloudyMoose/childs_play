@@ -52,6 +52,10 @@ public class Area extends AbstractCollection<HexTile<TileData>> {
 	public Player getOwner() {
 		return owner;
 	}
+	
+	public boolean isNeutral() {
+		return owner == null || owner == Player.Gaia();
+	}
 
 	/** Set it to <code>null</code> to make it uncontrolled */
 	public void setOwner(Player owner) {

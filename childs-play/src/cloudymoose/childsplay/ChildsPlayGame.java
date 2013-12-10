@@ -111,6 +111,7 @@ public class ChildsPlayGame extends Game {
 		am.load(Constants.GAME_ATLAS_PATH, TextureAtlas.class);
 		am.load("apple_tree.png", Texture.class);
 		am.load("catapult.png", Texture.class);
+		am.load("castle.png", Texture.class);
 		am.finishLoading();
 		return am;
 	}
