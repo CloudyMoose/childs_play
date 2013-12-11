@@ -50,7 +50,7 @@ public class WorldRenderer {
 		TextureAtlas atlas = assetManager.get(Constants.GAME_ATLAS_PATH);
 		TextureAtlas atlas0 = assetManager.get("game/pack0.atlas");
 		TextureAtlas atlas1 = assetManager.get("game/pack1.atlas");
-		animationRunner = new AnimationRunner(atlas);
+		animationRunner = new AnimationRunner(atlas, assetManager);
 
 		unitTextures.put(Catapult.class, new TexturePair(atlas0.findRegion("Catapult")));
 		unitTextures.put(Castle.class, new TexturePair(atlas0.findRegion("ExampleBase")));

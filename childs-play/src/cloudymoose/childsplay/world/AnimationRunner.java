@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -14,9 +16,11 @@ public class AnimationRunner {
 
 	private final List<AnimationData> ongoingAnimations = new ArrayList<AnimationData>();
 	private final Map<AnimationType, Animation> animations = new HashMap<AnimationType, Animation>();
+	private final Map<AnimationType, Sound> sounds = new HashMap<AnimationType, Sound>();
 
-	public AnimationRunner(TextureAtlas atlas) {
+	public AnimationRunner(TextureAtlas atlas, AssetManager am) {
 		animations.put(AnimationType.Melee, new Animation(0.05f, atlas.findRegions("big_ball_of_violence")));
+		sounds.put(AnimationType.Melee, am.get("sounds/fight.mp3", Sound.class));
 	}
 
 	public boolean hasOngoingAnimation() {
@@ -59,7 +63,13 @@ public class AnimationRunner {
 	 *            <code>null</code> is safely ignored
 	 */
 	public void addAnimationData(AnimationData data) {
-		if (data != null) ongoingAnimations.add(data);
+		if (data != null) {
+			Sound sound = sounds.get(data.type);
+			if (sound != null)
+				sound.play();
+
+			ongoingAnimations.add(data);
+		}
 	}
 
 }
