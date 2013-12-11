@@ -113,6 +113,9 @@ public class ChildsPlayGame extends Game {
 		am.load("game/pack1.atlas", TextureAtlas.class);
 
 		am.load("sounds/fight.mp3", Sound.class);
+		am.load("sounds/ok.mp3", Sound.class);
+		am.load("sounds/hereWeGo.mp3", Sound.class);
+		am.load("sounds/yes.mp3", Sound.class);
 		am.finishLoading();
 		return am;
 	}

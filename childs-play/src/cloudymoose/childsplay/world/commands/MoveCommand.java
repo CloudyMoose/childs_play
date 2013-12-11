@@ -1,6 +1,8 @@
 package cloudymoose.childsplay.world.commands;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import cloudymoose.childsplay.world.Constants;
 import cloudymoose.childsplay.world.ShortestPathSolver;
@@ -8,11 +10,15 @@ import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector3;
 
 public class MoveCommand extends Command {
 	public final int destQ;
 	public final int destR;
+
+	public static List<Sound> Sounds = new ArrayList<Sound>();
+	private static Random random = new Random();
 
 	protected MoveCommand() {
 		this(0, 0, 0);
@@ -39,6 +45,8 @@ public class MoveCommand extends Command {
 
 	@Override
 	public CommandRunner execute(World world) {
+		Sound sound = Sounds.get(random.nextInt(Sounds.size()));
+		sound.play();
 		return new MoveRunner(this, world);
 	}
 

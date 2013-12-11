@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
+import cloudymoose.childsplay.world.commands.MoveCommand;
 import cloudymoose.childsplay.world.hextiles.Direction;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 import cloudymoose.childsplay.world.units.AppleTree;
@@ -14,6 +15,7 @@ import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -51,6 +53,11 @@ public class WorldRenderer {
 		TextureAtlas atlas0 = assetManager.get("game/pack0.atlas");
 		TextureAtlas atlas1 = assetManager.get("game/pack1.atlas");
 		animationRunner = new AnimationRunner(atlas, assetManager);
+
+		// Add move command sounds
+		MoveCommand.Sounds.add(assetManager.get("sounds/ok.mp3", Sound.class));
+		MoveCommand.Sounds.add(assetManager.get("sounds/hereWeGo.mp3", Sound.class));
+		MoveCommand.Sounds.add(assetManager.get("sounds/yes.mp3", Sound.class));
 
 		unitTextures.put(Catapult.class, new TexturePair(atlas0.findRegion("Catapult")));
 		unitTextures.put(Castle.class, new TexturePair(atlas0.findRegion("ExampleBase")));

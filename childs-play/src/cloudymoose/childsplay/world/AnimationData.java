@@ -16,5 +16,4 @@ public class AnimationData {
 		this.loop = loop;
 		this.position = position;
 	}
-
 }
