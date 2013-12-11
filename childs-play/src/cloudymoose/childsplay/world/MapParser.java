@@ -16,32 +16,27 @@ public class MapParser {
 
 	private WorldMap map;
 	private List<Player> players;
-	
+
 	private Player localPlayer;
-	
+
 	public void setLocalPlayer(Player localPlayer) {
 		this.localPlayer = localPlayer;
 	}
-	
-	
+
 	public WorldMap getMap() {
 		if (map == null) throw new NullPointerException();
 		return map;
 	}
-
 
 	public List<Player> getPlayers() {
 		if (players == null) throw new NullPointerException();
 		return players;
 	}
 
-
-
 	public void parseJson(String mapName) {
 		JsonMap jsonMap = new Json().fromJson(JsonMap.class, Gdx.files.internal("game/" + mapName + ".json"));
-		
+
 		map = new WorldMap();
-		
 
 		// Players
 		players = new ArrayList<Player>(jsonMap.nb_players + 1);
@@ -58,12 +53,13 @@ public class MapParser {
 
 			players.add(player);
 		}
-		
-		
+
 		List<List<HexTile<TileData>>> areaTiles = new ArrayList<List<HexTile<TileData>>>(jsonMap.nb_areas);
-		for (int i = 0; i < jsonMap.nb_areas; i++) areaTiles.add(new ArrayList<HexTile<TileData>>());
+		for (int i = 0; i < jsonMap.nb_areas; i++)
+			areaTiles.add(new ArrayList<HexTile<TileData>>());
 		List<List<HexTile<TileData>>> controlPoints = new ArrayList<List<HexTile<TileData>>>(jsonMap.nb_areas);
-		for (int i = 0; i < jsonMap.nb_areas; i++) controlPoints.add(new ArrayList<HexTile<TileData>>());
+		for (int i = 0; i < jsonMap.nb_areas; i++)
+			controlPoints.add(new ArrayList<HexTile<TileData>>());
 
 		for (int y = 0; y < jsonMap.tiles.length; y++) {
 			for (int x = 0; x < jsonMap.tiles[y].length; x++) {
@@ -81,12 +77,14 @@ public class MapParser {
 				AxialCoords position = convert(x, y);
 				HexTile<TileData> t = map.addValue(position.q, position.r, new TileData(tt));
 
-				
 				int areaid = jsonMap.areas[y][x][0] - 1;
-				
+
+				Player player = null;
+				if (jsonMap.objects[y][x].length >= 2) player = players.get(jsonMap.objects[y][x][1]);
+
 				switch (jsonMap.objects[y][x][0]) {
 				case 1:
-					new Castle(players.get(jsonMap.objects[y][x][1])).onTile(t);
+					player.addUnit(new Castle(player).onTile(t));
 					break;
 				case 2:
 					new AppleTree().onTile(t);
@@ -95,13 +93,12 @@ public class MapParser {
 					new Catapult().onTile(t);
 					break;
 				case 11:
-					Player player = players.get(jsonMap.objects[y][x][1]);
 					player.addUnit(new Child(player).onTile(t));
 					break;
 				}
 
 				areaTiles.get(areaid).add(t);
-				if(jsonMap.areas[y][x].length > 1) {
+				if (jsonMap.areas[y][x].length > 1) {
 					controlPoints.get(areaid).add(t);
 				}
 			}
@@ -112,7 +109,7 @@ public class MapParser {
 		for (int i = 0; i < jsonMap.nb_areas; ++i) {
 			areas[i] = new Area(areaTiles.get(i), controlPoints.get(i));
 		}
-		
+
 		map.setAreas(areas);
 	}
 

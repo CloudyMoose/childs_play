@@ -14,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class GameHUD extends AbstractMenuStageManager {
@@ -24,8 +23,7 @@ public class GameHUD extends AbstractMenuStageManager {
 	Label labelUnitCount;
 	Label labelTicketCount;
 	Label labelInfoLog;
-	Label labelPhase;
-	Label labelPlayerHP;
+	HPBars hpBars;
 	CommandMenu commandMenu;
 	TextButton btnEnd;
 	TileStatusPreview tsp;
@@ -50,9 +48,6 @@ public class GameHUD extends AbstractMenuStageManager {
 		updateTicketCount();
 		stage.addActor(labelTicketCount);
 
-		labelPhase = new Label("Wait", getSkin());
-		stage.addActor(labelPhase);
-
 		btnEnd = new TextButton("End Turn", getSkin());
 		btnEnd.setSize(200, 50);
 		btnEnd.addListener(new ClickListener() {
@@ -72,9 +67,9 @@ public class GameHUD extends AbstractMenuStageManager {
 		labelInfoLog = new Label("", getSkin());
 		stage.addActor(labelInfoLog);
 
-		labelPlayerHP = new Label("", getSkin());
-		labelPlayerHP.setAlignment(Align.center);
-		stage.addActor(labelPlayerHP);
+		hpBars = new HPBars(game.assetManager, world.getPlayers().get(1),
+				world.getPlayers().size() == 2 ? Player.Gaia() : world.getPlayers().get(2));
+		stage.addActor(hpBars);
 
 		return null; /* We're adding the objects to the scene manually here */
 	}
@@ -84,11 +79,6 @@ public class GameHUD extends AbstractMenuStageManager {
 		super.resize(width, height);
 		labelUnitCount.setPosition(0, height - 20);
 		labelTicketCount.setPosition(0, height - 40);
-		labelPhase.setPosition(width - 250, height - 50);
-
-		labelPlayerHP.setPosition(0, height - 30);
-		labelPlayerHP.setWidth(width);
-		labelPlayerHP.setFontScale(1.5f);
 
 		labelInfoLog.setPosition(width / 2, height - 50);
 		btnEnd.setPosition(200, 20);
@@ -97,6 +87,9 @@ public class GameHUD extends AbstractMenuStageManager {
 		tsp.validate();
 		Gdx.app.log(TAG, tsp.getWidth() + " " + tsp.getHeight());
 		tsp.setPosition(100, 100);
+
+		hpBars.setWidth(width * 0.75f);
+		hpBars.setPosition(width / 2, height - 30);
 	}
 
 	private void updateUnitCount() {
@@ -106,14 +99,6 @@ public class GameHUD extends AbstractMenuStageManager {
 	private void updateTicketCount() {
 		labelTicketCount.setText(String.format("%d/%d tickets", world.getCurrentPlayer().getRemainingTickets(),
 				Constants.NB_TICKETS));
-	}
-
-	private void updatePlayerHP() {
-		Player p1 = world.getLocalPlayer();
-		Player p2 = world.getEnemyPlayers(p1, true).get(0);
-
-		labelPlayerHP.setText(String.format("%s - %d HP | %d RP                %d RP | %d HP - %s ", p1, p1.getHp(),
-				p1.getResourcePoints(), p2.getResourcePoints(), p2.getHp(), p2));
 	}
 
 	public void displayCommandMenu(int screenX, int screenY, HexTile<TileData> clickedTile) {
@@ -148,17 +133,12 @@ public class GameHUD extends AbstractMenuStageManager {
 		updateUnitCount();
 		updateTicketCount();
 		updateInfoLog();
-		updatePlayerHP();
-		updatePhase();
+		hpBars.updateHP();
 		tsp.update();
 	}
 
 	public void setButtonsVisible(boolean visible) {
 		btnEnd.setVisible(visible);
-	}
-
-	private void updatePhase() {
-		labelPhase.setText(world.getPhase().toString() + "(" + world.getCurrentPlayer() + ")");
 	}
 
 	private void updateInfoLog() {
@@ -177,6 +157,7 @@ public class GameHUD extends AbstractMenuStageManager {
 	@Override
 	public boolean render(float dt) {
 		super.render(dt);
+
 		return remainingInfoLogDisplayTime > 0;
 	}
 

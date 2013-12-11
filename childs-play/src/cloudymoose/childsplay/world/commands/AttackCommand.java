@@ -3,6 +3,7 @@ package cloudymoose.childsplay.world.commands;
 import cloudymoose.childsplay.world.AnimationData;
 import cloudymoose.childsplay.world.AnimationType;
 import cloudymoose.childsplay.world.World;
+import cloudymoose.childsplay.world.units.Child;
 import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.math.Vector3;
@@ -63,7 +64,7 @@ public class AttackCommand extends Command {
 		@Override
 		public AnimationData getAnimationData() {
 			// Return it only once.
-			if (meleeAnimation == null) {
+			if (meleeAnimation == null && target instanceof Child) {
 				Vector3 meleePosition = new Vector3(actor.position).add(target.position).scl(.5f);
 				meleeAnimation = new AnimationData(AnimationType.Melee, meleePosition, true, false);
 				return meleeAnimation;
