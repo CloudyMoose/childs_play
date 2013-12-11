@@ -1,0 +1,60 @@
+pack1.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+FlagRed
+  rotate: false
+  xy: 187, 1288
+  size: 182, 641
+  orig: 182, 641
+  offset: 0, 0
+  index: 5
+FlagBlue
+  rotate: false
+  xy: 376, 2
+  size: 185, 641
+  orig: 185, 641
+  offset: 0, 0
+  index: 4
+FlagBlue
+  rotate: false
+  xy: 2, 2
+  size: 185, 641
+  orig: 185, 641
+  offset: 0, 0
+  index: 2
+FlagBlue
+  rotate: false
+  xy: 563, 2
+  size: 185, 641
+  orig: 185, 641
+  offset: 0, 0
+  index: 5
+FlagBlue
+  rotate: false
+  xy: 189, 2
+  size: 185, 641
+  orig: 185, 641
+  offset: 0, 0
+  index: 3
+FlagBlue
+  rotate: false
+  xy: 2, 1288
+  size: 183, 641
+  orig: 183, 641
+  offset: 0, 0
+  index: 1
+FlagRed
+  rotate: false
+  xy: 750, 2
+  size: 185, 641
+  orig: 185, 641
+  offset: 0, 0
+  index: 2
+FlagRed
+  rotate: false
+  xy: 2, 645
+  size: 185, 641
+  orig: 185, 641
+  offset: 0, 0
+  index: 4

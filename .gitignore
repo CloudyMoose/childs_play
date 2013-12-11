@@ -1,8 +1,10 @@
 *.class
 /childs-play/create_desktop_jar.xml
+/childs-play/bin
 /childs-play-desktop/bin
 /childs-play-android/bin
 /childs-play-android/gen
+/pack*
 
 # Package Files #
 #*.jar

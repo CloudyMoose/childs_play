@@ -1,0 +1,116 @@
+pack0.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Tree
+  rotate: false
+  xy: 529, 1231
+  size: 456, 558
+  orig: 500, 566
+  offset: 44, 0
+  index: -1
+BlueHp
+  rotate: false
+  xy: 404, 1800
+  size: 512, 222
+  orig: 512, 222
+  offset: 0, 0
+  index: -1
+Sand
+  rotate: false
+  xy: 563, 596
+  size: 525, 604
+  orig: 535, 604
+  offset: 10, 0
+  index: -1
+FlagRed
+  rotate: false
+  xy: 1501, 1214
+  size: 186, 641
+  orig: 186, 641
+  offset: 0, 0
+  index: 1
+Road-straight
+  rotate: false
+  xy: 2, 1194
+  size: 525, 604
+  orig: 531, 604
+  offset: 6, 0
+  index: -1
+Water
+  rotate: false
+  xy: 1432, 2
+  size: 525, 604
+  orig: 535, 604
+  offset: 10, 0
+  index: -1
+Grass
+  rotate: false
+  xy: 1432, 608
+  size: 524, 604
+  orig: 552, 604
+  offset: 28, 0
+  index: -1
+AppleTree
+  rotate: false
+  xy: 698, 2
+  size: 614, 592
+  orig: 614, 592
+  offset: 0, 0
+  index: -1
+Bush
+  rotate: false
+  xy: 987, 1202
+  size: 349, 289
+  orig: 349, 289
+  offset: 0, 0
+  index: -1
+FlagNeutral
+  rotate: false
+  xy: 529, 588
+  size: 32, 641
+  orig: 32, 641
+  offset: 0, 0
+  index: -1
+Road-curved
+  rotate: false
+  xy: 2, 588
+  size: 525, 604
+  orig: 525, 604
+  offset: 0, 0
+  index: -1
+RedHp
+  rotate: false
+  xy: 918, 1791
+  size: 512, 222
+  orig: 512, 222
+  offset: 0, 0
+  index: -1
+Catapult
+  rotate: false
+  xy: 2, 1800
+  size: 400, 236
+  orig: 400, 236
+  offset: 0, 0
+  index: -1
+ExampleBase
+  rotate: false
+  xy: 2, 2
+  size: 694, 584
+  orig: 694, 584
+  offset: 0, 0
+  index: -1
+FlagRed
+  rotate: false
+  xy: 1689, 1214
+  size: 186, 641
+  orig: 186, 641
+  offset: 0, 0
+  index: 3
+Ticket
+  rotate: false
+  xy: 987, 1493
+  size: 512, 222
+  orig: 512, 222
+  offset: 0, 0
+  index: -1

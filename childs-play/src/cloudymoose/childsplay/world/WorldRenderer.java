@@ -10,19 +10,16 @@ import cloudymoose.childsplay.world.units.AppleTree;
 import cloudymoose.childsplay.world.units.Castle;
 import cloudymoose.childsplay.world.units.Catapult;
 import cloudymoose.childsplay.world.units.Child;
-import cloudymoose.childsplay.world.units.EnvironmentUnit;
 import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
 
 /** Takes the current state of the world and renders it to the screen */
@@ -51,12 +48,14 @@ public class WorldRenderer {
 
 	public void init() {
 		TextureAtlas atlas = assetManager.get(Constants.GAME_ATLAS_PATH);
+		TextureAtlas atlas0 = assetManager.get("game/pack0.atlas");
+		TextureAtlas atlas1 = assetManager.get("game/pack1.atlas");
 		animationRunner = new AnimationRunner(atlas);
 
-		unitTextures.put(Catapult.class, new TexturePair(new TextureRegion((Texture)assetManager.get("catapult.png"))));
-		unitTextures.put(Castle.class, new TexturePair(new TextureRegion((Texture)assetManager.get("castle.png"))));
+		unitTextures.put(Catapult.class, new TexturePair(atlas0.findRegion("Catapult")));
+		unitTextures.put(Castle.class, new TexturePair(atlas0.findRegion("ExampleBase")));
 		unitTextures.put(Child.class, new TexturePair(atlas.findRegion("conceptKid")));
-		unitTextures.put(AppleTree.class, new TexturePair(new TextureRegion((Texture)assetManager.get("apple_tree.png"))));
+		unitTextures.put(AppleTree.class, new TexturePair(atlas0.findRegion("AppleTree")));
 
 		tileTextures.put(TileType.Grass, atlas.findRegion("grass"));
 		tileTextures.put(TileType.Sand, atlas.findRegion("sand"));
@@ -67,7 +66,6 @@ public class WorldRenderer {
 			// TODO: jumps at the beginning. It should be smoothed or something...
 			setCameraPosition(world.getPreferredCameraFocus());
 		}
-
 
 		sb.begin();
 		sb.setProjectionMatrix(cam.combined);
@@ -95,7 +93,7 @@ public class WorldRenderer {
 			}
 
 		}
-		
+
 		sb.end();
 
 		if (animationRunner.hasOngoingAnimation()) {
@@ -115,17 +113,33 @@ public class WorldRenderer {
 
 	private void renderUnit(SpriteBatch sb, Unit unit, Color color) {
 		boolean flipTexture = false;
+
 		if (unit.getPlayerId() == 2) flipTexture = true;
-		else if (unit instanceof Catapult && unit.getOccupiedTile().value.getArea().isNeutral() && world.getCurrentPlayer().id == 2) flipTexture = true;
-		
+		else if (unit instanceof Catapult && unit.getOccupiedTile().value.getArea().isNeutral()
+				&& world.getCurrentPlayer().id == 2) flipTexture = true;
+
 		TextureRegion textureRegion = unitTextures.get(unit.getClass()).get(flipTexture);
-		if (textureRegion == null) {
-			throw new RuntimeException("Texture not found for " + unit.getClass().getSimpleName());
-		}
+
+		if (textureRegion == null) throw new RuntimeException("Texture not found for " + unit.getClass());
+
 		float aspectRatio = textureRegion.getRegionWidth() / (float) textureRegion.getRegionHeight();
+
+		// Center the sprite on the tile
+		float drawWidth, drawHeight, drawX, drawY;
+		if (aspectRatio > 0) {
+			drawWidth = unit.hitbox.width;
+			drawHeight = unit.hitbox.width / aspectRatio;
+			drawX = unit.hitbox.x;
+			drawY = unit.hitbox.y + unit.hitbox.height / 2 - drawHeight / 2;
+		} else {
+			drawWidth = unit.hitbox.height * aspectRatio;
+			drawHeight = unit.hitbox.height;
+			drawX = unit.hitbox.x + unit.hitbox.width / 2 - drawWidth / 2;
+			drawY = unit.hitbox.y;
+		}
+
 		sb.setColor(color);
-		sb.draw(textureRegion, unit.hitbox.x, unit.hitbox.y, aspectRatio * unit.hitbox.height, unit.hitbox.height );
-		sb.setColor(Color.WHITE);
+		sb.draw(textureRegion, drawX, drawY, drawWidth, drawHeight);
 	}
 
 	private void renderTile(SpriteBatch sb, HexTile<TileData> tile, Color color) {
@@ -136,7 +150,6 @@ public class WorldRenderer {
 		Vector3 position = tile.getPosition();
 		sb.setColor(color);
 		sb.draw(tileTextures.get(tile.value.type), position.x - width / 2, position.y - height / 2, width, height);
-		sb.setColor(Color.WHITE);
 	}
 
 	public void resize(int width, int height) {
@@ -212,23 +225,22 @@ public class WorldRenderer {
 		return edges;
 
 	}
-	
+
 	private static class TexturePair {
 		public final TextureRegion normal;
 		public final TextureRegion flipped;
-		
+
 		public TexturePair(TextureRegion normal) {
 			super();
 			this.normal = normal;
 			flipped = new TextureRegion(normal);
 			flipped.flip(true, false);
 		}
-		
+
 		public TextureRegion get(boolean flipped) {
 			return flipped ? this.flipped : normal;
 		}
-		
-		
+
 	}
 
 }
