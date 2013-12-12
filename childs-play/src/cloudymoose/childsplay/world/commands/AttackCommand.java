@@ -48,6 +48,7 @@ public class AttackCommand extends Command {
 	public static class AttackRunner extends CommandRunner {
 		private final Unit target;
 		private AnimationData meleeAnimation;
+		private boolean firstUpdate = true;
 
 		public AttackRunner(AttackCommand command, World world) {
 			super(command, world);
@@ -57,7 +58,11 @@ public class AttackCommand extends Command {
 
 		@Override
 		protected boolean update(float dt) {
-			actor.attack(target);
+			// Only attack once
+			if (firstUpdate) {
+				actor.attack(target);
+				firstUpdate = false;
+			}
 
 			if (meleeAnimation != null) {
 				return meleeAnimation.loop;
