@@ -58,7 +58,12 @@ public class AttackCommand extends Command {
 		@Override
 		protected boolean update(float dt) {
 			actor.attack(target);
-			return false;
+
+			if (meleeAnimation != null) {
+				return meleeAnimation.loop;
+			}
+
+			return true;
 		}
 
 		@Override
