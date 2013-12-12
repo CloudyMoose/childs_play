@@ -148,7 +148,7 @@ public class ChildsPlayGame extends Game {
 	}
 
 	public void notifyEndGameReceived() {
-		postGameScreen.setReason(EndReason.Forfeit);
+		postGameScreen.setReason(EndReason.Forfeit, -1);
 		setScreen(postGameScreen);
 	}
 
@@ -196,7 +196,7 @@ public class ChildsPlayGame extends Game {
 
 	public void endGame(boolean isWinner) {
 		client.send(world.exportCommands(), true);
-		postGameScreen.setReason(isWinner ? EndReason.Win : EndReason.Lose);
+		postGameScreen.setReason(isWinner ? EndReason.Win : EndReason.Lose, world.getLocalPlayer().id);
 		setScreen(postGameScreen);
 	}
 

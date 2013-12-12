@@ -167,8 +167,11 @@ public class WorldRenderer {
 		boolean flipTexture = false;
 
 		if (unit.getPlayerId() == 2) flipTexture = true;
-		else if (unit instanceof Catapult && unit.getOccupiedTile().value.getArea().isNeutral()
-				&& world.getLocalPlayer().id == 2) flipTexture = true;
+		else if (unit instanceof Catapult) {
+			if (unit.getOccupiedTile().value.getArea().isNeutral() && world.getLocalPlayer().id == 2) flipTexture = true;
+			else if (!unit.getOccupiedTile().value.getArea().isNeutral()
+					&& unit.getOccupiedTile().value.getArea().getOwner().id == 2) flipTexture = true;
+		}
 		else if (unit.getPlayerId() == Player.GAIA_ID && !(unit instanceof EnvironmentUnit)) flipTexture = true;
 
 		TextureRegion textureRegion = unitTextures.get(unit.getClass()).get(flipTexture);
@@ -234,28 +237,6 @@ public class WorldRenderer {
 	public void dispose() {
 		debugRenderer.dispose();
 		sb.dispose();
-	}
-
-	private static class TexturePair {
-		public final TextureRegion normal;
-		public final TextureRegion flipped;
-
-		public TexturePair(TextureRegion normal, TextureRegion flipped) {
-			this.normal = normal;
-			this.flipped = flipped;
-		}
-
-		public TexturePair(TextureRegion normal) {
-			super();
-			this.normal = normal;
-			flipped = new TextureRegion(normal);
-			flipped.flip(true, false);
-		}
-
-		public TextureRegion get(boolean flipped) {
-			return flipped ? this.flipped : normal;
-		}
-
 	}
 
 }

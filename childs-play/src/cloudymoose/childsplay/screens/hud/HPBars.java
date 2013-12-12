@@ -67,7 +67,7 @@ public class HPBars extends Table {
 		if (blueHp != blue.getHp()) {
 			hpChanged = true;
 			blueHp = blue.getHp();
-			for (int i = Constants.PLAYER_HEALTH_POINTS - blueHp; i < Constants.PLAYER_HEALTH_POINTS; ++i) {
+			for (int i = 0; i < Constants.PLAYER_HEALTH_POINTS - blueHp; ++i) {
 				((Image) cells.get(i).getWidget()).setVisible(false);
 			}
 		}

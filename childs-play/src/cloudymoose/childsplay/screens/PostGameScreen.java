@@ -1,20 +1,24 @@
 package cloudymoose.childsplay.screens;
 
 import cloudymoose.childsplay.ChildsPlayGame;
+import cloudymoose.childsplay.world.Constants;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.esotericsoftware.tablelayout.Cell;
 
 public class PostGameScreen extends AbstractMenuScreen<PostGameScreen.StageManager> {
 
 	public enum EndReason {
-		Win("Great, you won. Now what?"),
-		Lose("Shame on you! They beat you and got your snack. Maybe Mom will give you another?"),
+		Win("And the winner is ..."),
+		Lose("And the winner is ..."),
 		Forfeit("Ah! The cowards are retreating! The victory is ours!");
 
 		public final String label;
@@ -30,17 +34,27 @@ public class PostGameScreen extends AbstractMenuScreen<PostGameScreen.StageManag
 		setMenuStageManager(new StageManager(game, this));
 	}
 
-	public void setReason(EndReason reason) {
+	public void setReason(EndReason reason, int playerId) {
 		mMenuStageManager.postGameLabel.setText(reason.label);
+		TextureAtlas atlas = mGame.assetManager.get(Constants.UNITS_ICONS_ATLAS_PATH);
+		if (reason == EndReason.Forfeit) {
+			mMenuStageManager.im = new Image();
+		} else {
+			mMenuStageManager.im = new Image(atlas.findRegion(playerId == 1 ? "BlueTeam" : "RedTeam"));
+		}
+		// mMenuStageManager.winnerImageCell.setWidget(im);
 	}
 
 	class StageManager extends AbstractMenuStageManager {
 
 		Label postGameLabel;
+		Cell winnerImageCell;
+		Image im;
 
 		public StageManager(ChildsPlayGame game, Screen screen) {
 			super(game, screen);
 			postGameLabel = new Label("", getSkin());
+			im = new Image();
 		}
 
 		@Override
@@ -50,6 +64,9 @@ public class PostGameScreen extends AbstractMenuScreen<PostGameScreen.StageManag
 			table.setFillParent(true);
 
 			table.add(postGameLabel).spaceBottom(50);
+			table.row();
+			winnerImageCell = table.add(im);
+			winnerImageCell.spaceBottom(50);
 			table.row();
 
 			TextButton quitButton = new TextButton("Continue", getSkin());

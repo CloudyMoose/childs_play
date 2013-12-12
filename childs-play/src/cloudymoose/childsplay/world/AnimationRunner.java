@@ -13,17 +13,30 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 
 public class AnimationRunner {
 
 	private final List<AnimationData> ongoingAnimations = new ArrayList<AnimationData>();
-	private final Map<AnimationType, Animation> animations = new HashMap<AnimationType, Animation>();
+	private final Map<AnimationType, Animation[]> animations = new HashMap<AnimationType, Animation[]>();
 	private final Map<AnimationType, Sound> sounds = new HashMap<AnimationType, Sound>();
 
 	public AnimationRunner(TextureAtlas atlas, AssetManager am) {
-		animations.put(AnimationType.Melee, new Animation(0.05f, atlas.findRegions("Cloud"), Animation.LOOP));
-		animations.put(AnimationType.CatapultFire, new Animation(0.3f, atlas.findRegions("CatapultFire")));
+		Array<AtlasRegion> catapultFire = atlas.findRegions("CatapultFire");
+		Array<AtlasRegion> flippedCatapultFire = new Array<TextureAtlas.AtlasRegion>(true, catapultFire.size);
+		for (AtlasRegion ar : catapultFire) {
+			AtlasRegion far = new AtlasRegion(ar);
+			far.flip(true, false);
+			flippedCatapultFire.add(far);
+		}
+
+		animations.put(AnimationType.CatapultFire, new Animation[] { new Animation(0.3f, catapultFire),
+				new Animation(0.3f, flippedCatapultFire) });
+		animations.put(AnimationType.Melee, new Animation[] { new Animation(0.05f, atlas.findRegions("Cloud"),
+				Animation.LOOP) });
+
 		sounds.put(AnimationType.Melee, am.get("sounds/fight.mp3", Sound.class));
 	}
 
@@ -47,7 +60,19 @@ public class AnimationRunner {
 			}
 
 			data.stateTime += dt;
-			Animation a = animations.get(data.type);
+
+			Animation a;
+			if (data.type == AnimationType.CatapultFire) {
+				Gdx.app.log("AR", "Catapult firing for player "
+						+ data.toHide[0].getOccupiedTile().value.getOccupant().id);
+
+			}
+			if (data.type == AnimationType.CatapultFire
+					&& data.toHide[0].getOccupiedTile().value.getArea().getOwner().id == 2) {
+				a = animations.get(data.type)[1];
+			}
+			else a = animations.get(data.type)[0];
+
 			TextureRegion texture = a.getKeyFrame(data.stateTime);
 
 			float xRatio = data.type.maxWidth / texture.getRegionWidth();
