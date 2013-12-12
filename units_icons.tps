@@ -160,7 +160,7 @@
             <key>trimThreshold</key>
             <uint>1</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">Trim</enum>
+            <enum type="SpriteSettings::TrimMode">None</enum>
             <key>heuristicMask</key>
             <false/>
         </struct>
@@ -190,8 +190,8 @@
             <filename>raw-assets/CatapultFire3.png</filename>
             <filename>raw-assets/CatapultFire4.png</filename>
             <filename>raw-assets/full_size/Bush.png</filename>
-            <filename>raw-assets/full_size/RedHp.png</filename>
-            <filename>raw-assets/full_size/BlueHp.png</filename>
+            <filename>raw-assets/BlueLife.png</filename>
+            <filename>raw-assets/RedLife.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

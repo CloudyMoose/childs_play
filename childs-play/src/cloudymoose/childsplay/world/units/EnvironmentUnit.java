@@ -2,6 +2,7 @@ package cloudymoose.childsplay.world.units;
 
 import java.util.List;
 
+import cloudymoose.childsplay.world.AnimationData;
 import cloudymoose.childsplay.world.Player;
 import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.commands.Command;
@@ -23,6 +24,6 @@ public abstract class EnvironmentUnit extends StaticUnit {
 	public void takeDamage(int damage) {
 	}
 
-	public abstract void doEnvironmentalEffect(World world);
+	public abstract AnimationData doEnvironmentalEffect(World world);
 
 }

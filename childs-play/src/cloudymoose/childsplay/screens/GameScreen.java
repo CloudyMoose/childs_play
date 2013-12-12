@@ -159,4 +159,8 @@ public class GameScreen extends FixedTimestepScreen {
 	public void isDisconnected() {
 		this.disconnected = true;
 	}
+
+	public WorldRenderer getWorldRenderer() {
+		return renderer;
+	}
 }

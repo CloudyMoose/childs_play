@@ -2,6 +2,7 @@ package cloudymoose.childsplay.screens.hud;
 
 import cloudymoose.childsplay.ChildsPlayGame;
 import cloudymoose.childsplay.screens.AbstractMenuStageManager;
+import cloudymoose.childsplay.screens.GameScreen;
 import cloudymoose.childsplay.world.Constants;
 import cloudymoose.childsplay.world.Player;
 import cloudymoose.childsplay.world.TileData;
@@ -53,6 +54,7 @@ public class GameHUD extends AbstractMenuStageManager {
 		btnEnd.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				world.setPreferredCameraFocus(((GameScreen) screen).getWorldRenderer().cam.position);
 				game.endTurn();
 			}
 		});

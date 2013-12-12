@@ -4,7 +4,6 @@ import cloudymoose.childsplay.world.Constants;
 import cloudymoose.childsplay.world.Player;
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -40,10 +39,8 @@ public class HPBars extends Table {
 		// debug();
 		int nbCells = (Constants.PLAYER_HEALTH_POINTS * 2) + 1; // 1 for each HP + 1 for the labels
 		TextureAtlas atlas = assetManager.get(Constants.UNITS_ICONS_ATLAS_PATH);
-		// blueHpTexture = atlas.findRegion("BlueHp");
-		// redHpTexture = atlas.findRegion("RedHp");
-		blueHpTexture = new TextureRegion((Texture) assetManager.get("game/BlueLife.png"));
-		redHpTexture = new TextureRegion((Texture) assetManager.get("game/RedLife.png"));
+		blueHpTexture = atlas.findRegion("BlueLife");
+		redHpTexture = atlas.findRegion("RedLife");
 
 		blueHp = blue.getHp();
 		redHp = red.getHp();

@@ -2,6 +2,7 @@ package cloudymoose.childsplay.world;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
 
 import cloudymoose.childsplay.world.commands.MoveCommand;
 import cloudymoose.childsplay.world.hextiles.HexTile;
@@ -60,7 +61,7 @@ public class WorldRenderer {
 		MoveCommand.Sounds.add(assetManager.get("sounds/hereWeGo.mp3", Sound.class));
 		MoveCommand.Sounds.add(assetManager.get("sounds/yes.mp3", Sound.class));
 
-		unitTextures.put(Catapult.class, new TexturePair(atlasUI.findRegion("catapult")));
+		unitTextures.put(Catapult.class, new TexturePair(atlasUI.findRegion("CatapultFire")));
 		unitTextures.put(Castle.class, new TexturePair(atlasUI.findRegion("castle")));
 		unitTextures.put(Child.class,
 				new TexturePair(atlasUI.findRegion("BlueChild"), atlasUI.findRegion("RedChild")));
@@ -78,6 +79,7 @@ public class WorldRenderer {
 		if (world.getPreferredCameraFocus() != null) {
 			// TODO: jumps at the beginning. It should be smoothed or something...
 			setCameraPosition(world.getPreferredCameraFocus());
+			world.setPreferredCameraFocus(null);
 		}
 
 		sb.begin();
@@ -101,7 +103,7 @@ public class WorldRenderer {
 
 			// Render units
 			Unit unit = tile.value.getOccupant();
-			if (unit != null) {
+			if (unit != null && unit.isVisible()) {
 				this.renderUnit(sb, unit, Constants.PLAYER_COLORS[unit.getPlayerId()]);
 
 			}
@@ -155,8 +157,10 @@ public class WorldRenderer {
 		sb.draw(flag, tilePosition.x - drawXOffset, tilePosition.y, drawWidth, drawHeight);
 	}
 
-	public void addAnimationData(AnimationData data) {
-		animationRunner.addAnimationData(data);
+	public void addAnimationData(Queue<AnimationData> data) {
+		while (!data.isEmpty()) {
+			animationRunner.addAnimationData(data.remove());
+		}
 	}
 
 	private void renderUnit(SpriteBatch sb, Unit unit, Color color) {

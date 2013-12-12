@@ -54,6 +54,7 @@ public class World {
 	// Command execution and creation data
 	private CommandBuilder selectedCommandBuilder;
 	private CommandRunner ongoingCommand;
+	private final Queue<AnimationData> ongoingAnimationData = new LinkedList<AnimationData>();
 	public final Set<HexTile<?>> targetableTiles = new HashSet<HexTile<?>>();
 	private Vector3 preferredCameraFocus;
 
@@ -115,9 +116,8 @@ public class World {
 		}
 	}
 
-	public AnimationData getOngoingAnimationData() {
-		if (ongoingCommand == null) return null;
-		return ongoingCommand.getAnimationData();
+	public Queue<AnimationData> getOngoingAnimationData() {
+		return ongoingAnimationData;
 	}
 
 	/** Environment stuff: area control etc. */
@@ -126,7 +126,7 @@ public class World {
 		Set<Area> areaSet = new HashSet<Area>();
 		for (Area a : map.areas) {
 			if (a.getOwner() == currentPlayer && !a.isContested()) {
-				a.getBenefits(this);
+				ongoingAnimationData.addAll(a.getBenefits(this));
 				areaSet.add(a);
 			}
 		}
@@ -220,6 +220,7 @@ public class World {
 		// Start the command
 		ongoingCommand = command.execute(this);
 		ongoingCommand.start();
+		ongoingAnimationData.add(ongoingCommand.getAnimationData());
 
 		if (!replayMode) {
 			// Register it
@@ -360,6 +361,11 @@ public class World {
 			if (p.id == id) return p;
 		}
 		return null;
+	}
+
+	public void setPreferredCameraFocus(Vector3 position) {
+		preferredCameraFocus = position == null ? null : new Vector3(position);
+
 	}
 
 }

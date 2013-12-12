@@ -1,6 +1,7 @@
 package cloudymoose.childsplay.world;
 
 import java.util.AbstractCollection;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -142,10 +143,13 @@ public class Area extends AbstractCollection<HexTile<TileData>> {
 		}
 	}
 
-	public void getBenefits(World world) {
+	public List<AnimationData> getBenefits(World world) {
+		List<AnimationData> animations = new ArrayList<AnimationData>();
 		for (EnvironmentUnit eu : benefitProviders) {
-			eu.doEnvironmentalEffect(world);
+			AnimationData a = eu.doEnvironmentalEffect(world);
+			if (a != null) animations.add(a);
 		}
+		return animations;
 	}
 
 	public int getControlPoints() {

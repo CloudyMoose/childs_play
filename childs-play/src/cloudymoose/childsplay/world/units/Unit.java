@@ -20,6 +20,7 @@ public abstract class Unit {
 	public final int id;
 	public final int size;
 	public final Rectangle hitbox;
+	private boolean visible;
 
 	public final int maxHealthPoints;
 	private int currentHealthPoints;
@@ -36,6 +37,7 @@ public abstract class Unit {
 		this.size = size;
 		hitbox = new Rectangle(0, 0, size, size);
 		hitbox.setCenter(position.x, position.y);
+		visible = true;
 
 		maxHealthPoints = hp;
 		currentHealthPoints = hp;
@@ -157,6 +159,14 @@ public abstract class Unit {
 		setPosition(tile.getPosition());
 
 		return this;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	public boolean isVisible() {
+		return visible;
 	}
 
 }
