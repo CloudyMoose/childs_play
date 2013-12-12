@@ -2,10 +2,10 @@ package cloudymoose.childsplay.world.hextiles;
 
 import java.util.AbstractCollection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.badlogic.gdx.math.Vector3;
 
@@ -30,7 +30,7 @@ public class HexGrid<T> extends AbstractCollection<HexTile<T>> {
 	public HexGrid(float tileSize) {
 		this.tiles = new HashMap<Integer, Map<Integer, HexTile<T>>>();
 		this.tileSize = tileSize;
-		this.tileSet = new HashSet<HexTile<T>>();
+		this.tileSet = new TreeSet<HexTile<T>>(new HexComparator());
 	}
 
 	/**

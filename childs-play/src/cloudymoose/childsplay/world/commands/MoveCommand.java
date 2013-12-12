@@ -87,6 +87,7 @@ public class MoveCommand extends Command {
 			if (path.isEmpty()) return false;
 
 			HexTile<TileData> target = path.get(0);
+			target.value.setOccupant(actor);
 			destination = target.getPosition();
 
 			double angle = Math.atan2((destination.y - actor.position.y), destination.x - actor.position.x);

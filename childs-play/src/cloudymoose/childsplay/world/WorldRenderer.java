@@ -86,20 +86,19 @@ public class WorldRenderer {
 			}
 
 			this.renderTile(sb, tile, color);
+		}
+
+		for (HexTile<TileData> tile : world.getMap()) {
 			if (world.getMap().isControlPoint(tile)) {
 				renderFlag(sb, tile);
 			}
-		}
 
-		// Render units
-		for (HexTile<TileData> tile : world.getMap()) {
-
+			// Render units
 			Unit unit = tile.value.getOccupant();
 			if (unit != null) {
 				this.renderUnit(sb, unit, Constants.PLAYER_COLORS[unit.getPlayerId()]);
 
 			}
-
 		}
 
 		sb.end();
