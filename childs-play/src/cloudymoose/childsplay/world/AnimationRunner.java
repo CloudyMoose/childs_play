@@ -19,7 +19,7 @@ public class AnimationRunner {
 	private final Map<AnimationType, Sound> sounds = new HashMap<AnimationType, Sound>();
 
 	public AnimationRunner(TextureAtlas atlas, AssetManager am) {
-		animations.put(AnimationType.Melee, new Animation(0.05f, atlas.findRegions("big_ball_of_violence")));
+		animations.put(AnimationType.Melee, new Animation(0.05f, atlas.findRegions("Cloud")));
 		sounds.put(AnimationType.Melee, am.get("sounds/fight.mp3", Sound.class));
 	}
 
@@ -65,8 +65,7 @@ public class AnimationRunner {
 	public void addAnimationData(AnimationData data) {
 		if (data != null) {
 			Sound sound = sounds.get(data.type);
-			if (sound != null)
-				sound.play();
+			if (sound != null) sound.play();
 
 			ongoingAnimations.add(data);
 		}

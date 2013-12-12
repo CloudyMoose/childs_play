@@ -49,23 +49,23 @@ public class WorldRenderer {
 	}
 
 	public void init() {
-		TextureAtlas atlas = assetManager.get(Constants.GAME_ATLAS_PATH);
-		TextureAtlas atlas0 = assetManager.get("game/pack0.atlas");
-		TextureAtlas atlas1 = assetManager.get("game/pack1.atlas");
-		animationRunner = new AnimationRunner(atlas, assetManager);
+		TextureAtlas atlasTF = assetManager.get(Constants.TILES_FLAGS_ATLAS_PATH);
+		TextureAtlas atlasUI = assetManager.get(Constants.UNITS_ICONS_ATLAS_PATH);
+		animationRunner = new AnimationRunner(atlasUI, assetManager);
 
 		// Add move command sounds
 		MoveCommand.Sounds.add(assetManager.get("sounds/ok.mp3", Sound.class));
 		MoveCommand.Sounds.add(assetManager.get("sounds/hereWeGo.mp3", Sound.class));
 		MoveCommand.Sounds.add(assetManager.get("sounds/yes.mp3", Sound.class));
 
-		unitTextures.put(Catapult.class, new TexturePair(atlas0.findRegion("Catapult")));
-		unitTextures.put(Castle.class, new TexturePair(atlas0.findRegion("ExampleBase")));
-		unitTextures.put(Child.class, new TexturePair(atlas.findRegion("conceptKid")));
-		unitTextures.put(AppleTree.class, new TexturePair(atlas0.findRegion("AppleTree")));
+		unitTextures.put(Catapult.class, new TexturePair(atlasUI.findRegion("catapult")));
+		unitTextures.put(Castle.class, new TexturePair(atlasUI.findRegion("castle")));
+		unitTextures.put(Child.class,
+				new TexturePair(atlasUI.findRegion("BlueChild"), atlasUI.findRegion("RedChild")));
+		unitTextures.put(AppleTree.class, new TexturePair(atlasUI.findRegion("apple_tree")));
 
-		tileTextures.put(TileType.Grass, atlas.findRegion("grass"));
-		tileTextures.put(TileType.Sand, atlas.findRegion("sand"));
+		tileTextures.put(TileType.Grass, atlasTF.findRegion("Grass"));
+		tileTextures.put(TileType.Sand, atlasTF.findRegion("Sand"));
 	}
 
 	public boolean render(float dt) {
@@ -117,7 +117,7 @@ public class WorldRenderer {
 	}
 
 	private void renderFlag(SpriteBatch batch, HexTile<TileData> tile) {
-		TextureAtlas atlas0 = assetManager.get("game/pack0.atlas");
+		TextureAtlas atlas0 = assetManager.get(Constants.TILES_FLAGS_ATLAS_PATH);
 		TextureRegion flag = atlas0.findRegion("FlagRed");
 		sb.setColor(Color.WHITE);
 		Vector3 tilePosition = tile.getPosition();
@@ -158,7 +158,7 @@ public class WorldRenderer {
 			drawY = unit.hitbox.y;
 		}
 
-		sb.setColor(color);
+		// sb.setColor(color);
 		sb.draw(textureRegion, drawX, drawY, drawWidth, drawHeight);
 	}
 
@@ -249,6 +249,11 @@ public class WorldRenderer {
 	private static class TexturePair {
 		public final TextureRegion normal;
 		public final TextureRegion flipped;
+
+		public TexturePair(TextureRegion normal, TextureRegion flipped) {
+			this.normal = normal;
+			this.flipped = flipped;
+		}
 
 		public TexturePair(TextureRegion normal) {
 			super();

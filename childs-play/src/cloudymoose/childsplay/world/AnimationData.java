@@ -6,6 +6,7 @@ public class AnimationData {
 
 	public float stateTime;
 	public AnimationType type;
+	public SoundType sound;
 	public Vector3 position;
 	public boolean loop;
 	public boolean isBlocking;
