@@ -75,25 +75,7 @@ public class AnimationRunner {
 
 			TextureRegion texture = a.getKeyFrame(data.stateTime);
 
-			float xRatio = data.type.maxWidth / texture.getRegionWidth();
-			float yRatio = data.type.maxHeight / texture.getRegionHeight();
-
-			float drawWidth, drawHeight;
-			if (xRatio < yRatio) {
-				drawWidth = data.type.maxWidth;
-				drawHeight = texture.getRegionHeight() * xRatio;
-			} else if (yRatio != Float.POSITIVE_INFINITY) {
-				drawWidth = texture.getRegionWidth() * yRatio;
-				drawHeight = data.type.maxHeight;
-			} else {
-				drawWidth = texture.getRegionWidth();
-				drawHeight = texture.getRegionHeight();
-			}
-
-			Gdx.app.log("AR", drawWidth + " " + drawHeight);
-
-			sb.draw(texture, data.position.x - drawWidth / 2,
-					data.position.y - drawHeight / 2, drawWidth, drawHeight);
+			RenderingUtils.drawScaledTexture(sb, texture, data.type.maxWidth, data.type.maxHeight, data.position);
 
 			if (!data.loop) {
 				if (a.isAnimationFinished(data.stateTime)) {

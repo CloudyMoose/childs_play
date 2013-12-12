@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import cloudymoose.childsplay.world.Constants;
 import cloudymoose.childsplay.world.Player;
 import cloudymoose.childsplay.world.commands.Command;
 import cloudymoose.childsplay.world.commands.RecruitCommand;
@@ -20,7 +21,7 @@ public class Castle extends StaticUnit {
 	private Player owner;
 
 	public Castle(Player owner) {
-		super(owner, 65, 1);
+		super(owner, Constants.CASTLE_SIZE, 1);
 		this.owner = owner;
 	}
 

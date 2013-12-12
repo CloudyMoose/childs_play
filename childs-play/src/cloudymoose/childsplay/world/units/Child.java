@@ -18,7 +18,7 @@ public class Child extends Unit {
 			MoveCommand.class, AttackCommand.class));
 
 	public Child(Player owner) {
-		super(owner, 20, 1, 25, 1, 1);
+		super(owner, Constants.CHILD_SIZE, 1, Constants.CHILD_MOVE_RANGE, 1, 1);
 	}
 
 	@Override

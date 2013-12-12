@@ -3,6 +3,7 @@ package cloudymoose.childsplay.world.units;
 import java.util.List;
 
 import cloudymoose.childsplay.world.AnimationData;
+import cloudymoose.childsplay.world.Constants;
 import cloudymoose.childsplay.world.Player;
 import cloudymoose.childsplay.world.World;
 import cloudymoose.childsplay.world.commands.Command;
@@ -11,7 +12,7 @@ import cloudymoose.childsplay.world.commands.Command;
 public abstract class EnvironmentUnit extends StaticUnit {
 
 	public EnvironmentUnit() {
-		super(Player.Gaia(), 45, 1);
+		super(Player.Gaia(), Constants.ENVIRONMENT_UNIT_SIZE, 1);
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
+import cloudymoose.childsplay.ChildsPlayGame;
 import cloudymoose.childsplay.world.commands.MoveCommand;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 import cloudymoose.childsplay.world.units.AppleTree;
@@ -22,7 +23,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
 /** Takes the current state of the world and renders it to the screen */
@@ -136,25 +139,22 @@ public class WorldRenderer {
 			double rawProgress = area.getControlPoints() / (float) area.getControlTiles().size();
 			int progress = (int) Math.ceil(rawProgress * (nbFlags - 1));
 			textureIndex += progress;
-			Gdx.app.debug(TAG, String.format("ti %d | progress %f-%d | status: %s ",
-					textureIndex, rawProgress, progress, area.getControlPointStatus()));
+			// Gdx.app.log(TAG, String.format("ti %d | progress %f-%d | status: %s ",
+			// textureIndex, rawProgress, progress, area.getControlPointStatus()));
 		}
 
 		TextureRegion flag = flagTextures.get(textureIndex);
 		sb.setColor(Color.WHITE);
-		Vector3 tilePosition = tile.getPosition();
-		float aspectRatio = flag.getRegionWidth() / (float) flag.getRegionHeight();
-		float drawHeight = Constants.TILE_SIZE * 2;
-		float drawWidth = drawHeight * aspectRatio;
 
-		float drawXOffset = 0;
+		int alignX = Align.right;
 		if (area.isNeutral()) {
-			drawXOffset = drawWidth / 2;
+			alignX = Align.center;
 		} else if (area.getOwner().id == 1) {
-			drawXOffset = drawWidth;
+			alignX = Align.left;
 		}
 
-		sb.draw(flag, tilePosition.x - drawXOffset, tilePosition.y, drawWidth, drawHeight);
+		RenderingUtils.drawScaledTexture(batch, flag, Float.POSITIVE_INFINITY, Constants.TILE_SIZE * 2,
+				tile.getPosition(), alignX, Align.bottom);
 	}
 
 	public void addAnimationData(Queue<AnimationData> data) {
@@ -178,23 +178,9 @@ public class WorldRenderer {
 
 		if (textureRegion == null) throw new RuntimeException("Texture not found for " + unit.getClass());
 
-		float aspectRatio = textureRegion.getRegionWidth() / (float) textureRegion.getRegionHeight();
+		RenderingUtils.drawScaledTexture(sb, textureRegion, unit.hitbox.width, unit.hitbox.height, new Vector3(
+				unit.hitbox.getCenter(new Vector2(0, 0)), 0));
 
-		// Center the sprite on the tile
-		float drawWidth, drawHeight, drawX, drawY;
-		if (aspectRatio > 0) {
-			drawWidth = unit.hitbox.width;
-			drawHeight = unit.hitbox.width / aspectRatio;
-			drawX = unit.hitbox.x;
-			drawY = unit.hitbox.y + unit.hitbox.height / 2 - drawHeight / 2;
-		} else {
-			drawWidth = unit.hitbox.height * aspectRatio;
-			drawHeight = unit.hitbox.height;
-			drawX = unit.hitbox.x + unit.hitbox.width / 2 - drawWidth / 2;
-			drawY = unit.hitbox.y;
-		}
-
-		sb.draw(textureRegion, drawX, drawY, drawWidth, drawHeight);
 	}
 
 	private void renderTile(SpriteBatch sb, HexTile<TileData> tile, Color color) {
@@ -209,10 +195,13 @@ public class WorldRenderer {
 
 	public void resize(int width, int height) {
 		Gdx.app.log(TAG, "resize(" + width + ", " + height + ")");
-		cam.setToOrtho(false, width / 2, height / 2);
+		cam.setToOrtho(false, width, height);
 
 		cam.position.set(0, 0, 0);
-		cam.zoom = 0.5f;
+		float Xratio = ChildsPlayGame.VIEWPORT_WIDTH / (float) width;
+		float Yratio = ChildsPlayGame.VIEWPORT_HEIGHT / (float) height;
+		Gdx.app.log(TAG, String.format("Resizing: %d %d, ratio: %f %f", width, height, Xratio, Yratio));
+		cam.zoom = Math.min(Xratio, Yratio);
 		cam.update();
 	}
 
