@@ -11,32 +11,30 @@ import cloudymoose.childsplay.world.hextiles.HexTile;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.esotericsoftware.tablelayout.Cell;
 
 public class GameHUD extends AbstractMenuStageManager {
 	World world;
 
-	Sprite unitSpriteA, unitSpriteB;
-	Sprite resourceSpriteA, resourceSpriteB;
-
-	Label labelUnitCountA, labelUnitCountB;
-	Label labelResourceCountA, labelResourceCountB;
-	Label labelTicketCount;
-	Label labelInfoLog;
-	HPBars hpBars;
-	CommandMenu commandMenu;
-	Button btnEnd;
-	TileStatusPreview tsp;
+	private Label labelUnitCountA, labelUnitCountB;
+	private Label labelResourceCountA, labelResourceCountB;
+	private Label labelTicketCount;
+	private Label labelInfoLog;
+	private HPBars hpBars;
+	private CommandMenu commandMenu;
+	private Button btnEnd;
+	private TileStatusPreview tsp;
+	private Table blueStatusRecap, redStatusRecap;
 
 	private int remainingInfoLogDisplayTime;
 
@@ -62,35 +60,47 @@ public class GameHUD extends AbstractMenuStageManager {
 		AtlasRegion unitTextureB = atlas.findRegion("RedTroops");
 		AtlasRegion resourceTexture = atlas.findRegion("Apple");
 
-		unitSpriteA = new Sprite(unitTextureA);
-		unitSpriteA.setSize(32, 32);
-		unitSpriteB = new Sprite(unitTextureB);
-		unitSpriteB.setSize(32, 32);
-
-		resourceSpriteA = new Sprite(resourceTexture);
-		resourceSpriteA.setSize(32, 32);
-		resourceSpriteB = new Sprite(resourceTexture);
-		resourceSpriteB.setSize(32, 32);
-
 		labelUnitCountA = new Label("", getSkin());
 		labelUnitCountB = new Label("", getSkin());
-		stage.addActor(labelUnitCountA);
-		stage.addActor(labelUnitCountB);
-		updateUnitCount();
 
 		labelResourceCountA = new Label("", getSkin());
 		labelResourceCountB = new Label("", getSkin());
-		stage.addActor(labelResourceCountA);
-		stage.addActor(labelResourceCountB);
-		updateResourceCount();
 
 		labelTicketCount = new Label("", getSkin());
-		updateTicketCount();
-		stage.addActor(labelTicketCount);
+
+		float labelpadding = 20;
+		blueStatusRecap = new Table(getSkin());
+		// blueStatusRecap.debug();
+		blueStatusRecap.pad(15);
+		stage.addActor(blueStatusRecap);
+
+		blueStatusRecap.add(new Image(unitTextureA)).expand().spaceRight(labelpadding);
+
+		blueStatusRecap.add(labelUnitCountA);
+		blueStatusRecap.row();
+		blueStatusRecap.add(new Image(resourceTexture)).expand().spaceRight(labelpadding);
+		blueStatusRecap.add(labelResourceCountA);
+		blueStatusRecap.row();
+		if (world.getCurrentPlayer().id == 1) {
+			blueStatusRecap.add(labelTicketCount);
+		}
+
+		redStatusRecap = new Table(getSkin());
+		redStatusRecap.pad(15);
+		// redStatusRecap.debug();
+		stage.addActor(redStatusRecap);
+		redStatusRecap.add(labelUnitCountB).spaceRight(labelpadding);
+		redStatusRecap.add(new Image(unitTextureB)).expand();
+		redStatusRecap.row();
+		redStatusRecap.add(labelResourceCountB).spaceRight(labelpadding);
+		redStatusRecap.add(new Image(resourceTexture)).expand();
+		redStatusRecap.row();
+		if (world.getCurrentPlayer().id == 2) {
+			redStatusRecap.add(labelTicketCount);
+		}
 
 		String name = "Hourglass" + (world.getLocalPlayer().id == 1 ? "Blue" : "Red");
 		btnEnd = new Button(new TextureRegionDrawable(atlas.findRegion(name)));
-		btnEnd.setSize(96, 96);
 		btnEnd.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -112,6 +122,7 @@ public class GameHUD extends AbstractMenuStageManager {
 		hpBars = new HPBars(game.assetManager, blue, red);
 		stage.addActor(hpBars);
 
+		update();
 		return null; /* We're adding the objects to the scene manually here */
 	}
 
@@ -119,35 +130,13 @@ public class GameHUD extends AbstractMenuStageManager {
 	public void resize(int width, int height) {
 		super.resize(width, height);
 
-		TextBounds font = labelUnitCountA.getStyle().font.getBounds("1");
+		float bigIconSize = 128;
+		resizeStatusRecap(width, height);
 
-		// Place unit counter sprites
-		float y = height - 5 - unitSpriteA.getHeight();
-		unitSpriteA.setPosition(5, y);
-		unitSpriteB.setPosition(width - 5 - unitSpriteB.getWidth(), y);
-		y = height - unitSpriteA.getHeight() / 2 - font.height / 2;
-		labelUnitCountA.setPosition(2 * 5 + unitSpriteA.getWidth(), y);
-		font = labelUnitCountB.getStyle().font.getBounds(labelUnitCountB
-				.getText());
-		labelUnitCountB.setPosition(width - 2 * 5 - unitSpriteB.getWidth()
-				- font.width, y);
-
-		// Place unit counter labels
-		y = height - 2 * 5 - resourceSpriteA.getHeight()
-				- unitSpriteA.getHeight();
-		resourceSpriteA.setPosition(5, y);
-		resourceSpriteB.setPosition(width - 5 - unitSpriteB.getWidth(), y);
-		y = height - 5 - resourceSpriteA.getHeight() / 2
-				- unitSpriteA.getHeight() - font.height / 2;
-		labelResourceCountA.setPosition(2 * 5 + unitSpriteA.getWidth(), y);
-		font = labelResourceCountB.getStyle().font
-				.getBounds(labelResourceCountB.getText());
-		labelResourceCountB.setPosition(width - 2 * 5 - unitSpriteB.getWidth()
-				- font.width, y);
-
-		labelTicketCount.setPosition(0, height - 100);
-		labelInfoLog.setPosition(width / 2, height - 110);
+		btnEnd.setSize(bigIconSize, bigIconSize);
 		btnEnd.setPosition(200, 20);
+
+		labelInfoLog.setPosition(width / 2, height - 110);
 		commandMenu.resize(width, height);
 		Gdx.app.log(TAG, tsp.getWidth() + " " + tsp.getHeight());
 		tsp.validate();
@@ -156,6 +145,32 @@ public class GameHUD extends AbstractMenuStageManager {
 
 		hpBars.setWidth(width * 0.75f);
 		hpBars.setPosition(width / 2, height - 30);
+	}
+
+	@SuppressWarnings("rawtypes")
+	private void resizeStatusRecap(int width, int height) {
+		// TODO: separate that in another class?
+		float smallIconSize = 64;
+
+		float fontHeight = labelUnitCountA.getStyle().font.getBounds("1").height;
+
+		for (Cell c : redStatusRecap.getCells()) {
+			if (c.getWidget() instanceof Image) {
+				c.size(smallIconSize);
+			}
+		}
+		for (Cell c : blueStatusRecap.getCells()) {
+			if (c.getWidget() instanceof Image) {
+				c.size(smallIconSize);
+			}
+		}
+
+		float tableHeight = smallIconSize * 2 + fontHeight + 40;
+		float tableWidth = smallIconSize + 40;
+		blueStatusRecap.setSize(tableWidth, tableHeight);
+		redStatusRecap.setSize(tableWidth, tableHeight);
+		blueStatusRecap.setPosition(0, height - tableHeight);
+		redStatusRecap.setPosition(width - tableWidth, height - tableHeight);
 	}
 
 	private static int units(Player p) {
@@ -235,13 +250,13 @@ public class GameHUD extends AbstractMenuStageManager {
 	public boolean render(float dt) {
 		super.render(dt);
 
-		SpriteBatch sb = new SpriteBatch();
-		sb.begin();
-		unitSpriteA.draw(sb);
-		unitSpriteB.draw(sb);
-		resourceSpriteA.draw(sb);
-		resourceSpriteB.draw(sb);
-		sb.end();
+		// SpriteBatch sb = new SpriteBatch();
+		// sb.begin();
+		// unitSpriteA.draw(sb);
+		// unitSpriteB.draw(sb);
+		// resourceSpriteA.draw(sb);
+		// resourceSpriteB.draw(sb);
+		// sb.end();
 
 		return remainingInfoLogDisplayTime > 0;
 	}

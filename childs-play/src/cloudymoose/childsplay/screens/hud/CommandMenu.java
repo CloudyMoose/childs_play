@@ -30,6 +30,7 @@ public class CommandMenu extends Group {
 	private LocalPlayer player;
 
 	private Table table;
+	private float buttonSize;
 
 	Map<Class<? extends Command>, Button> commandButtons;
 
@@ -67,7 +68,7 @@ public class CommandMenu extends Group {
 
 		for (Class<? extends Command> clazz : clickedTile.value.getOccupant().getSupportedCommands()) {
 			table.row();
-			table.add(commandButtons.get(clazz)).size(64, 64).uniform().spaceBottom(10);
+			table.add(commandButtons.get(clazz)).size(buttonSize, buttonSize).uniform().spaceBottom(10);
 		}
 	}
 
@@ -89,14 +90,14 @@ public class CommandMenu extends Group {
 		Gdx.app.log(TAG, "New screen position: " + x + ", " + y);
 		super.setPosition(x, Gdx.graphics.getHeight() - y); // Why isn't it the same origins as the screen coordinates?
 		if (x < Gdx.graphics.getWidth() / 2) {
-			table.setPosition(50, 0);
+			table.setPosition(Constants.TILE_SIZE, 0);
 		} else {
-			table.setPosition(-50, 0);
+			table.setPosition(Constants.TILE_SIZE, 0);
 		}
 	}
 
 	public void resize(int width, int height) {
-		Gdx.app.log(TAG, "resize");
+		buttonSize = 88;
 	}
 
 	protected class CommandListener extends ClickListener {
