@@ -131,10 +131,6 @@ public class World {
 			}
 		}
 
-		if (!areaSet.isEmpty()) {
-			infoLog.add(String.format("%s is getting the benefits of controlling %s", currentPlayer, areaSet));
-		}
-
 		// Update the area ownership
 		areaSet.clear();
 		for (Unit unit : currentPlayer.units.values()) {
@@ -144,10 +140,6 @@ public class World {
 				a.doControlAttempt(currentPlayer);
 				areaSet.add(a);
 			}
-		}
-
-		for (Area a : areaSet) {
-			infoLog.add(a.getStatusMessage(currentPlayer));
 		}
 
 		phaseFinished = true;

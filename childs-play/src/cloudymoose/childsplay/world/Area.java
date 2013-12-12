@@ -52,7 +52,7 @@ public class Area extends AbstractCollection<HexTile<TileData>> {
 	public Player getOwner() {
 		return owner;
 	}
-	
+
 	public boolean isNeutral() {
 		return owner == null || owner == Player.Gaia();
 	}
@@ -146,5 +146,9 @@ public class Area extends AbstractCollection<HexTile<TileData>> {
 		for (EnvironmentUnit eu : benefitProviders) {
 			eu.doEnvironmentalEffect(world);
 		}
+	}
+
+	public int getControlPoints() {
+		return controlPoints;
 	}
 }

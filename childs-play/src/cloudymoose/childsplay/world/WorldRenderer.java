@@ -1,16 +1,15 @@
 package cloudymoose.childsplay.world;
 
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
 import cloudymoose.childsplay.world.commands.MoveCommand;
-import cloudymoose.childsplay.world.hextiles.Direction;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 import cloudymoose.childsplay.world.units.AppleTree;
 import cloudymoose.childsplay.world.units.Castle;
 import cloudymoose.childsplay.world.units.Catapult;
 import cloudymoose.childsplay.world.units.Child;
+import cloudymoose.childsplay.world.units.EnvironmentUnit;
 import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.Gdx;
@@ -23,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 
 /** Takes the current state of the world and renders it to the screen */
 public class WorldRenderer {
@@ -38,6 +38,7 @@ public class WorldRenderer {
 	// Materials
 	private Map<TileType, TextureRegion> tileTextures;
 	private Map<Class<? extends Unit>, TexturePair> unitTextures;
+	private Array<TextureRegion> flagTextures;
 
 	private AnimationRunner animationRunner;
 
@@ -46,6 +47,7 @@ public class WorldRenderer {
 		this.assetManager = assetManager;
 		this.unitTextures = new HashMap<Class<? extends Unit>, TexturePair>();
 		this.tileTextures = new HashMap<TileType, TextureRegion>();
+		this.flagTextures = new Array<TextureRegion>();
 	}
 
 	public void init() {
@@ -66,6 +68,10 @@ public class WorldRenderer {
 
 		tileTextures.put(TileType.Grass, atlasTF.findRegion("Grass"));
 		tileTextures.put(TileType.Sand, atlasTF.findRegion("Sand"));
+
+		flagTextures.addAll(atlasTF.findRegions("FlagBlue"));
+		flagTextures.add(atlasTF.findRegion("FlagNeutral"));
+		flagTextures.addAll(atlasTF.findRegions("FlagRed"));
 	}
 
 	public boolean render(float dt) {
@@ -116,14 +122,37 @@ public class WorldRenderer {
 	}
 
 	private void renderFlag(SpriteBatch batch, HexTile<TileData> tile) {
-		TextureAtlas atlas0 = assetManager.get(Constants.TILES_FLAGS_ATLAS_PATH);
-		TextureRegion flag = atlas0.findRegion("FlagRed");
+		int nbFlags = flagTextures.size / 2;
+		Area area = tile.value.getArea();
+
+		int textureIndex;
+		if (area.isNeutral()) textureIndex = nbFlags;
+		else {
+			if (area.getOwner().id == 1) textureIndex = 0;
+			else textureIndex = nbFlags + 1;
+
+			double rawProgress = area.getControlPoints() / (float) area.getControlTiles().size();
+			int progress = (int) Math.ceil(rawProgress * (nbFlags - 1));
+			textureIndex += progress;
+			Gdx.app.debug(TAG, String.format("ti %d | progress %f-%d | status: %s ",
+					textureIndex, rawProgress, progress, area.getControlPointStatus()));
+		}
+
+		TextureRegion flag = flagTextures.get(textureIndex);
 		sb.setColor(Color.WHITE);
 		Vector3 tilePosition = tile.getPosition();
 		float aspectRatio = flag.getRegionWidth() / (float) flag.getRegionHeight();
 		float drawHeight = Constants.TILE_SIZE * 2;
 		float drawWidth = drawHeight * aspectRatio;
-		sb.draw(flag, tilePosition.x - drawWidth / 2, tilePosition.y, drawWidth, drawHeight);
+
+		float drawXOffset = 0;
+		if (area.isNeutral()) {
+			drawXOffset = drawWidth / 2;
+		} else if (area.getOwner().id == 1) {
+			drawXOffset = drawWidth;
+		}
+
+		sb.draw(flag, tilePosition.x - drawXOffset, tilePosition.y, drawWidth, drawHeight);
 	}
 
 	public void addAnimationData(AnimationData data) {
@@ -135,7 +164,8 @@ public class WorldRenderer {
 
 		if (unit.getPlayerId() == 2) flipTexture = true;
 		else if (unit instanceof Catapult && unit.getOccupiedTile().value.getArea().isNeutral()
-				&& world.getCurrentPlayer().id == 2) flipTexture = true;
+				&& world.getLocalPlayer().id == 2) flipTexture = true;
+		else if (unit.getPlayerId() == Player.GAIA_ID && !(unit instanceof EnvironmentUnit)) flipTexture = true;
 
 		TextureRegion textureRegion = unitTextures.get(unit.getClass()).get(flipTexture);
 
@@ -157,7 +187,6 @@ public class WorldRenderer {
 			drawY = unit.hitbox.y;
 		}
 
-		// sb.setColor(color);
 		sb.draw(textureRegion, drawX, drawY, drawWidth, drawHeight);
 	}
 
@@ -201,48 +230,6 @@ public class WorldRenderer {
 	public void dispose() {
 		debugRenderer.dispose();
 		sb.dispose();
-	}
-
-	private float[][] getEdges(Vector3 center, EnumSet<Direction> borders) {
-		float height = 2 * world.getMap().getTileSize();
-		float width = (float) (Math.sqrt(3) / 2f * height);
-		// center.x - width / 2, center.y + height / 4
-		// center.x, center.y + height / 2
-		// center.x + width / 2, center.y + height / 4
-		// center.x + width / 2, center.y - height / 4
-		// center.x,center.y - height / 2
-		// center.x - width / 2, center.y - height / 4
-
-		float[][] edges = new float[borders.size()][];
-		int i = 0;
-		for (Direction d : borders) {
-			switch (d) {
-			case DownLeft:
-				edges[i] = new float[] { center.x, center.y - height / 2, center.x - width / 2, center.y - height / 4 };
-				break;
-			case DownRight:
-				edges[i] = new float[] { center.x + width / 2, center.y - height / 4, center.x, center.y - height / 2 };
-				break;
-			case Left:
-				edges[i] = new float[] { center.x - width / 2, center.y - height / 4, center.x - width / 2,
-						center.y + height / 4 };
-				break;
-			case Right:
-				edges[i] = new float[] { center.x + width / 2, center.y + height / 4, center.x + width / 2,
-						center.y - height / 4 };
-				break;
-			case UpLeft:
-				edges[i] = new float[] { center.x - width / 2, center.y + height / 4, center.x, center.y + height / 2 };
-				break;
-			case UpRight:
-				edges[i] = new float[] { center.x, center.y + height / 2, center.x + width / 2, center.y + height / 4 };
-				break;
-			}
-			i++;
-		}
-
-		return edges;
-
 	}
 
 	private static class TexturePair {
