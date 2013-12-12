@@ -58,7 +58,7 @@ public class GameHUD extends AbstractMenuStageManager {
 		});
 		stage.addActor(btnEnd);
 
-		commandMenu = new CommandMenu(world.getLocalPlayer(), getSkin());
+		commandMenu = new CommandMenu(world.getLocalPlayer(), this.game.assetManager);
 		stage.addActor(commandMenu);
 
 		tsp = new TileStatusPreview(world.getLocalPlayer(), getSkin());
