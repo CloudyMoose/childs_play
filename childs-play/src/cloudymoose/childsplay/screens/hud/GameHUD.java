@@ -10,11 +10,13 @@ import cloudymoose.childsplay.world.hextiles.HexTile;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class GameHUD extends AbstractMenuStageManager {
 
@@ -25,7 +27,7 @@ public class GameHUD extends AbstractMenuStageManager {
 	Label labelInfoLog;
 	HPBars hpBars;
 	CommandMenu commandMenu;
-	TextButton btnEnd;
+	Button btnEnd;
 	TileStatusPreview tsp;
 
 	private int remainingInfoLogDisplayTime;
@@ -48,8 +50,12 @@ public class GameHUD extends AbstractMenuStageManager {
 		updateTicketCount();
 		stage.addActor(labelTicketCount);
 
-		btnEnd = new TextButton("End Turn", getSkin());
-		btnEnd.setSize(200, 50);
+		TextureAtlas atlasUI = this.game.assetManager
+				.get(Constants.UNITS_ICONS_ATLAS_PATH);
+
+		String name = "Hourglass" + (world.getLocalPlayer().id == 1 ? "Blue" : "Red");
+		btnEnd = new Button(new TextureRegionDrawable(atlasUI.findRegion(name)));
+		btnEnd.setSize(96, 96);
 		btnEnd.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
