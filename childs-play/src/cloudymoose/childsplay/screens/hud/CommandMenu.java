@@ -43,18 +43,18 @@ public class CommandMenu extends Group {
 	protected void build(AssetManager assetManager) {
 		table = new Table();
 
-		TextureAtlas atlasUI = assetManager.get(Constants.UNITS_ICONS_ATLAS_PATH);
+		TextureAtlas atlas = assetManager.get(Constants.TRIM_ATLAS_PATH);
 
-		Button btnMove = new Button(new TextureRegionDrawable(atlasUI.findRegion("Move")));
+		Button btnMove = new Button(new TextureRegionDrawable(atlas.findRegion("Move")));
 		commandButtons.put(MoveCommand.class, btnMove);
 		btnMove.addListener(new CommandListener(MoveCommand.class));
 
-		Button btnAttack = new Button(new TextureRegionDrawable(atlasUI.findRegion("Attack")));
+		Button btnAttack = new Button(new TextureRegionDrawable(atlas.findRegion("Attack")));
 		commandButtons.put(AttackCommand.class, btnAttack);
 		btnAttack.addListener(new CommandListener(AttackCommand.class));
 
 		String name = "Recruit" + (player.id == 1 ? "Blue" : "Red");
-		Button btnRecruit = new Button(new TextureRegionDrawable(atlasUI.findRegion(name)));
+		Button btnRecruit = new Button(new TextureRegionDrawable(atlas.findRegion(name)));
 		commandButtons.put(RecruitCommand.class, btnRecruit);
 		btnRecruit.addListener(new CommandListener(RecruitCommand.class));
 

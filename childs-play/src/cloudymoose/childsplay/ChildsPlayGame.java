@@ -108,8 +108,8 @@ public class ChildsPlayGame extends Game {
 	private static AssetManager initializeAssetManager() {
 		AssetManager am = new AssetManager();
 		am.load(Constants.MENU_SKIN_JSON_PATH, Skin.class);
-		am.load(Constants.TILES_FLAGS_ATLAS_PATH, TextureAtlas.class);
-		am.load(Constants.UNITS_ICONS_ATLAS_PATH, TextureAtlas.class);
+		am.load(Constants.NO_TRIM_ATLAS_PATH, TextureAtlas.class);
+		am.load(Constants.TRIM_ATLAS_PATH, TextureAtlas.class);
 
 		am.load("sounds/fight.mp3", Sound.class);
 		am.load("sounds/ok.mp3", Sound.class);

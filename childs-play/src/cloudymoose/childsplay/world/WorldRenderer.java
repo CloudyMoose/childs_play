@@ -52,27 +52,27 @@ public class WorldRenderer {
 	}
 
 	public void init() {
-		TextureAtlas atlasTF = assetManager.get(Constants.TILES_FLAGS_ATLAS_PATH);
-		TextureAtlas atlasUI = assetManager.get(Constants.UNITS_ICONS_ATLAS_PATH);
-		animationRunner = new AnimationRunner(atlasUI, assetManager);
+		TextureAtlas atlas0 = assetManager.get(Constants.NO_TRIM_ATLAS_PATH);
+		TextureAtlas atlas1 = assetManager.get(Constants.TRIM_ATLAS_PATH);
+		animationRunner = new AnimationRunner(atlas0, assetManager);
 
 		// Add move command sounds
 		MoveCommand.Sounds.add(assetManager.get("sounds/ok.mp3", Sound.class));
 		MoveCommand.Sounds.add(assetManager.get("sounds/hereWeGo.mp3", Sound.class));
 		MoveCommand.Sounds.add(assetManager.get("sounds/yes.mp3", Sound.class));
 
-		unitTextures.put(Catapult.class, new TexturePair(atlasUI.findRegion("CatapultFire")));
-		unitTextures.put(Castle.class, new TexturePair(atlasUI.findRegion("castle")));
+		unitTextures.put(Catapult.class, new TexturePair(atlas0.findRegion("CatapultFire")));
+		unitTextures.put(Castle.class, new TexturePair(atlas1.findRegion("castle")));
 		unitTextures.put(Child.class,
-				new TexturePair(atlasUI.findRegion("BlueChild"), atlasUI.findRegion("RedChild")));
-		unitTextures.put(AppleTree.class, new TexturePair(atlasUI.findRegion("apple_tree")));
+				new TexturePair(atlas1.findRegion("BlueChild"), atlas1.findRegion("RedChild")));
+		unitTextures.put(AppleTree.class, new TexturePair(atlas0.findRegion("apple_tree")));
 
-		tileTextures.put(TileType.Grass, atlasTF.findRegion("Grass"));
-		tileTextures.put(TileType.Sand, atlasTF.findRegion("Sand"));
+		tileTextures.put(TileType.Grass, atlas0.findRegion("grass"));
+		tileTextures.put(TileType.Sand, atlas0.findRegion("sand"));
 
-		flagTextures.addAll(atlasTF.findRegions("FlagBlue"));
-		flagTextures.add(atlasTF.findRegion("FlagNeutral"));
-		flagTextures.addAll(atlasTF.findRegions("FlagRed"));
+		flagTextures.addAll(atlas0.findRegions("FlagBlue"));
+		flagTextures.add(atlas0.findRegion("FlagNeutral"));
+		flagTextures.addAll(atlas0.findRegions("FlagRed"));
 	}
 
 	public boolean render(float dt) {

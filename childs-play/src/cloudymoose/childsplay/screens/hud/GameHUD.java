@@ -29,7 +29,7 @@ public class GameHUD extends AbstractMenuStageManager {
 	Sprite unitSpriteA, unitSpriteB;
 	Sprite resourceSpriteA, resourceSpriteB;
 
-	Label labelUnitCountA,labelUnitCountB;
+	Label labelUnitCountA, labelUnitCountB;
 	Label labelResourceCountA, labelResourceCountB;
 	Label labelTicketCount;
 	Label labelInfoLog;
@@ -56,12 +56,11 @@ public class GameHUD extends AbstractMenuStageManager {
 
 	@Override
 	protected Actor init() {
-		TextureAtlas atlasUI = this.game.assetManager
-				.get(Constants.UNITS_ICONS_ATLAS_PATH);
+		TextureAtlas atlas = this.game.assetManager.get(Constants.TRIM_ATLAS_PATH);
 
-		AtlasRegion unitTextureA = atlasUI.findRegion("BlueTroops");
-		AtlasRegion unitTextureB = atlasUI.findRegion("RedTroops");
-		AtlasRegion resourceTexture = atlasUI.findRegion("Apple");
+		AtlasRegion unitTextureA = atlas.findRegion("BlueTroops");
+		AtlasRegion unitTextureB = atlas.findRegion("RedTroops");
+		AtlasRegion resourceTexture = atlas.findRegion("Apple");
 
 		unitSpriteA = new Sprite(unitTextureA);
 		unitSpriteA.setSize(32, 32);
@@ -90,7 +89,7 @@ public class GameHUD extends AbstractMenuStageManager {
 		stage.addActor(labelTicketCount);
 
 		String name = "Hourglass" + (world.getLocalPlayer().id == 1 ? "Blue" : "Red");
-		btnEnd = new Button(new TextureRegionDrawable(atlasUI.findRegion(name)));
+		btnEnd = new Button(new TextureRegionDrawable(atlas.findRegion(name)));
 		btnEnd.setSize(96, 96);
 		btnEnd.addListener(new ClickListener() {
 			@Override
@@ -160,8 +159,9 @@ public class GameHUD extends AbstractMenuStageManager {
 	}
 
 	private static int units(Player p) {
-		return  Math.max(0, p.units.size() - 1);
+		return Math.max(0, p.units.size() - 1);
 	}
+
 	private void updateUnitCount() {
 		labelUnitCountA.setText(String.format("%d", units(blue)));
 		labelUnitCountB.setText(String.format("%d", units(red)));

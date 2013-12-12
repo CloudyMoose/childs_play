@@ -1,0 +1,151 @@
+no_trim_sprites.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+sand
+  rotate: false
+  xy: 892, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+Cloud
+  rotate: false
+  xy: 892, 262
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 3
+FlagBlue
+  rotate: false
+  xy: 693, 645
+  size: 185, 641
+  orig: 185, 641
+  offset: 0, 0
+  index: 4
+CatapultFire
+  rotate: false
+  xy: 376, 906
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 1
+FlagRed
+  rotate: false
+  xy: 189, 516
+  size: 185, 641
+  orig: 185, 641
+  offset: 0, 0
+  index: 2
+FlagNeutral
+  rotate: false
+  xy: 376, 1036
+  size: 32, 641
+  orig: 32, 641
+  offset: 0, 0
+  index: -1
+grass
+  rotate: false
+  xy: 892, 132
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+FlagBlue
+  rotate: false
+  xy: 410, 1288
+  size: 185, 641
+  orig: 185, 641
+  offset: 0, 0
+  index: 3
+Cloud
+  rotate: false
+  xy: 892, 392
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 2
+CatapultFire
+  rotate: false
+  xy: 376, 516
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 4
+FlagRed
+  rotate: false
+  xy: 516, 2
+  size: 186, 641
+  orig: 186, 641
+  offset: 0, 0
+  index: 3
+Cloud
+  rotate: false
+  xy: 892, 522
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 1
+FlagBlue
+  rotate: false
+  xy: 597, 1288
+  size: 185, 641
+  orig: 185, 641
+  offset: 0, 0
+  index: 2
+CatapultFire
+  rotate: false
+  xy: 376, 646
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 3
+FlagRed
+  rotate: false
+  xy: 2, 516
+  size: 185, 641
+  orig: 185, 641
+  offset: 0, 0
+  index: 4
+apple_tree
+  rotate: false
+  xy: 2, 2
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+FlagRed
+  rotate: false
+  xy: 704, 2
+  size: 186, 641
+  orig: 186, 641
+  offset: 0, 0
+  index: 1
+FlagBlue
+  rotate: false
+  xy: 784, 1288
+  size: 183, 641
+  orig: 183, 641
+  offset: 0, 0
+  index: 1
+FlagBlue
+  rotate: false
+  xy: 506, 645
+  size: 185, 641
+  orig: 185, 641
+  offset: 0, 0
+  index: 5
+FlagRed
+  rotate: false
+  xy: 2, 1159
+  size: 182, 641
+  orig: 182, 641
+  offset: 0, 0
+  index: 5
+CatapultFire
+  rotate: false
+  xy: 376, 776
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: 2

@@ -36,7 +36,7 @@
         <key>dataFormat</key>
         <string>libgdx</string>
         <key>textureFileName</key>
-        <filename>childs-play-android/assets/game/units_icons.png</filename>
+        <filename>childs-play-android/assets/game/trimmed_sprites.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>ditherType</key>
@@ -127,7 +127,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>childs-play-android/assets/game/units_icons.txt</filename>
+                <filename>childs-play-android/assets/game/trimmed_sprites.txt</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -160,15 +160,12 @@
             <key>trimThreshold</key>
             <uint>1</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">None</enum>
+            <enum type="SpriteSettings::TrimMode">Trim</enum>
             <key>heuristicMask</key>
             <false/>
         </struct>
         <key>fileList</key>
         <array>
-            <filename>raw-assets/Cloud1.png</filename>
-            <filename>raw-assets/Cloud2.png</filename>
-            <filename>raw-assets/Cloud3.png</filename>
             <filename>raw-assets/HourglassBlue.png</filename>
             <filename>raw-assets/HourglassRed.png</filename>
             <filename>raw-assets/Move.png</filename>
@@ -178,18 +175,11 @@
             <filename>raw-assets/RedTeam.png</filename>
             <filename>raw-assets/RedTroops.png</filename>
             <filename>raw-assets/Apple.png</filename>
-            <filename>raw-assets/apple_tree.png</filename>
             <filename>raw-assets/Attack.png</filename>
             <filename>raw-assets/BlueChild.png</filename>
             <filename>raw-assets/BlueTeam.png</filename>
             <filename>raw-assets/BlueTroops.png</filename>
             <filename>raw-assets/castle.png</filename>
-            <filename>raw-assets/catapult.png</filename>
-            <filename>raw-assets/CatapultFire1.png</filename>
-            <filename>raw-assets/CatapultFire2.png</filename>
-            <filename>raw-assets/CatapultFire3.png</filename>
-            <filename>raw-assets/CatapultFire4.png</filename>
-            <filename>raw-assets/full_size/Bush.png</filename>
             <filename>raw-assets/BlueLife.png</filename>
             <filename>raw-assets/RedLife.png</filename>
         </array>

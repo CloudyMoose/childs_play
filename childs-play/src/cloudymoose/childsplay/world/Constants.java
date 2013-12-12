@@ -20,6 +20,6 @@ public class Constants {
 
 	// Texture paths
 	public static final String MENU_SKIN_JSON_PATH = "menu_skin/uiskin.json";
-	public static final String TILES_FLAGS_ATLAS_PATH = "game/tiles_flags.txt";
-	public static final String UNITS_ICONS_ATLAS_PATH = "game/units_icons.txt";
+	public static final String NO_TRIM_ATLAS_PATH = "game/no_trim_sprites.txt";
+	public static final String TRIM_ATLAS_PATH = "game/trimmed_sprites.txt";
 }

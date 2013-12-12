@@ -1,0 +1,116 @@
+trimmed_sprites.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+RedTroops
+  rotate: false
+  xy: 776, 132
+  size: 128, 126
+  orig: 128, 128
+  offset: 0, 2
+  index: -1
+BlueLife
+  rotate: false
+  xy: 646, 350
+  size: 128, 86
+  orig: 128, 128
+  offset: 0, 22
+  index: -1
+RedChild
+  rotate: false
+  xy: 906, 2
+  size: 106, 128
+  orig: 128, 128
+  offset: 11, 0
+  index: -1
+Apple
+  rotate: false
+  xy: 906, 132
+  size: 100, 128
+  orig: 128, 128
+  offset: 11, 0
+  index: -1
+BlueChild
+  rotate: false
+  xy: 906, 262
+  size: 58, 128
+  orig: 128, 128
+  offset: 35, 0
+  index: -1
+HourglassRed
+  rotate: false
+  xy: 516, 132
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+Move
+  rotate: false
+  xy: 776, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+Attack
+  rotate: false
+  xy: 646, 132
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+RedTeam
+  rotate: false
+  xy: 516, 392
+  size: 128, 90
+  orig: 128, 128
+  offset: 0, 19
+  index: -1
+BlueTroops
+  rotate: false
+  xy: 776, 260
+  size: 128, 126
+  orig: 128, 128
+  offset: 0, 2
+  index: -1
+RedLife
+  rotate: false
+  xy: 646, 262
+  size: 128, 86
+  orig: 128, 128
+  offset: 0, 21
+  index: -1
+castle
+  rotate: false
+  xy: 2, 2
+  size: 512, 432
+  orig: 512, 512
+  offset: 0, 41
+  index: -1
+RecruitRed
+  rotate: false
+  xy: 516, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+BlueTeam
+  rotate: false
+  xy: 2, 436
+  size: 128, 68
+  orig: 128, 128
+  offset: 0, 30
+  index: -1
+HourglassBlue
+  rotate: false
+  xy: 516, 262
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+RecruitBlue
+  rotate: false
+  xy: 646, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
