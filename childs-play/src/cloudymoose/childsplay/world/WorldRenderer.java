@@ -239,4 +239,26 @@ public class WorldRenderer {
 		sb.dispose();
 	}
 
+	class TexturePair {
+		public final TextureRegion normal;
+		public final TextureRegion flipped;
+
+		public TexturePair(TextureRegion normal, TextureRegion flipped) {
+			this.normal = normal;
+			this.flipped = flipped;
+		}
+
+		public TexturePair(TextureRegion normal) {
+			super();
+			this.normal = normal;
+			flipped = new TextureRegion(normal);
+			flipped.flip(true, false);
+		}
+
+		public TextureRegion get(boolean flipped) {
+			return flipped ? this.flipped : normal;
+		}
+
+	}
+
 }
