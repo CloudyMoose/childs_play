@@ -1,5 +1,6 @@
 package cloudymoose.childsplay.world.units;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +28,15 @@ public class Child extends Unit {
 
 	@Override
 	public List<Class<? extends Command>> getSupportedCommands() {
-		return supportedCommands;
+		if (getAttackRange() > 0) {
+			return supportedCommands;
+		} else {
+			// TODO: handle this in a way that makes it easier to add new
+			// commands
+			List<Class<? extends Command>> list = new ArrayList<Class<? extends Command>>();
+			list.add(MoveCommand.class);
+			return list;
+		}
 	}
 
 	public static int getCost() {
