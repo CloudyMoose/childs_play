@@ -83,11 +83,12 @@ public class WorldRenderer {
 
 			if (world.targetableTiles.contains(tile)) {
 				color = Color.ORANGE;
-			} else if (world.getMap().isControlPoint(tile)) {
-				color = Color.MAGENTA;
 			}
 
 			this.renderTile(sb, tile, color);
+			if (world.getMap().isControlPoint(tile)) {
+				renderFlag(sb, tile);
+			}
 		}
 
 		// Render units
@@ -106,12 +107,24 @@ public class WorldRenderer {
 		if (animationRunner.hasOngoingAnimation()) {
 			boolean block;
 			sb.begin();
+			sb.setColor(Color.WHITE);
 			block = animationRunner.run(dt, sb);
 			sb.end();
 			return block;
 		} else {
 			return false;
 		}
+	}
+
+	private void renderFlag(SpriteBatch batch, HexTile<TileData> tile) {
+		TextureAtlas atlas0 = assetManager.get("game/pack0.atlas");
+		TextureRegion flag = atlas0.findRegion("FlagRed");
+		sb.setColor(Color.WHITE);
+		Vector3 tilePosition = tile.getPosition();
+		float aspectRatio = flag.getRegionWidth() / (float) flag.getRegionHeight();
+		float drawHeight = Constants.TILE_SIZE * 2;
+		float drawWidth = drawHeight * aspectRatio;
+		sb.draw(flag, tilePosition.x - drawWidth / 2, tilePosition.y, drawWidth, drawHeight);
 	}
 
 	public void addAnimationData(AnimationData data) {
