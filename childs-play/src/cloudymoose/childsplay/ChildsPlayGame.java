@@ -22,6 +22,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -110,6 +111,8 @@ public class ChildsPlayGame extends Game {
 		am.load(Constants.MENU_SKIN_JSON_PATH, Skin.class);
 		am.load(Constants.TILES_FLAGS_ATLAS_PATH, TextureAtlas.class);
 		am.load(Constants.UNITS_ICONS_ATLAS_PATH, TextureAtlas.class);
+		am.load("game/BlueLife.png", Texture.class);
+		am.load("game/RedLife.png", Texture.class);
 
 		am.load("sounds/fight.mp3", Sound.class);
 		am.load("sounds/ok.mp3", Sound.class);
