@@ -66,7 +66,20 @@ public class AttackCommand extends Command {
 			// Return it only once.
 			if (meleeAnimation == null && target instanceof Child) {
 				Vector3 meleePosition = new Vector3(actor.position).add(target.position).scl(.5f);
-				meleeAnimation = new AnimationData(AnimationType.Melee, meleePosition, true, false);
+				meleeAnimation = new AnimationData(AnimationType.Melee, meleePosition, true, true);
+
+				// Stop looping the animation in a second using this ugly thread hack
+				Runnable turnOffLoop = new Runnable() {
+					@Override
+					public void run() {
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) { }
+						meleeAnimation.loop = false;
+					}
+				};
+				new Thread(turnOffLoop).start();
+
 				return meleeAnimation;
 			} else {
 				return null;
