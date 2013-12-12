@@ -205,7 +205,7 @@ public class WorldRenderer {
 		cam.setToOrtho(false, width / 2, height / 2);
 
 		cam.position.set(0, 0, 0);
-
+		cam.zoom = 0.5f;
 		cam.update();
 	}
 
