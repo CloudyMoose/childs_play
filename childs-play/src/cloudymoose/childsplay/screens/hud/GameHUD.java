@@ -10,7 +10,11 @@ import cloudymoose.childsplay.world.hextiles.HexTile;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -19,10 +23,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class GameHUD extends AbstractMenuStageManager {
-
 	World world;
 
-	Label labelUnitCount;
+	Sprite unitSpriteA, unitSpriteB;
+	Sprite resourceSpriteA, resourceSpriteB;
+
+	Label labelUnitCountA,labelUnitCountB;
+	Label labelResourceCountA, labelResourceCountB;
 	Label labelTicketCount;
 	Label labelInfoLog;
 	HPBars hpBars;
@@ -31,27 +38,55 @@ public class GameHUD extends AbstractMenuStageManager {
 	TileStatusPreview tsp;
 
 	private int remainingInfoLogDisplayTime;
+
+	private Player blue, red;
+
 	/** In seconds */
 	private static final int MSG_DISPLAY_TIME = 3;
 
 	public GameHUD(ChildsPlayGame game, Screen screen, World world) {
 		super(game, screen);
 		this.world = world;
+
+		blue = world.getPlayers().get(1);
+		red = world.getPlayers().size() == 2 ? Player.Gaia() : world
+				.getPlayers().get(2);
 	}
 
 	@Override
 	protected Actor init() {
+		TextureAtlas atlasUI = this.game.assetManager
+				.get(Constants.UNITS_ICONS_ATLAS_PATH);
 
-		labelUnitCount = new Label("", getSkin());
+		AtlasRegion unitTextureA = atlasUI.findRegion("BlueTroops");
+		AtlasRegion unitTextureB = atlasUI.findRegion("RedTroops");
+		AtlasRegion resourceTexture = atlasUI.findRegion("Apple");
+
+		unitSpriteA = new Sprite(unitTextureA);
+		unitSpriteA.setSize(32, 32);
+		unitSpriteB = new Sprite(unitTextureB);
+		unitSpriteB.setSize(32, 32);
+
+		resourceSpriteA = new Sprite(resourceTexture);
+		resourceSpriteA.setSize(32, 32);
+		resourceSpriteB = new Sprite(resourceTexture);
+		resourceSpriteB.setSize(32, 32);
+
+		labelUnitCountA = new Label("", getSkin());
+		labelUnitCountB = new Label("", getSkin());
+		stage.addActor(labelUnitCountA);
+		stage.addActor(labelUnitCountB);
 		updateUnitCount();
-		stage.addActor(labelUnitCount);
+
+		labelResourceCountA = new Label("", getSkin());
+		labelResourceCountB = new Label("", getSkin());
+		stage.addActor(labelResourceCountA);
+		stage.addActor(labelResourceCountB);
+		updateResourceCount();
 
 		labelTicketCount = new Label("", getSkin());
 		updateTicketCount();
 		stage.addActor(labelTicketCount);
-
-		TextureAtlas atlasUI = this.game.assetManager
-				.get(Constants.UNITS_ICONS_ATLAS_PATH);
 
 		String name = "Hourglass" + (world.getLocalPlayer().id == 1 ? "Blue" : "Red");
 		btnEnd = new Button(new TextureRegionDrawable(atlasUI.findRegion(name)));
@@ -73,8 +108,7 @@ public class GameHUD extends AbstractMenuStageManager {
 		labelInfoLog = new Label("", getSkin());
 		stage.addActor(labelInfoLog);
 
-		hpBars = new HPBars(game.assetManager, world.getPlayers().get(1),
-				world.getPlayers().size() == 2 ? Player.Gaia() : world.getPlayers().get(2));
+		hpBars = new HPBars(game.assetManager, blue, red);
 		stage.addActor(hpBars);
 
 		return null; /* We're adding the objects to the scene manually here */
@@ -83,10 +117,35 @@ public class GameHUD extends AbstractMenuStageManager {
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
-		labelUnitCount.setPosition(0, height - 20);
-		labelTicketCount.setPosition(0, height - 40);
 
-		labelInfoLog.setPosition(width / 2, height - 50);
+		TextBounds font = labelUnitCountA.getStyle().font.getBounds("1");
+
+		// Place unit counter sprites
+		float y = height - 5 - unitSpriteA.getHeight();
+		unitSpriteA.setPosition(5, y);
+		unitSpriteB.setPosition(width - 5 - unitSpriteB.getWidth(), y);
+		y = height - unitSpriteA.getHeight() / 2 - font.height / 2;
+		labelUnitCountA.setPosition(2 * 5 + unitSpriteA.getWidth(), y);
+		font = labelUnitCountB.getStyle().font.getBounds(labelUnitCountB
+				.getText());
+		labelUnitCountB.setPosition(width - 2 * 5 - unitSpriteB.getWidth()
+				- font.width, y);
+
+		// Place unit counter labels
+		y = height - 2 * 5 - resourceSpriteA.getHeight()
+				- unitSpriteA.getHeight();
+		resourceSpriteA.setPosition(5, y);
+		resourceSpriteB.setPosition(width - 5 - unitSpriteB.getWidth(), y);
+		y = height - 5 - resourceSpriteA.getHeight() / 2
+				- unitSpriteA.getHeight() - font.height / 2;
+		labelResourceCountA.setPosition(2 * 5 + unitSpriteA.getWidth(), y);
+		font = labelResourceCountB.getStyle().font
+				.getBounds(labelResourceCountB.getText());
+		labelResourceCountB.setPosition(width - 2 * 5 - unitSpriteB.getWidth()
+				- font.width, y);
+
+		labelTicketCount.setPosition(0, height - 100);
+		labelInfoLog.setPosition(width / 2, height - 110);
 		btnEnd.setPosition(200, 20);
 		commandMenu.resize(width, height);
 		Gdx.app.log(TAG, tsp.getWidth() + " " + tsp.getHeight());
@@ -98,8 +157,17 @@ public class GameHUD extends AbstractMenuStageManager {
 		hpBars.setPosition(width / 2, height - 30);
 	}
 
+	private static int units(Player p) {
+		return  Math.max(0, p.units.size() - 1);
+	}
 	private void updateUnitCount() {
-		labelUnitCount.setText(String.format("%d units", world.getCurrentPlayer().units.size()));
+		labelUnitCountA.setText(String.format("%d", units(blue)));
+		labelUnitCountB.setText(String.format("%d", units(red)));
+	}
+
+	private void updateResourceCount() {
+		labelResourceCountA.setText(String.format("%d", blue.getResourcePoints()));
+		labelResourceCountB.setText(String.format("%d", red.getResourcePoints()));
 	}
 
 	private void updateTicketCount() {
@@ -137,6 +205,7 @@ public class GameHUD extends AbstractMenuStageManager {
 
 	public void update() {
 		updateUnitCount();
+		updateResourceCount();
 		updateTicketCount();
 		updateInfoLog();
 		hpBars.updateHP();
@@ -163,6 +232,14 @@ public class GameHUD extends AbstractMenuStageManager {
 	@Override
 	public boolean render(float dt) {
 		super.render(dt);
+
+		SpriteBatch sb = new SpriteBatch();
+		sb.begin();
+		unitSpriteA.draw(sb);
+		unitSpriteB.draw(sb);
+		resourceSpriteA.draw(sb);
+		resourceSpriteB.draw(sb);
+		sb.end();
 
 		return remainingInfoLogDisplayTime > 0;
 	}
