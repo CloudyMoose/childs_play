@@ -19,7 +19,7 @@ public class AnimationRunner {
 	private final Map<AnimationType, Sound> sounds = new HashMap<AnimationType, Sound>();
 
 	public AnimationRunner(TextureAtlas atlas, AssetManager am) {
-		animations.put(AnimationType.Melee, new Animation(0.05f, atlas.findRegions("Cloud")));
+		animations.put(AnimationType.Melee, new Animation(0.05f, atlas.findRegions("Cloud"), Animation.LOOP));
 		sounds.put(AnimationType.Melee, am.get("sounds/fight.mp3", Sound.class));
 	}
 

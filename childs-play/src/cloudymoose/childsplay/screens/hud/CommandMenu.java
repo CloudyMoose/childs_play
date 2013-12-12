@@ -3,6 +3,7 @@ package cloudymoose.childsplay.screens.hud;
 import java.util.HashMap;
 import java.util.Map;
 
+import cloudymoose.childsplay.world.Constants;
 import cloudymoose.childsplay.world.LocalPlayer;
 import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.commands.AttackCommand;
@@ -12,12 +13,14 @@ import cloudymoose.childsplay.world.commands.RecruitCommand;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class CommandMenu extends Group {
 
@@ -28,28 +31,30 @@ public class CommandMenu extends Group {
 
 	private Table table;
 
-	Map<Class<? extends Command>, TextButton> commandButtons;
+	Map<Class<? extends Command>, Button> commandButtons;
 
-	public CommandMenu(LocalPlayer player, Skin uiSkin) {
+	public CommandMenu(LocalPlayer player, AssetManager am) {
 		this.player = player;
-		commandButtons = new HashMap<Class<? extends Command>, TextButton>();
+		commandButtons = new HashMap<Class<? extends Command>, Button>();
 		setTransform(false);
-		build(uiSkin);
+		build(am);
 	}
 
-	protected void build(Skin uiSkin) {
+	protected void build(AssetManager assetManager) {
 		table = new Table();
-		// table.debug();
 
-		TextButton btnMove = new TextButton("Move", uiSkin);
+		TextureAtlas atlasUI = assetManager.get(Constants.UNITS_ICONS_ATLAS_PATH);
+
+		Button btnMove = new Button(new TextureRegionDrawable(atlasUI.findRegion("Move")));
 		commandButtons.put(MoveCommand.class, btnMove);
 		btnMove.addListener(new CommandListener(MoveCommand.class));
 
-		TextButton btnAttack = new TextButton("Attack", uiSkin);
+		Button btnAttack = new Button(new TextureRegionDrawable(atlasUI.findRegion("Attack")));
 		commandButtons.put(AttackCommand.class, btnAttack);
 		btnAttack.addListener(new CommandListener(AttackCommand.class));
 
-		TextButton btnRecruit = new TextButton("Recruit", uiSkin);
+		String name = "Recruit" + (player.id == 1 ? "Blue" : "Red");
+		Button btnRecruit = new Button(new TextureRegionDrawable(atlasUI.findRegion(name)));
 		commandButtons.put(RecruitCommand.class, btnRecruit);
 		btnRecruit.addListener(new CommandListener(RecruitCommand.class));
 
@@ -62,7 +67,7 @@ public class CommandMenu extends Group {
 
 		for (Class<? extends Command> clazz : clickedTile.value.getOccupant().getSupportedCommands()) {
 			table.row();
-			table.add(commandButtons.get(clazz)).size(80, 40).uniform().spaceBottom(10);
+			table.add(commandButtons.get(clazz)).size(64, 64).uniform().spaceBottom(10);
 		}
 	}
 
@@ -84,9 +89,9 @@ public class CommandMenu extends Group {
 		Gdx.app.log(TAG, "New screen position: " + x + ", " + y);
 		super.setPosition(x, Gdx.graphics.getHeight() - y); // Why isn't it the same origins as the screen coordinates?
 		if (x < Gdx.graphics.getWidth() / 2) {
-			table.setPosition(100, 0);
+			table.setPosition(50, 0);
 		} else {
-			table.setPosition(-100, 0);
+			table.setPosition(-50, 0);
 		}
 	}
 
