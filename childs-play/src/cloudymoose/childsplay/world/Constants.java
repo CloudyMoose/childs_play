@@ -17,7 +17,7 @@ public class Constants {
 
 	public static final float MAP_SCROLL_SPEED = 0.200f;
 	public static final float TILE_SIZE = 64.0f;
-	public static final double UNIT_MOVEMENT_SPEED = 5;
+	public static final double UNIT_MOVEMENT_SPEED = 15;
 	public static final float DIMINISHING_RETURN_BASE = 0.66f;
 
 	/** TODO will be generated or imported for the map file. */

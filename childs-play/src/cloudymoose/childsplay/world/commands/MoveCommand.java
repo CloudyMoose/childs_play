@@ -67,7 +67,7 @@ public class MoveCommand extends Command {
 	public static class MoveRunner extends CommandRunner {
 		private Vector3 destination;
 		private Vector3 currentMovement;
-		protected final float POSITION_EPSILON = 5f; // Position accuracy
+		protected final float POSITION_EPSILON = 10f; // Position accuracy
 		private List<HexTile<TileData>> path;
 
 		public MoveRunner(MoveCommand command, World world) {
