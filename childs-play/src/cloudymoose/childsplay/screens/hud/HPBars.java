@@ -50,7 +50,7 @@ public class HPBars extends Table {
 			if (i < Constants.PLAYER_HEALTH_POINTS) {
 				cells.add(add(new Image(new TextureRegionDrawable(blueHpTexture), Scaling.fillX)));
 			} else if (i == Constants.PLAYER_HEALTH_POINTS) {
-				cells.add(add(lblHp));
+				cells.add(add(lblHp).space(5));
 			} else {
 				cells.add(add(new Image(new TextureRegionDrawable(redHpTexture), Scaling.fillX)));
 			}
