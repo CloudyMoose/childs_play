@@ -13,6 +13,7 @@ public class Constants {
 
 	public static final int CHILD_SIZE = 90;
 	public static final int ENVIRONMENT_UNIT_SIZE = 110;
+	public static final int OBSTACLE_SIZE = 110;
 	public static final int CASTLE_SIZE = 140;
 
 	public static final float MAP_SCROLL_SPEED = 0.200f;

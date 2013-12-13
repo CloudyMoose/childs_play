@@ -3,6 +3,7 @@ package cloudymoose.childsplay.world.commands;
 import cloudymoose.childsplay.world.TileData;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 import cloudymoose.childsplay.world.units.EnvironmentUnit;
+import cloudymoose.childsplay.world.units.Obstacle;
 import cloudymoose.childsplay.world.units.Unit;
 
 public abstract class TargetConstraints {
@@ -47,6 +48,7 @@ public abstract class TargetConstraints {
 			Unit occupant = tile.value.getOccupant();
 			if (occupant == null) return false;
 			if (occupant instanceof EnvironmentUnit) return false;
+			if (occupant instanceof Obstacle) return false;
 			if (occupant.getPlayerId() == currentPlayerId) return false;
 			return true;
 		}
