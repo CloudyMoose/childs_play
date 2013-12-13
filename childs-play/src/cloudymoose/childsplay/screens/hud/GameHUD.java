@@ -11,7 +11,6 @@ import cloudymoose.childsplay.world.hextiles.HexTile;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -20,7 +19,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.esotericsoftware.tablelayout.Cell;
@@ -56,11 +54,12 @@ public class GameHUD extends AbstractMenuStageManager {
 
 	@Override
 	protected Actor init() {
-		TextureAtlas atlas = this.game.assetManager.get(Constants.TRIM_ATLAS_PATH);
+		TextureAtlas atlas = this.game.assetManager.get(Constants.SPRITES_ATLAS_PATH);
 
 		AtlasRegion unitTextureA = atlas.findRegion("BlueTroops");
 		AtlasRegion unitTextureB = atlas.findRegion("RedTroops");
 		AtlasRegion resourceTexture = atlas.findRegion("Apple");
+		AtlasRegion ticketTexture = atlas.findRegion("Tickets");
 
 		labelUnitCountA = new Label("", getSkin());
 		labelUnitCountB = new Label("", getSkin());
@@ -84,7 +83,7 @@ public class GameHUD extends AbstractMenuStageManager {
 		blueStatusRecap.add(labelResourceCountA);
 		blueStatusRecap.row();
 		if (world.getCurrentPlayer().id == 1) {
-			blueStatusRecap.add();
+			blueStatusRecap.add(new Image(ticketTexture)).expand().spaceRight(labelpadding);
 			blueStatusRecap.add(labelTicketCount);
 		}
 
@@ -99,8 +98,8 @@ public class GameHUD extends AbstractMenuStageManager {
 		redStatusRecap.add(new Image(resourceTexture)).expand();
 		redStatusRecap.row();
 		if (world.getCurrentPlayer().id == 2) {
-			redStatusRecap.add();
-			redStatusRecap.add(labelTicketCount);
+			redStatusRecap.add(labelTicketCount).spaceRight(labelpadding);
+			redStatusRecap.add(new Image(ticketTexture)).expand();
 		}
 
 		String name = "Hourglass" + (world.getLocalPlayer().id == 1 ? "Blue" : "Red");
@@ -177,8 +176,9 @@ public class GameHUD extends AbstractMenuStageManager {
 			}
 		}
 
-		float tableHeight = smallIconSize * 2 + fontHeight + 40;
+		float tableHeight = smallIconSize * 3 + 40;
 		float tableWidth = smallIconSize + fontScale * 40;
+
 		blueStatusRecap.setSize(tableWidth, tableHeight);
 		redStatusRecap.setSize(tableWidth, tableHeight);
 		blueStatusRecap.setPosition(0, height - tableHeight);

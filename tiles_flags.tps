@@ -36,7 +36,7 @@
         <key>dataFormat</key>
         <string>libgdx</string>
         <key>textureFileName</key>
-        <filename>childs-play-android/assets/game/no_trim_sprites.png</filename>
+        <filename>childs-play-android/assets/game/animations.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>ditherType</key>
@@ -127,7 +127,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>childs-play-android/assets/game/no_trim_sprites.txt</filename>
+                <filename>childs-play-android/assets/game/animations.txt</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -166,17 +166,6 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>raw-assets/full_size/FlagNeutral.png</filename>
-            <filename>raw-assets/full_size/FlagRed1.png</filename>
-            <filename>raw-assets/full_size/FlagRed2.png</filename>
-            <filename>raw-assets/full_size/FlagRed3.png</filename>
-            <filename>raw-assets/full_size/FlagRed4.png</filename>
-            <filename>raw-assets/full_size/FlagRed5.png</filename>
-            <filename>raw-assets/full_size/FlagBlue1.png</filename>
-            <filename>raw-assets/full_size/FlagBlue2.png</filename>
-            <filename>raw-assets/full_size/FlagBlue3.png</filename>
-            <filename>raw-assets/full_size/FlagBlue4.png</filename>
-            <filename>raw-assets/full_size/FlagBlue5.png</filename>
             <filename>raw-assets/CatapultFire1.png</filename>
             <filename>raw-assets/CatapultFire2.png</filename>
             <filename>raw-assets/CatapultFire3.png</filename>
@@ -184,9 +173,17 @@
             <filename>raw-assets/Cloud1.png</filename>
             <filename>raw-assets/Cloud2.png</filename>
             <filename>raw-assets/Cloud3.png</filename>
-            <filename>raw-assets/apple_tree.png</filename>
-            <filename>raw-assets/grass.png</filename>
-            <filename>raw-assets/sand.png</filename>
+            <filename>raw-assets/FlagBlue4.png</filename>
+            <filename>raw-assets/FlagNeutral.png</filename>
+            <filename>raw-assets/FlagRed0.png</filename>
+            <filename>raw-assets/FlagRed1.png</filename>
+            <filename>raw-assets/FlagRed2.png</filename>
+            <filename>raw-assets/FlagRed3.png</filename>
+            <filename>raw-assets/FlagRed4.png</filename>
+            <filename>raw-assets/FlagBlue0.png</filename>
+            <filename>raw-assets/FlagBlue1.png</filename>
+            <filename>raw-assets/FlagBlue2.png</filename>
+            <filename>raw-assets/FlagBlue3.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
