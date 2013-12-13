@@ -11,6 +11,7 @@ import cloudymoose.childsplay.world.hextiles.HexTile;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.esotericsoftware.tablelayout.Cell;
@@ -82,6 +84,7 @@ public class GameHUD extends AbstractMenuStageManager {
 		blueStatusRecap.add(labelResourceCountA);
 		blueStatusRecap.row();
 		if (world.getCurrentPlayer().id == 1) {
+			blueStatusRecap.add();
 			blueStatusRecap.add(labelTicketCount);
 		}
 
@@ -96,6 +99,7 @@ public class GameHUD extends AbstractMenuStageManager {
 		redStatusRecap.add(new Image(resourceTexture)).expand();
 		redStatusRecap.row();
 		if (world.getCurrentPlayer().id == 2) {
+			redStatusRecap.add();
 			redStatusRecap.add(labelTicketCount);
 		}
 
@@ -130,7 +134,7 @@ public class GameHUD extends AbstractMenuStageManager {
 	public void resize(int width, int height) {
 		super.resize(width, height);
 
-		float bigIconSize = 128;
+		float bigIconSize = width * (128f / ChildsPlayGame.VIEWPORT_WIDTH);
 		resizeStatusRecap(width, height);
 
 		btnEnd.setSize(bigIconSize, bigIconSize);
@@ -150,9 +154,17 @@ public class GameHUD extends AbstractMenuStageManager {
 	@SuppressWarnings("rawtypes")
 	private void resizeStatusRecap(int width, int height) {
 		// TODO: separate that in another class?
-		float smallIconSize = 64;
+		float smallIconSize = width * (64f / ChildsPlayGame.VIEWPORT_WIDTH);
 
 		float fontHeight = labelUnitCountA.getStyle().font.getBounds("1").height;
+		float fontScale = 0.5f * smallIconSize / fontHeight;
+		fontHeight *= fontScale;
+
+		labelUnitCountA.setFontScale(fontScale);
+		labelUnitCountB.setFontScale(fontScale);
+		labelResourceCountA.setFontScale(fontScale);
+		labelResourceCountB.setFontScale(fontScale);
+		labelTicketCount.setFontScale(fontScale);
 
 		for (Cell c : redStatusRecap.getCells()) {
 			if (c.getWidget() instanceof Image) {
@@ -166,7 +178,7 @@ public class GameHUD extends AbstractMenuStageManager {
 		}
 
 		float tableHeight = smallIconSize * 2 + fontHeight + 40;
-		float tableWidth = smallIconSize + 40;
+		float tableWidth = smallIconSize + fontScale * 40;
 		blueStatusRecap.setSize(tableWidth, tableHeight);
 		redStatusRecap.setSize(tableWidth, tableHeight);
 		blueStatusRecap.setPosition(0, height - tableHeight);
@@ -188,7 +200,7 @@ public class GameHUD extends AbstractMenuStageManager {
 	}
 
 	private void updateTicketCount() {
-		labelTicketCount.setText(String.format("%d/%d tickets", world.getCurrentPlayer().getRemainingTickets(),
+		labelTicketCount.setText(String.format("%d/%d", world.getCurrentPlayer().getRemainingTickets(),
 				Constants.NB_TICKETS));
 	}
 

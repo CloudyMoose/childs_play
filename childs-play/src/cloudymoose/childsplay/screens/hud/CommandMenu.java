@@ -3,6 +3,7 @@ package cloudymoose.childsplay.screens.hud;
 import java.util.HashMap;
 import java.util.Map;
 
+import cloudymoose.childsplay.ChildsPlayGame;
 import cloudymoose.childsplay.world.Constants;
 import cloudymoose.childsplay.world.LocalPlayer;
 import cloudymoose.childsplay.world.TileData;
@@ -97,7 +98,7 @@ public class CommandMenu extends Group {
 	}
 
 	public void resize(int width, int height) {
-		buttonSize = 88;
+		buttonSize = width * (88f / ChildsPlayGame.VIEWPORT_WIDTH);
 	}
 
 	protected class CommandListener extends ClickListener {
