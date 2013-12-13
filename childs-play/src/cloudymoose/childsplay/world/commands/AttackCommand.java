@@ -2,7 +2,10 @@ package cloudymoose.childsplay.world.commands;
 
 import cloudymoose.childsplay.world.AnimationData;
 import cloudymoose.childsplay.world.AnimationType;
+import cloudymoose.childsplay.world.Constants;
+import cloudymoose.childsplay.world.Player;
 import cloudymoose.childsplay.world.World;
+import cloudymoose.childsplay.world.units.Castle;
 import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.math.Vector3;
@@ -48,10 +51,12 @@ public class AttackCommand extends Command {
 		private final Unit target;
 		private AnimationData meleeAnimation;
 		private boolean firstUpdate = true;
+		private World world;
 
 		public AttackRunner(AttackCommand command, World world) {
 			super(command, world);
 			target = world.getUnit(command.targetId);
+			this.world = world;
 
 		}
 
@@ -60,12 +65,21 @@ public class AttackCommand extends Command {
 			// Only attack once
 			if (firstUpdate) {
 				actor.attack(target);
+
 				firstUpdate = false;
+
+				// Execution: finish it if the enemy player can't do anything
+				if (target instanceof Castle) {
+					Player enemyPlayer = world.getPlayers().get(target.getPlayerId());
+					if (enemyPlayer.units.size() <= 1 && enemyPlayer.getResourcePoints() < Constants.CHILD_COST
+							&& world.getAreasForPlayer(enemyPlayer.id).isEmpty()) {
+						firstUpdate = true; // The attack will be done until the end of the game.
+					}
+
+				}
 			}
 
-			if (meleeAnimation != null) {
-				return meleeAnimation.loop;
-			}
+			if (meleeAnimation != null) { return meleeAnimation.loop; }
 
 			return true;
 		}

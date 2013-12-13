@@ -368,4 +368,14 @@ public class World {
 
 	}
 
+	public List<Area> getAreasForPlayer(int id) {
+		List<Area> controlledAreas = new ArrayList<Area>();
+		for (Area a : map.areas) {
+			if (!a.isNeutral() && !a.isContested() && a.getOwner().id == id) {
+				controlledAreas.add(a);
+			}
+		}
+		return controlledAreas;
+	}
+
 }
