@@ -8,10 +8,12 @@ import cloudymoose.childsplay.ChildsPlayGame;
 import cloudymoose.childsplay.world.commands.MoveCommand;
 import cloudymoose.childsplay.world.hextiles.HexTile;
 import cloudymoose.childsplay.world.units.AppleTree;
+import cloudymoose.childsplay.world.units.Bush;
 import cloudymoose.childsplay.world.units.Castle;
 import cloudymoose.childsplay.world.units.Catapult;
 import cloudymoose.childsplay.world.units.Child;
 import cloudymoose.childsplay.world.units.EnvironmentUnit;
+import cloudymoose.childsplay.world.units.Tree;
 import cloudymoose.childsplay.world.units.Unit;
 
 import com.badlogic.gdx.Gdx;
@@ -69,6 +71,8 @@ public class WorldRenderer {
 		unitTextures.put(Child.class,
 				new TexturePair(staticAtlas.findRegion("BlueChild"), staticAtlas.findRegion("RedChild")));
 		unitTextures.put(AppleTree.class, new TexturePair(staticAtlas.findRegion("apple_tree")));
+		unitTextures.put(Tree.class, new TexturePair(staticAtlas.findRegion("tree")));
+		unitTextures.put(Bush.class, new TexturePair(staticAtlas.findRegion("bush")));
 
 		tileTextures.put(TileType.Grass, staticAtlas.findRegion("grass"));
 		tileTextures.put(TileType.Sand, staticAtlas.findRegion("sand"));

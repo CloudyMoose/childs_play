@@ -5,9 +5,11 @@ import java.util.List;
 
 import cloudymoose.childsplay.world.hextiles.HexTile;
 import cloudymoose.childsplay.world.units.AppleTree;
+import cloudymoose.childsplay.world.units.Bush;
 import cloudymoose.childsplay.world.units.Castle;
 import cloudymoose.childsplay.world.units.Catapult;
 import cloudymoose.childsplay.world.units.Child;
+import cloudymoose.childsplay.world.units.Tree;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Json;
@@ -91,6 +93,12 @@ public class MapParser {
 					break;
 				case 3:
 					new Catapult().onTile(t);
+					break;
+				case 6:
+					new Tree().onTile(t);
+					break;
+				case 7:
+					new Bush().onTile(t);
 					break;
 				case 11:
 					player.addUnit(new Child(player).onTile(t));

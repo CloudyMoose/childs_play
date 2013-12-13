@@ -7,7 +7,7 @@ public class AppleTree extends EnvironmentUnit {
 
 	@Override
 	public String toString() {
-		return "Tree " + id;
+		return "AppleTree";
 	}
 
 	@Override
