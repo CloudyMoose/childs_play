@@ -55,7 +55,7 @@ public class MainMenuScreen extends AbstractMenuScreen<MainMenuScreen.StageManag
 			table.row();
 
 			// register the button "start server"
-			startServerButton = new TextButton("Start Server", getSkin());
+			startServerButton = new TextButton("Start Multiplayer Server", getSkin());
 			startServerButton.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
@@ -66,7 +66,7 @@ public class MainMenuScreen extends AbstractMenuScreen<MainMenuScreen.StageManag
 			table.row();
 
 			// register the button "start server"
-			TextButton tmpStartServButton = new TextButton("Start Server (debug: 1 player only)", getSkin());
+			TextButton tmpStartServButton = new TextButton("Start Single Player Server", getSkin());
 			tmpStartServButton.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
