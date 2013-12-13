@@ -8,8 +8,8 @@ public class Constants {
 	public static final int STARTING_RESOURCE_POINTS = 0;
 	public static final int CHILD_COST = 2;
 	public static final Color[] PLAYER_COLORS = new Color[] { Color.WHITE, Color.BLUE, Color.RED };
-	public static final int PLAYER_HEALTH_POINTS = 15;
-	public static final int CHILD_MOVE_RANGE = 5;
+	public static final int PLAYER_HEALTH_POINTS = 10;
+	public static final int CHILD_MOVE_RANGE = 4;
 
 	public static final int CHILD_SIZE = 90;
 	public static final int ENVIRONMENT_UNIT_SIZE = 110;
