@@ -36,7 +36,7 @@ public class PostGameScreen extends AbstractMenuScreen<PostGameScreen.StageManag
 
 	public void setReason(EndReason reason, int playerId) {
 		mMenuStageManager.postGameLabel.setText(reason.label);
-		TextureAtlas atlas = mGame.assetManager.get(Constants.TRIM_ATLAS_PATH);
+		TextureAtlas atlas = mGame.assetManager.get(Constants.SPRITES_ATLAS_PATH);
 		if (reason == EndReason.Forfeit) {
 			mMenuStageManager.im = new Image();
 		} else {

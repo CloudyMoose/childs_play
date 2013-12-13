@@ -36,7 +36,7 @@
         <key>dataFormat</key>
         <string>libgdx</string>
         <key>textureFileName</key>
-        <filename>childs-play-android/assets/game/trimmed_sprites.png</filename>
+        <filename>childs-play-android/assets/game/sprites.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>ditherType</key>
@@ -127,7 +127,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>childs-play-android/assets/game/trimmed_sprites.txt</filename>
+                <filename>childs-play-android/assets/game/sprites.txt</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -182,6 +182,12 @@
             <filename>raw-assets/castle.png</filename>
             <filename>raw-assets/BlueLife.png</filename>
             <filename>raw-assets/RedLife.png</filename>
+            <filename>raw-assets/Tickets.png</filename>
+            <filename>raw-assets/apple_tree.png</filename>
+            <filename>raw-assets/bush.png</filename>
+            <filename>raw-assets/tree.png</filename>
+            <filename>raw-assets/grass.png</filename>
+            <filename>raw-assets/sand.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

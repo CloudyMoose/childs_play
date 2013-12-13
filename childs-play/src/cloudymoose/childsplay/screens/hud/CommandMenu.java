@@ -44,7 +44,7 @@ public class CommandMenu extends Group {
 	protected void build(AssetManager assetManager) {
 		table = new Table();
 
-		TextureAtlas atlas = assetManager.get(Constants.TRIM_ATLAS_PATH);
+		TextureAtlas atlas = assetManager.get(Constants.SPRITES_ATLAS_PATH);
 
 		Button btnMove = new Button(new TextureRegionDrawable(atlas.findRegion("Move")));
 		commandButtons.put(MoveCommand.class, btnMove);

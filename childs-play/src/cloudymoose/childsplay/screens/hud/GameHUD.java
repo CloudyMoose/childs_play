@@ -54,7 +54,7 @@ public class GameHUD extends AbstractMenuStageManager {
 
 	@Override
 	protected Actor init() {
-		TextureAtlas atlas = this.game.assetManager.get(Constants.TRIM_ATLAS_PATH);
+		TextureAtlas atlas = this.game.assetManager.get(Constants.SPRITES_ATLAS_PATH);
 
 		AtlasRegion unitTextureA = atlas.findRegion("BlueTroops");
 		AtlasRegion unitTextureB = atlas.findRegion("RedTroops");

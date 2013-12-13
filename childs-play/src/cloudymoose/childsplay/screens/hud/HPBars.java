@@ -38,7 +38,7 @@ public class HPBars extends Table {
 	public void build(AssetManager assetManager) {
 		// debug();
 		int nbCells = (Constants.PLAYER_HEALTH_POINTS * 2) + 1; // 1 for each HP + 1 for the labels
-		TextureAtlas atlas = assetManager.get(Constants.TRIM_ATLAS_PATH);
+		TextureAtlas atlas = assetManager.get(Constants.SPRITES_ATLAS_PATH);
 		blueHpTexture = atlas.findRegion("BlueLife");
 		redHpTexture = atlas.findRegion("RedLife");
 

@@ -55,27 +55,27 @@ public class WorldRenderer {
 	}
 
 	public void init() {
-		TextureAtlas atlas0 = assetManager.get(Constants.NO_TRIM_ATLAS_PATH);
-		TextureAtlas atlas1 = assetManager.get(Constants.TRIM_ATLAS_PATH);
-		animationRunner = new AnimationRunner(atlas0, assetManager);
+		TextureAtlas animationAtlas = assetManager.get(Constants.ANIMATIONS_ATLAS_PATH);
+		TextureAtlas staticAtlas = assetManager.get(Constants.SPRITES_ATLAS_PATH);
+		animationRunner = new AnimationRunner(animationAtlas, assetManager);
 
 		// Add move command sounds
 		MoveCommand.Sounds.add(assetManager.get("sounds/ok.mp3", Sound.class));
 		MoveCommand.Sounds.add(assetManager.get("sounds/hereWeGo.mp3", Sound.class));
 		MoveCommand.Sounds.add(assetManager.get("sounds/yes.mp3", Sound.class));
 
-		unitTextures.put(Catapult.class, new TexturePair(atlas0.findRegion("CatapultFire")));
-		unitTextures.put(Castle.class, new TexturePair(atlas1.findRegion("castle")));
+		unitTextures.put(Catapult.class, new TexturePair(animationAtlas.findRegion("CatapultFire")));
+		unitTextures.put(Castle.class, new TexturePair(staticAtlas.findRegion("castle")));
 		unitTextures.put(Child.class,
-				new TexturePair(atlas1.findRegion("BlueChild"), atlas1.findRegion("RedChild")));
-		unitTextures.put(AppleTree.class, new TexturePair(atlas0.findRegion("apple_tree")));
+				new TexturePair(staticAtlas.findRegion("BlueChild"), staticAtlas.findRegion("RedChild")));
+		unitTextures.put(AppleTree.class, new TexturePair(staticAtlas.findRegion("apple_tree")));
 
-		tileTextures.put(TileType.Grass, atlas0.findRegion("grass"));
-		tileTextures.put(TileType.Sand, atlas0.findRegion("sand"));
+		tileTextures.put(TileType.Grass, staticAtlas.findRegion("grass"));
+		tileTextures.put(TileType.Sand, staticAtlas.findRegion("sand"));
 
-		flagTextures.addAll(atlas0.findRegions("FlagBlue"));
-		flagTextures.add(atlas0.findRegion("FlagNeutral"));
-		flagTextures.addAll(atlas0.findRegions("FlagRed"));
+		flagTextures.addAll(animationAtlas.findRegions("FlagBlue"));
+		flagTextures.add(animationAtlas.findRegion("FlagNeutral"));
+		flagTextures.addAll(animationAtlas.findRegions("FlagRed"));
 	}
 
 	public boolean render(float dt) {
