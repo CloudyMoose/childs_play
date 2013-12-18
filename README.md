@@ -1,7 +1,9 @@
 Child's Play
 ===========
 
-Something something -RTS- Turn Based,  children's imagination, something capture points, something.
+Child’s Play is a turn based strategy game for mobile devices in which you control a group of children as they play in their neighborhood. The children are pretending to be medieval knights, thieves and wizards and compete to win a pretend war against children of other factions
+
+The game was developped for the Computer Game Design class at KTH
 
 Gameplay
 --------
